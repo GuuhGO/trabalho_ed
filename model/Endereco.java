@@ -3,52 +3,79 @@ package model;
 public class Endereco {
 	private String logradouro;
 	private int numero;
-	private String complemento;
+	private String complemento = "";
 	private String cep;
-	
-	
-	public Endereco(String logradouro, int numero, String complemento, String cep) {
-		super();
-		this.logradouro = logradouro;
-		this.numero = numero;
-		this.complemento = complemento;
-		this.cep = cep;
+	private StringBuffer errorMessage = new StringBuffer("ERRO NA CRIAÇÃO DO ENDEREÇO:\n");
+
+	public Endereco(String logradouro, int numero, String complemento, String cep) throws Exception {
+		setLogradouro(logradouro);
+		setComplemento(complemento);
+		setNumero(numero);
+		setCep(cep);
 	}
-	
+
 	public String getLogradouro() {
-		return logradouro;
+		return this.logradouro;
 	}
-	public void setLogradouro(String logradouro) {
+
+	public void setLogradouro(String logradouro) throws Exception {
+		boolean bLog = (!logradouro.equals(""));
+		if (!bLog) {
+			errorMessage.append("Logradouro NÃO pode ser vazio\n");
+			throw new Exception(errorMessage.toString());
+		}
 		this.logradouro = logradouro;
+		return;
 	}
+
 	public int getNumero() {
-		return numero;
+		return this.numero;
 	}
-	public void setNumero(int numero) {
+
+	public void setNumero(int numero) throws Exception {
+		boolean bNum = (numero < 0);
+		if (bNum) {
+			errorMessage.append("Número NÃO pode ser menor que zero\n");
+			throw new Exception(errorMessage.toString());
+		}
 		this.numero = numero;
+		return;
 	}
+
 	public String getComplemento() {
-		return complemento;
+		return this.complemento;
 	}
+
 	public void setComplemento(String complemento) {
 		this.complemento = complemento;
 	}
+
 	public String getCep() {
-		return cep;
+		return this.cep;
 	}
-	public void setCep(String cep) {
+
+	public void setCep(String cep) throws Exception {
+		boolean bCep = (cep.equals(""));
+		if (bCep) {
+			errorMessage.append("CEP NÃO pode ser vazio\n");
+			throw new Exception(errorMessage.toString());
+		}
 		this.cep = cep;
+		return;
 	}
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.logradouro);
 		buffer.append(", ");
 		buffer.append(this.numero);
-		buffer.append("-");
-		buffer.append(this.complemento);
+		if (!complemento.equals("")) {
+			buffer.append("-");
+			buffer.append(this.complemento);
+		}
 		buffer.append(" - ");
 		buffer.append(this.cep);
 		return buffer.toString();
 	}
-	 
+
 }
