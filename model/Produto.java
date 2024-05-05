@@ -70,7 +70,7 @@ public class Produto {
         buffer.append(";");
         buffer.append(quantidadeEstoque);
         buffer.append(";");
-        buffer.append(tipo.getId());
+        buffer.append(tipo.getCodigo());
         return buffer.toString();
     }
 }

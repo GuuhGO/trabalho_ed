@@ -1,24 +1,24 @@
 package model;
 
 public class Tipo {
-    private int id;
+    private int codigo;
     private String nome;
     private String descricao;
 
     public Tipo() {}
 
-    public Tipo(int id, String nome, String descricao) {
-        setId(id);
+    public Tipo(int codigo, String nome, String descricao) {
+        setCodigo(codigo);
         setNome(nome);
         setDescricao(descricao);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
 
-    public int getId() {
-        return id;
+    public int getCodigo() {
+        return codigo;
     }
 
     public void setNome(String nome) {
@@ -39,7 +39,7 @@ public class Tipo {
 
     public String getCsv() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(id).append(";").append(nome).append(";").append(descricao);
+        buffer.append(codigo).append(";").append(nome).append(";").append(descricao);
         return buffer.toString();
     }
 }
