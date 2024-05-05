@@ -1,5 +1,5 @@
 package model;
-
+//test
 public class Endereco {
 	private String logradouro;
 	private int numero;
