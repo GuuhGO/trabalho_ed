@@ -43,7 +43,7 @@ public class ClienteFisico extends Cliente {
     }
 
     public void setNome(String nome) throws Exception {
-        if (!nome.isEmpty()) {
+        if (nome.isEmpty()) {
             throw new Exception("Campo 'nome' não pode ser vazio");
         }
         this.nome = nome;
