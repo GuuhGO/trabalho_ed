@@ -6,16 +6,15 @@ public class ClienteJuridico extends Cliente {
     private String email;
 
     public ClienteJuridico(String fantasia, String cnpj, String telefone, String email) {
-        this.tipoCliente = "Jurídico";
+        this.setTipoCliente("Jurídico");
         setCnpj(cnpj);
         setFantasia(fantasia);
         setTelefone(telefone);
         setEmail(email);
     }
 
-    public ClienteJuridico(String fantasia, String cnpj, String logradouro, String complemento, int numero, String cep,
-                           String telefone, String email) throws Exception {
-        this.tipoCliente = "Jurídico";
+    public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, String logradouro, String complemento, int numero, String cep) throws Exception {
+        this.setTipoCliente("Jurídico");
         setCnpj(cnpj);
         setFantasia(fantasia);
         setTelefone(telefone);
@@ -23,9 +22,8 @@ public class ClienteJuridico extends Cliente {
         setEndereco(logradouro, numero, complemento, cep);
     }
 
-    public ClienteJuridico(String fantasia, String cnpj, String logradouro, int numero, String cep, String telefone,
-                           String email) throws Exception {
-        this.tipoCliente = "Jurídico";
+    public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, String logradouro, int numero, String cep) throws Exception {
+        this.setTipoCliente("Jurídico");
         setCnpj(cnpj);
         setFantasia(fantasia);
         setTelefone(telefone);
@@ -60,18 +58,18 @@ public class ClienteJuridico extends Cliente {
     public String getObjCsv() {
         //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
         StringBuffer buffer = new StringBuffer();
-        buffer.append(cnpj);
+        buffer.append(this.cnpj);
         buffer.append(";");
-        buffer.append(tipoCliente);
+        buffer.append(this.getTipoCliente());
         buffer.append(";");
-        buffer.append(fantasia);
+        buffer.append(this.fantasia);
         buffer.append(";");
-        if (super.getEndereco() != null)
-            buffer.append(super.getEndereco().toString());
+        if (this.getEndereco() != null)
+            buffer.append(this.getEndereco().toString());
         buffer.append(";");
-        buffer.append(super.getTelefone());
+        buffer.append(this.getTelefone());
         buffer.append(";");
-        buffer.append(getEmail());
+        buffer.append(this.email);
         return buffer.toString();
     }
 

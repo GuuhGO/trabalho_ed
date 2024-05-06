@@ -19,7 +19,7 @@ public class Endereco {
 	}
 
 	public void setLogradouro(String logradouro) throws Exception {
-		boolean bLog = (!logradouro.equals(""));
+		boolean bLog = (!logradouro.isEmpty());
 		if (!bLog) {
 			errorMessage.append("Logradouro NÃO pode ser vazio\n");
 			throw new Exception(errorMessage.toString());
@@ -55,7 +55,7 @@ public class Endereco {
 	}
 
 	public void setCep(String cep) throws Exception {
-		boolean bCep = (cep.equals(""));
+		boolean bCep = (cep.isEmpty());
 		if (bCep) {
 			errorMessage.append("CEP NÃO pode ser vazio\n");
 			throw new Exception(errorMessage.toString());
