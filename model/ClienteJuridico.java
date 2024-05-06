@@ -57,18 +57,19 @@ public class ClienteJuridico extends Cliente {
 
     public String getObjCsv() {
         //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
+        String delimiter = ";";
         StringBuffer buffer = new StringBuffer();
         buffer.append(this.cnpj);
-        buffer.append(";");
+        buffer.append(delimiter);
         buffer.append(this.getTipoCliente());
-        buffer.append(";");
+        buffer.append(delimiter);
         buffer.append(this.fantasia);
-        buffer.append(";");
+        buffer.append(delimiter);
         if (this.getEndereco() != null)
             buffer.append(this.getEndereco().toString());
-        buffer.append(";");
+        buffer.append(delimiter);
         buffer.append(this.getTelefone());
-        buffer.append(";");
+        buffer.append(delimiter);
         buffer.append(this.email);
         return buffer.toString();
     }

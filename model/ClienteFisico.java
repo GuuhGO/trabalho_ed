@@ -55,11 +55,11 @@ public class ClienteFisico extends Cliente {
         //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
         String delimiter = ";";
         StringBuffer buffer = new StringBuffer();
-        buffer.append(cpf);
+        buffer.append(this.cpf);
         buffer.append(delimiter);
-        buffer.append(getTipoCliente());
+        buffer.append(this.getTipoCliente());
         buffer.append(delimiter);
-        buffer.append(nome);
+        buffer.append(this.nome);
         buffer.append(delimiter);
         if (this.getEndereco() != null)
             buffer.append(this.getEndereco().toString());
