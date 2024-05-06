@@ -4,7 +4,7 @@ public class ClienteFisico extends Cliente {
     private String cpf;
     private String nome;
 
-    public ClienteFisico(String nome, String cpf, String telefone) {
+    public ClienteFisico(String nome, String cpf, String telefone) throws Exception {
         this.setTipoCliente("Físico");
         setNome(nome);
         setCpf(cpf);
@@ -31,24 +31,22 @@ public class ClienteFisico extends Cliente {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
-        if (!cpf.isEmpty()) {
-            this.cpf = cpf;
-            return;
+    public void setCpf(String cpf) throws Exception {
+        if (cpf.isEmpty()) {
+            throw new Exception("Campo 'cpf' não pode ser vazio");
         }
-        System.out.println("Parametro 'cpf' não pode ser vazio");
+        this.cpf = cpf;
     }
 
     public String getNome() {
         return this.nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(String nome) throws Exception {
         if (!nome.isEmpty()) {
-            this.nome = nome;
-            return;
+            throw new Exception("Campo 'nome' não pode ser vazio");
         }
-        System.out.println("Parâmetro 'nome' não pode ser vazio");
+        this.nome = nome;
     }
 
     public String getObjCsv() {

@@ -12,8 +12,11 @@ public abstract class Cliente {
         return this.telefone;
     }
 
-    public void setTelefone(String telefone) {
-		this.telefone = telefone;
+    public void setTelefone(String telefone) throws Exception {
+		if (telefone.isEmpty()){
+            throw new Exception("Campo 'telefone' não pode ser vazio");
+        }
+        this.telefone = telefone;
     }
 
     public Endereco getEndereco() {

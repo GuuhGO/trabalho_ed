@@ -5,7 +5,7 @@ public class ClienteJuridico extends Cliente {
     private String fantasia;
     private String email;
 
-    public ClienteJuridico(String fantasia, String cnpj, String telefone, String email) {
+    public ClienteJuridico(String fantasia, String cnpj, String telefone, String email) throws Exception{
         this.setTipoCliente("Jurídico");
         setCnpj(cnpj);
         setFantasia(fantasia);
@@ -35,7 +35,10 @@ public class ClienteJuridico extends Cliente {
         return cnpj;
     }
 
-    public void setCnpj(String cnpj) {
+    public void setCnpj(String cnpj) throws Exception {
+        if(cnpj.isEmpty()){
+            throw new Exception("Campo 'cnpj' não pode ser vazio");
+        }
         this.cnpj = cnpj;
     }
 
@@ -43,7 +46,10 @@ public class ClienteJuridico extends Cliente {
         return fantasia;
     }
 
-    public void setFantasia(String fantasia) {
+    public void setFantasia(String fantasia) throws Exception {
+        if (fantasia.isEmpty()){
+            throw new Exception("Campo 'fantasia' não pode ser vazio");
+        }
         this.fantasia = fantasia;
     }
 
@@ -51,9 +57,13 @@ public class ClienteJuridico extends Cliente {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws Exception {
+        if (email.isEmpty()) {
+            throw new Exception("Campo email não pode ser vazio!");
+        }
         this.email = email;
     }
+
 
     public String getObjCsv() {
         //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
