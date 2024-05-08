@@ -22,6 +22,9 @@ public class Tipo {
     }
 
     public void setNome(String nome) {
+        if(nome.isEmpty()) {
+            nome = "NULL";
+        }
         this.nome = nome;
     }
 
@@ -30,6 +33,9 @@ public class Tipo {
     }
 
     public void setDescricao(String descricao) {
+        if(descricao.isEmpty()) {
+            descricao = "NULL";
+        }
         this.descricao = descricao;
     }
 

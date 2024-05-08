@@ -27,6 +27,9 @@ public class Produto {
     }
 
     public void setNome(String nome) {
+        if(nome.isEmpty()) {
+            nome = "NULL";
+        }
         this.nome = nome;
     }
 
@@ -60,7 +63,7 @@ public class Produto {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
-    public String getCsv() {
+    public String getObjCsv() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(codigo);
         buffer.append(";");
