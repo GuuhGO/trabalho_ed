@@ -1,6 +1,6 @@
 package model;
 
-public class Tipo {
+public class Tipo implements IRegistroCsv {
     private int codigo;
     private String nome;
     private String descricao;
@@ -43,7 +43,8 @@ public class Tipo {
         return descricao;
     }
 
-    public String getCsv() {
+    @Override
+    public String getObjCsv() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(codigo).append(";").append(nome).append(";").append(descricao);
         return buffer.toString();

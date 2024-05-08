@@ -1,6 +1,6 @@
 package model;
 
-public class ClienteFisico extends Cliente {
+public class ClienteFisico extends Cliente implements IRegistroCsv{
     private String cpf;
     private String nome;
 
@@ -49,6 +49,7 @@ public class ClienteFisico extends Cliente {
         this.nome = nome;
     }
 
+    @Override
     public String getObjCsv() {
         //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
         String delimiter = ";";

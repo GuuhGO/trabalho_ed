@@ -1,6 +1,6 @@
 package model;
 
-public class Produto {
+public class Produto implements IRegistroCsv {
     private int codigo;
     private String nome;
     private Tipo tipo;
@@ -63,6 +63,7 @@ public class Produto {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
+    @Override
     public String getObjCsv() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(codigo);
