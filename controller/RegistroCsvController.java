@@ -118,10 +118,38 @@ public abstract class RegistroCsvController implements IRegistroCsvController {
                     return currentLine;
                 }
             }
-
         }
 
         throw new IOException("Arquivo inválido");
+    }
+
+    @Override
+    public List<String> getAllRegistros() throws IOException {
+        File file = new File(dirPath, fileName+".csv");
+
+        if(file.exists() && file.isFile()) {
+            List<String> registroList = new List<>();
+
+            FileInputStream  stream = new FileInputStream(file);
+            InputStreamReader reader = new InputStreamReader(stream);
+            BufferedReader buffer = new BufferedReader(reader);
+
+            String currentLine;
+            buffer.readLine();
+            while((currentLine = buffer.readLine()) != null) {
+                try {
+                    registroList.addLast(currentLine);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+
+            buffer.close();
+            reader.close();
+
+            return registroList;
+        }
+        throw  new IOException("Arquivo Inválido");
     }
 
     @Override
