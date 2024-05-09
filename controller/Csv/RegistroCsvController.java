@@ -118,9 +118,11 @@ public abstract class RegistroCsvController implements IRegistroCsvController {
                     return currentLine;
                 }
             }
+            return null;
         }
-
-        throw new IOException("Arquivo inválido");
+        else {
+            throw new IOException("Arquivo inválido");
+        }
     }
 
     @Override
