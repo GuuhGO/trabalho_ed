@@ -1,4 +1,9 @@
-package model;
+package model.carrinho;
+
+import model.Produto;
+import model.Tipo;
+import model.carrinho.ItemCarrinho;
+import model.cliente.Cliente;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package model;
+package model.cliente;
 
 public abstract class Cliente {
     private Endereco endereco;

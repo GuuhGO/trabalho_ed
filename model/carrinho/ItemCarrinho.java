@@ -1,4 +1,7 @@
-package model;
+package model.carrinho;
+
+import model.Produto;
+import model.Tipo;
 
 public class ItemCarrinho {
     private Produto produto;

@@ -1,4 +1,4 @@
-package model;
+package model.cliente;
 
 //test
 public class Endereco {
