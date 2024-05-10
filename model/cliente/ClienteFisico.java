@@ -1,9 +1,8 @@
 package model.cliente;
 
 import model.IRegistroCsv;
-import model.cliente.Cliente;
 
-public class ClienteFisico extends Cliente implements IRegistroCsv {
+public class ClienteFisico extends BaseCliente implements IRegistroCsv {
     private String cpf;
     private String nome;
 

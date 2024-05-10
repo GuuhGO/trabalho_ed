@@ -2,17 +2,16 @@ package model.carrinho;
 
 import model.Produto;
 import model.Tipo;
-import model.carrinho.ItemCarrinho;
-import model.cliente.Cliente;
+import model.cliente.BaseCliente;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Carrinho {
-    private Cliente cliente;
+    private BaseCliente cliente;
     private List<Object> itens;
 
-    public Carrinho(Cliente cliente) {
+    public Carrinho(BaseCliente cliente) {
         this.cliente = cliente;
         this.itens = new ArrayList<>();
     }

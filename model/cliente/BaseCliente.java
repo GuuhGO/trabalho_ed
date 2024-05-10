@@ -1,11 +1,11 @@
 package model.cliente;
 
-public abstract class Cliente {
+public abstract class BaseCliente {
     private Endereco endereco;
     private String telefone;
     private String tipoCliente;
 
-    public Cliente() {
+    public BaseCliente() {
     }
 
     public String getTelefone() {

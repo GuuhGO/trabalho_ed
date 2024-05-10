@@ -5,12 +5,12 @@ import model.IRegistroCsv;
 
 import java.io.*;
 
-public abstract class RegistroCsvController implements IRegistroCsvController {
+public abstract class BaseRegistroCsvController implements IRegistroCsvController {
     private String dirPath;
     private String fileName;
     private String header;
 
-    public RegistroCsvController(String dirPath, String fileName, String header) {
+    public BaseRegistroCsvController(String dirPath, String fileName, String header) {
         setFilePath(dirPath);
         setFileName(fileName);
         setHeader(header);
