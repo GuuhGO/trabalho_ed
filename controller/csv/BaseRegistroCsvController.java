@@ -2,7 +2,6 @@ package controller.csv;
 
 import datastrucures.genericList.List;
 import model.IRegistroCsv;
-import model.Produto;
 
 import java.io.*;
 

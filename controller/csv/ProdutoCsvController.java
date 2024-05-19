@@ -1,11 +1,9 @@
 package controller.csv;
 
 import controller.hashTables.TipoHashTable;
-import datastrucures.genericList.List;
 import model.Produto;
 import model.Tipo;
 
-import java.io.*;
 
 public class ProdutoCsvController extends BaseRegistroCsvController<Produto> {
 
