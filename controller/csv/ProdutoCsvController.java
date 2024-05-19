@@ -45,39 +45,4 @@ public class ProdutoCsvController extends BaseRegistroCsvController<Produto> {
 
         return new Produto(codigo, nome, tipo, valor, quantidade);
     }
-
-    @Override
-    public Produto getObjectById(int id) throws Exception {
-        String registroCsv = getRegistroById(String.valueOf(id));
-        if (registroCsv == null) {
-            throw new Exception("Produto não encontrado");
-        }
-
-        return objectBuilder(registroCsv.split(";"));
-    }
-
-    @Override
-    public List<Produto> getAllObjects() throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        if (!file.exists() || !file.isFile()) {
-            throw new IOException("Arquivo inválido");
-        }
-
-        List<Produto> list = new List<>();
-
-        FileInputStream stream = new FileInputStream(file);
-        InputStreamReader reader = new InputStreamReader(stream);
-        BufferedReader buffer = new BufferedReader(reader);
-
-        String currentLine = buffer.readLine(); // pula a mãe de alguém
-        while((currentLine = buffer.readLine()) != null) {
-            try {
-                list.addLast(objectBuilder(currentLine.split(";")));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-
-        return list;
-    }
 }

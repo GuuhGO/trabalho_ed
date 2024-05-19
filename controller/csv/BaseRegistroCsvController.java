@@ -2,13 +2,14 @@ package controller.csv;
 
 import datastrucures.genericList.List;
 import model.IRegistroCsv;
+import model.Produto;
 
 import java.io.*;
 
 public abstract class BaseRegistroCsvController<T> implements IRegistroCsvController<T> {
-    protected String dirPath;
-    protected String fileName;
-    protected String header;
+    private String dirPath;
+    private String fileName;
+    private String header;
 
     public BaseRegistroCsvController(String dirPath, String fileName, String header) {
         setFilePath(dirPath);
@@ -20,7 +21,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
         return header;
     }
 
-    public void setHeader(String header) {
+    protected void setHeader(String header) {
         this.header = header;
     }
 
@@ -28,7 +29,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    protected void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
@@ -36,7 +37,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
         return dirPath;
     }
 
-    public void setFilePath(String dirPath){
+    protected void setFilePath(String dirPath){
         this.dirPath = dirPath;
     }
 
@@ -105,8 +106,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
 
     }
 
-    @Override
-    public String getRegistroById(String id) throws IOException {
+    private String getRegistroById(String id) throws IOException {
         File file = new File(dirPath, fileName+".csv");
         if(file.exists() && file.isFile()) {
             FileInputStream  stream = new FileInputStream(file);
@@ -145,5 +145,40 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
         else {
             throw new IOException("Diretório Inválido");
         }
+    }
+
+    @Override
+    public List<T> getAllObjects() throws IOException {
+        File file = new File(dirPath, fileName+".csv");
+        if (!file.exists() || !file.isFile()) {
+            throw new IOException("Arquivo inválido");
+        }
+
+        List<T> list = new List<>();
+
+        FileInputStream stream = new FileInputStream(file);
+        InputStreamReader reader = new InputStreamReader(stream);
+        BufferedReader buffer = new BufferedReader(reader);
+
+        String currentLine = buffer.readLine(); // pula a mãe de alguém
+        while((currentLine = buffer.readLine()) != null) {
+            try {
+                list.addLast(objectBuilder(currentLine.split(";")));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public T getObjectById(int id) throws Exception {
+        String registroCsv = getRegistroById(String.valueOf(id));
+        if (registroCsv == null) {
+            throw new Exception("Produto não encontrado");
+        }
+
+        return objectBuilder(registroCsv.split(";"));
     }
 }

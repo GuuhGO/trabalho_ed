@@ -9,7 +9,6 @@ import java.io.IOException;
 public interface IRegistroCsvController<T> {
     void addNewRegistro(IRegistroCsv obj) throws IOException;
     void deleteRegistro(IRegistroCsv obj) throws IOException;
-    String getRegistroById(String id) throws IOException;
     T getObjectById(int id) throws Exception;
     List<T> getAllObjects() throws IOException;
     T objectBuilder(String[] campos) throws Exception;
