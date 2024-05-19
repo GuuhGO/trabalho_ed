@@ -3,13 +3,13 @@ package controller.Dicionarios;
 import datastrucures.genericList.List;
 import model.Tipo;
 
-public class DicionarioTipo implements IDicionario<Integer, Tipo> {
+public class TipoHashTable implements IHashTable<Integer, Tipo> {
     @SuppressWarnings("rawtypes")
     private List[] buckets;
     private int size;
 
-    public DicionarioTipo() {
-        inicializarBuckets(15);
+    public TipoHashTable(int length) {
+        inicializarBuckets(length);
         size = 0;
     }
 
@@ -22,7 +22,7 @@ public class DicionarioTipo implements IDicionario<Integer, Tipo> {
 
     @Override
     public void put(Tipo item) throws Exception {
-        int bucketIndex = item.hashCode() % buckets.length;
+        int bucketIndex = item.hashCode();
         List<Tipo> list = this.buckets[bucketIndex];
 
         int qtd = list.size();
@@ -38,7 +38,7 @@ public class DicionarioTipo implements IDicionario<Integer, Tipo> {
 
     @Override
     public void remove(Integer id) throws Exception {
-        int bucketIndex = Tipo.hash(id) % buckets.length;
+        int bucketIndex = Tipo.hash(id);
         List<Tipo> list = this.buckets[bucketIndex];
 
         int qtd = list.size();
@@ -53,7 +53,7 @@ public class DicionarioTipo implements IDicionario<Integer, Tipo> {
 
     @Override
     public Tipo get(Integer id) throws Exception {
-        int bucketIndex = Tipo.hash(id) % buckets.length;
+        int bucketIndex = Tipo.hash(id);
         List<Tipo> list = this.buckets[bucketIndex];
 
         int qtd = list.size();
