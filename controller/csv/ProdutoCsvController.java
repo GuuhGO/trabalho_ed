@@ -1,8 +1,7 @@
-package controller.Csv;
+package controller.csv;
 
 import datastrucures.genericList.List;
 import model.Produto;
-import model.Tipo;
 
 import java.io.IOException;
 
