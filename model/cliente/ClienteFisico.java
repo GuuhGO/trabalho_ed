@@ -30,7 +30,7 @@ public class ClienteFisico extends BaseCliente implements IRegistroCsv {
     }
 
     public String getCpf() {
-        return cpf;
+        return this.cpf;
     }
 
     public void setCpf(String cpf) throws Exception {
@@ -53,7 +53,7 @@ public class ClienteFisico extends BaseCliente implements IRegistroCsv {
 
     @Override
     public String getObjCsv() {
-        //cpf/cnpj;tipo;nome/fantasia;endereco;telefone;email
+        //cpf/cnpj;tipo;nome/fantasia;logradouro;numero;complemento;cep;telefone;email
         String delimiter = ";";
         StringBuffer buffer = new StringBuffer();
         buffer.append(this.cpf);
@@ -63,7 +63,7 @@ public class ClienteFisico extends BaseCliente implements IRegistroCsv {
         buffer.append(this.nome);
         buffer.append(delimiter);
         if (this.getEndereco() != null)
-            buffer.append(this.getEndereco().toString());
+            buffer.append(this.getEndereco().getObjCsv());
         buffer.append(delimiter);
         buffer.append(this.getTelefone());
         buffer.append(delimiter);
