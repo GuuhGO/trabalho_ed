@@ -65,15 +65,16 @@ public class Endereco implements IRegistroCsv {
 
 	@Override
 	public String getObjCsv() {
+		String delimiter = ";";
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.logradouro);
-		buffer.append(";");
+		buffer.append(delimiter);
 		buffer.append(this.numero);
-		buffer.append(";");
+		buffer.append(delimiter);
 		if (!this.complemento.isEmpty()) {
 			buffer.append(this.complemento);
 		}
-		buffer.append(";");
+		buffer.append(delimiter);
 		buffer.append(this.cep);
 		return buffer.toString();
 	}
