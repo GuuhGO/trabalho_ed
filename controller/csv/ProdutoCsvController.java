@@ -16,6 +16,7 @@ public class ProdutoCsvController extends BaseRegistroCsvController<Produto> {
         this.TABLE_TIPOS = tabelaTipos;
     }
 
+    @Override
     public Produto objectBuilder(String[] campos) throws Exception {
         if (campos.length != 5) {
             throw new Exception("Registro Inválido");

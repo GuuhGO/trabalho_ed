@@ -1,8 +1,7 @@
 package model.cliente;
 
-import model.IRegistroCsv;
 
-public class ClienteJuridico extends BaseCliente implements IRegistroCsv {
+public class ClienteJuridico extends BaseCliente {
 	private String cnpj;
 	private String fantasia;
 	private String email;
