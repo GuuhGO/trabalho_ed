@@ -5,10 +5,10 @@ import model.IRegistroCsv;
 
 import java.io.*;
 
-public abstract class BaseRegistroCsvController implements IRegistroCsvController {
-    private String dirPath;
-    private String fileName;
-    private String header;
+public abstract class BaseRegistroCsvController<T> implements IRegistroCsvController<T> {
+    protected String dirPath;
+    protected String fileName;
+    protected String header;
 
     public BaseRegistroCsvController(String dirPath, String fileName, String header) {
         setFilePath(dirPath);
@@ -123,35 +123,6 @@ public abstract class BaseRegistroCsvController implements IRegistroCsvControlle
         else {
             throw new IOException("Arquivo inválido");
         }
-    }
-
-    @Override
-    public List<String> getAllRegistros() throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-
-        if(file.exists() && file.isFile()) {
-            List<String> registroList = new List<>();
-
-            FileInputStream  stream = new FileInputStream(file);
-            InputStreamReader reader = new InputStreamReader(stream);
-            BufferedReader buffer = new BufferedReader(reader);
-
-            String currentLine;
-            buffer.readLine();
-            while((currentLine = buffer.readLine()) != null) {
-                try {
-                    registroList.addLast(currentLine);
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-
-            buffer.close();
-            reader.close();
-
-            return registroList;
-        }
-        throw  new IOException("Arquivo Inválido");
     }
 
     @Override
