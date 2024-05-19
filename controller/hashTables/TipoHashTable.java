@@ -1,4 +1,4 @@
-package controller.Dicionarios;
+package controller.hashTables;
 
 import datastrucures.genericList.List;
 import model.Tipo;

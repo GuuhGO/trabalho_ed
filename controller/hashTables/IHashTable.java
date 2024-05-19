@@ -1,4 +1,4 @@
-package controller.Dicionarios;
+package controller.hashTables;
 
 public interface IHashTable<K, V> {
     void put(V item) throws Exception;
