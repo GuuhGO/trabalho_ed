@@ -2,9 +2,9 @@ package controller.csv;
 
 import model.Tipo;
 
-public class TipoRegistroCsvController extends BaseRegistroCsvController<Tipo> {
+public class TipoCsvController extends BaseCsvController<Tipo> {
 
-    public TipoRegistroCsvController(String dirPath, String fileName, String header) {
+    public TipoCsvController(String dirPath, String fileName, String header) {
         super(dirPath, fileName, header);
     }
 

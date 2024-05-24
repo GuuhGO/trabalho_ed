@@ -1,16 +1,16 @@
 package controller.csv;
 
 import datastrucures.genericList.List;
-import model.IRegistroCsv;
+import model.ICsv;
 
 import java.io.*;
 
-public abstract class BaseRegistroCsvController<T> implements IRegistroCsvController<T> {
+public abstract class BaseCsvController<T> implements ICsvController<T> {
     private String dirPath;
     private String fileName;
     private String header;
 
-    public BaseRegistroCsvController(String dirPath, String fileName, String header) {
+    public BaseCsvController(String dirPath, String fileName, String header) {
         setFilePath(dirPath);
         setFileName(fileName);
         setHeader(header);
@@ -41,7 +41,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
     }
 
     @Override
-    public void addNewRegistro(IRegistroCsv obj) throws IOException {
+    public void addRegistro(ICsv obj) throws IOException {
         File dir = new File(dirPath);
         File arq = new File(dirPath, fileName+".csv");
         if(dir.exists() && dir.isDirectory()) {
@@ -63,7 +63,7 @@ public abstract class BaseRegistroCsvController<T> implements IRegistroCsvContro
     }
 
     @Override
-    public void deleteRegistro(IRegistroCsv obj) throws IOException {
+    public void deleteRegistro(ICsv obj) throws IOException {
         File file = new File(dirPath, fileName+".csv");
         File tempFile = new File(dirPath, "temp" + fileName+".csv");
 

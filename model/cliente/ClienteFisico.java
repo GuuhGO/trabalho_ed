@@ -20,6 +20,14 @@ public class ClienteFisico extends BaseCliente {
         setEndereco(logradouro, numero, complemento, cep);
     }
 
+    public ClienteFisico(String nome, String cpf, String telefone, Endereco endereco) throws Exception {
+        this.setTipoCliente("Físico");
+        setNome(nome);
+        setCpf(cpf);
+        setTelefone(telefone);
+        this.endereco = endereco;
+    }
+
     public ClienteFisico(String nome, String cpf, String telefone, String logradouro, int numero, String cep) throws Exception {
         this.setTipoCliente("Físico");
         setNome(nome);
@@ -61,8 +69,11 @@ public class ClienteFisico extends BaseCliente {
         buffer.append(delimiter);
         buffer.append(this.nome);
         buffer.append(delimiter);
-        if (this.getEndereco() != null)
+        if (this.getEndereco() != null) {
             buffer.append(this.getEndereco().getObjCsv());
+        } else {
+            buffer.append("null");
+        }
         buffer.append(delimiter);
         buffer.append(this.getTelefone());
         buffer.append(delimiter);

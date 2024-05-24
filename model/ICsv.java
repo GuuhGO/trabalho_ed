@@ -1,5 +1,5 @@
 package model;
 
-public interface IRegistroCsv {
+public interface ICsv {
     String getObjCsv();
 }

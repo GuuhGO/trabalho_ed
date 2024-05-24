@@ -34,6 +34,15 @@ public class ClienteJuridico extends BaseCliente {
 		setEndereco(logradouro, numero, cep);
 	}
 
+	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, Endereco endereco) throws Exception{
+		this.setTipoCliente("Jurídico");
+		setCnpj(cnpj);
+		setFantasia(fantasia);
+		setTelefone(telefone);
+		setEmail(email);
+		this.endereco = endereco;
+	}
+
 	public String getCnpj() {
 		return this.cnpj;
 	}
@@ -78,8 +87,11 @@ public class ClienteJuridico extends BaseCliente {
 		buffer.append(delimiter);
 		buffer.append(this.fantasia);
 		buffer.append(delimiter);
-		if (this.getEndereco() != null)
+		if (this.getEndereco() != null) {
 			buffer.append(this.getEndereco().getObjCsv());
+		} else {
+			buffer.append("null");
+		}
 		buffer.append(delimiter);
 		buffer.append(this.getTelefone());
 		buffer.append(delimiter);

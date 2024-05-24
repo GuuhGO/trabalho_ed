@@ -1,9 +1,9 @@
 package model.cliente;
 
-import model.IRegistroCsv;
+import model.ICsv;
 
-public abstract class BaseCliente implements IRegistroCsv {
-	private Endereco endereco;
+public abstract class BaseCliente implements ICsv {
+	protected Endereco endereco;
 	private String telefone;
 	private String tipoCliente;
 

@@ -1,6 +1,6 @@
 package model;
 
-public class Produto implements IRegistroCsv {
+public class Produto implements ICsv {
     private int codigo;
     private String nome;
     private Tipo tipo;

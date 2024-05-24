@@ -1,8 +1,8 @@
 package model.cliente;
 
-import model.IRegistroCsv;
+import model.ICsv;
 
-public class Endereco implements IRegistroCsv {
+public class Endereco implements ICsv {
 	private String logradouro;
 	private int numero;
 	private String complemento = "";
@@ -73,6 +73,8 @@ public class Endereco implements IRegistroCsv {
 		buffer.append(delimiter);
 		if (!this.complemento.isEmpty()) {
 			buffer.append(this.complemento);
+		} else {
+			buffer.append("null");
 		}
 		buffer.append(delimiter);
 		buffer.append(this.cep);

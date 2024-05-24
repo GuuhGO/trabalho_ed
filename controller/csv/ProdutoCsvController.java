@@ -5,7 +5,7 @@ import model.Produto;
 import model.Tipo;
 
 
-public class ProdutoCsvController extends BaseRegistroCsvController<Produto> {
+public class ProdutoCsvController extends BaseCsvController<Produto> {
 
     private final TipoHashTable TABLE_TIPOS;
 

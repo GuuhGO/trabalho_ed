@@ -2,7 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class Tipo implements IRegistroCsv {
+public class Tipo implements ICsv {
     private int codigo;
     private String nome;
     private String descricao;

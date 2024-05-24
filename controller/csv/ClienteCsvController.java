@@ -1,55 +1,77 @@
 package controller.csv;
 
 import model.cliente.BaseCliente;
-import datastrucures.genericList.List;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import model.cliente.ClienteFisico;
+import model.cliente.ClienteJuridico;
+import model.cliente.Endereco;
 
 
-public class ClienteCsvController extends BaseRegistroCsvController<BaseCliente> {
+public class ClienteCsvController extends BaseCsvController<BaseCliente> {
 
     public ClienteCsvController(String dirPath, String fileName, String header) {
         super(dirPath, fileName, header);
     }
 
     @Override
-    public BaseCliente getObjectById(int id) throws Exception {
-        String registroCsv = getRegistroById(String.valueOf(id));
-        if(registroCsv == null) {
-            throw new Exception("Cliente não encontrado");
-        }
-        return objectBuilder(registroCsv.split(";"));
-    }
-
-    @Override
-    public List<BaseCliente> getAllObjects() throws IOException{
-        File file = new File(dirPath, fileName + ".csv");
-        if(!file.exists() || !file.isFile()){
-            throw new IOException("Arquivo inválido");
-        }
-        List<BaseCliente> list = new List<>();
-        FileInputStream stream = new FileInputStream(file);
-        InputStreamReader reader = new InputStreamReader(stream);
-        BufferedReader buffer = new BufferedReader(reader);
-
-        String currentLine = buffer.readLine(); // Ignora cabeçalho
-        while((currentLine = buffer.readLine()) != null) {
-            try {
-                String[] fields = currentLine.split(";");
-                list.addLast(objectBuilder(fields));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        return list;
-    }
-
-    @Override
     public BaseCliente objectBuilder(String[] campos) throws Exception {
-        return null;
+        if (campos.length < 5) {
+            throw new Exception("Registro Inválido");
+        }
+        // Cria o cliente de acordo com seu tipo
+        return switch (campos[1]) {
+            case "Jurídico" -> clienteJuridicoBuilder(campos);
+            case "Físico" -> clienteFisicoBuilder(campos);
+            default -> throw new Exception("Registro Inválido");
+        };
     }
 
+    private BaseCliente clienteFisicoBuilder(String[] campos) throws Exception {
+        int length = campos.length;
+
+        String   cpf      = campos[0];
+        String   nome     = campos[1];
+        Endereco endereco = !campos[2].equals("null") ? enderecoBuilder(campos) : null; // TODO: pergunta: devemos registrar o cliente sem endereço caso ele esteja errado?
+        // validar se a quantidade de campos bate com o correto
+        if ((endereco != null && length != 7) || (endereco == null & length != 4)) {
+            throw new Exception("Registro Inválido");
+        }
+        String telefone = campos[length - 1];
+
+        return new ClienteFisico(nome, cpf, telefone, endereco);
+    }
+
+    private BaseCliente clienteJuridicoBuilder(String[] campos) throws Exception {
+        int length = campos.length;
+
+        String   cnpj     = campos[0];
+        String   fantasia = campos[1];
+        Endereco endereco = !campos[2].equals("null") ? enderecoBuilder(campos) : null; // TODO: pergunta: devemos registrar o cliente sem endereço caso ele esteja errado?
+        // validar se a quantidade de campos bate com o correto
+        if ((endereco != null && length != 8) || (endereco == null & length != 5)) {
+            throw new Exception("Registro Inválido");
+        }
+        String telefone = campos[campos.length - 2];
+        String email    = campos[campos.length - 1];
+
+        return new ClienteJuridico(fantasia, cnpj, telefone, email, endereco);
+    }
+
+    private Endereco enderecoBuilder(String[] campos) throws Exception {
+        if (campos[2].equals("null")) {
+            return null;
+        }
+
+        String logradouro = campos[2];
+        int numero;
+        try {
+            numero = Integer.parseInt(campos[3]);
+        } catch (NumberFormatException e) {
+            throw new Exception("Endereço inválido");
+        }
+
+        String complemento = !campos[4].equals("null") ? campos[4] : "";
+        String cep = campos[5];
+
+        return new Endereco(logradouro, numero, complemento, cep);
+    }
 }
