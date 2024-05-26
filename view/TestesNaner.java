@@ -4,7 +4,6 @@ import controller.csv.ClienteCsvController;
 import controller.csv.ProdutoCsvController;
 import controller.csv.TipoCsvController;
 import controller.hashTables.ProdutoHashTable;
-import controller.hashTables.TipoHashTable;
 import datastrucures.genericList.List;
 import model.Produto;
 import model.Tipo;
@@ -17,26 +16,32 @@ import model.cliente.Endereco;
 public class TestesNaner {
     static ClienteCsvController dbCliente = new ClienteCsvController();
     static TipoCsvController dbTipo = new TipoCsvController();
-    static final TipoHashTable TIPO_TABLE = new TipoHashTable(15);
-    static ProdutoCsvController dbProduto = new ProdutoCsvController(TIPO_TABLE);
+    static final List<Tipo> TIPO_LIST = new List<>();
+    static ProdutoCsvController dbProduto = new ProdutoCsvController(TIPO_LIST);
 
     public static void main(String[] args) {
+        testeReadProduto();
+    }
+
+    private static void testeHashTableProduto() {
         try {
             ProdutoHashTable produtoTable = new ProdutoHashTable();
             List<Tipo> t = dbTipo.get();
             Produto p = new Produto(0, "Laranja", t.get(0), 5.60, 100);
-            Produto p2 = new Produto(1, "Laranja", t.get(1), 5.60, 100);
+            Produto p2 = new Produto(1, "Laranja", t.get(0), 5.60, 100);
             Produto p3 = new Produto(2, "Laranja", t.get(2), 5.60, 100);
             produtoTable.put(p);
             produtoTable.put(p2);
             produtoTable.put(p3);
-            produtoTable.remove(0,0);
-            produtoTable.remove(p2);
-            System.out.println(produtoTable);
+            List<Produto> produtos = produtoTable.getAllProducts();
+            List<Produto> produtosTipo0 = produtoTable.getByType(0);
+            Produto produtoPesquisado = produtoTable.get(2);
+            System.out.println(produtos);
+            System.out.println(produtosTipo0);
+            System.out.println(produtoPesquisado);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static void testeWriteCliente() {
@@ -111,7 +116,7 @@ public class TestesNaner {
     public static void testeReadProduto() {
         try {
             Tipo t = dbTipo.get("0");
-            TIPO_TABLE.put(t);
+            TIPO_LIST.addLast(t);
             Produto p = dbProduto.get("0");
             System.out.println(p);
 

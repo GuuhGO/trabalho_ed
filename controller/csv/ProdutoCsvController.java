@@ -1,6 +1,6 @@
 package controller.csv;
 
-import controller.hashTables.TipoHashTable;
+import datastrucures.genericList.List;
 import model.Produto;
 import model.Tipo;
 
@@ -9,10 +9,10 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
 
     private static final String HEADER = "código;nome;valor;quantidadeEstoque;códigoTipo";
     private static final String FILE_NAME = "produtos";
-    private final TipoHashTable TABLE_TIPOS;
+    private final List<Tipo> TIPOS;
 
-    public ProdutoCsvController(TipoHashTable tabelaTipos) {
-        this.TABLE_TIPOS = tabelaTipos;
+    public ProdutoCsvController(List<Tipo> tabelaTipos) {
+        this.TIPOS = tabelaTipos;
     }
 
     @Override
@@ -48,11 +48,22 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
             throw new Exception("Registro Inválido");
         }
 
-        Tipo tipo = TABLE_TIPOS.get(codigoTipo);
-        if (tipo == null) {
-            tipo = new Tipo(codigoTipo, "Desconhecido", "Desconhecido");
-        }
+        Tipo tipo = searchTipo(codigoTipo);
 
         return new Produto(codigo, nome, tipo, valor, quantidade);
+    }
+
+    private Tipo searchTipo(int codigo) throws Exception {
+        int size = TIPOS.size();
+        Tipo result = new Tipo(codigo, "Desconhecido", "Desconhecido");
+
+        for (int i = 0; i < size; i++) {
+            Tipo tipo = TIPOS.get(i);
+            if(tipo.getCodigo() == codigo) {
+                result = tipo;
+                break;
+            }
+        }
+        return result;
     }
 }
