@@ -1,6 +1,10 @@
 package model.cliente;
 
 
+import datastrucures.genericList.List;
+
+import java.io.*;
+
 public class ClienteJuridico extends BaseCliente {
 	private String cnpj;
 	private String fantasia;
@@ -89,14 +93,43 @@ public class ClienteJuridico extends BaseCliente {
 		buffer.append(delimiter);
 		if (this.getEndereco() != null) {
 			buffer.append(this.getEndereco().getObjCsv());
+			buffer.append(delimiter);
 		} else {
-			buffer.append("null");
+			String temp = "null" + delimiter;
+			buffer.append(temp.repeat(4));
 		}
-		buffer.append(delimiter);
 		buffer.append(this.getTelefone());
 		buffer.append(delimiter);
 		buffer.append(this.email);
 		return buffer.toString();
 	}
 
+	public ClienteJuridico getById(String id) throws Exception{
+		return (ClienteJuridico) super.getById(id);
+	}
+
+	public List<ClienteJuridico> getAll() throws IOException {
+		File file = new File(DIR_PATH, getFileName()+".csv");
+		if (!file.exists() || !file.isFile()) {
+			throw new IOException("Arquivo inválido");
+		}
+
+		List<ClienteJuridico> list = new List<>();
+
+		FileInputStream stream = new FileInputStream(file);
+		InputStreamReader reader = new InputStreamReader(stream);
+		BufferedReader buffer = new BufferedReader(reader);
+
+
+		String currentLine = buffer.readLine(); // pula a mãe de alguém
+		while((currentLine = buffer.readLine()) != null) {
+			try {
+				list.addLast((ClienteJuridico) objectBuilder(currentLine));
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
+		}
+
+		return list;
+	}
 }

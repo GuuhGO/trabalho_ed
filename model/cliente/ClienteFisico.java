@@ -75,38 +75,24 @@ public class ClienteFisico extends BaseCliente {
         buffer.append(delimiter);
         if (this.getEndereco() != null) {
             buffer.append(this.getEndereco().getObjCsv());
+            buffer.append(delimiter);
         } else {
-            buffer.append("null");
+            String temp = "null" + delimiter;
+            buffer.append(temp.repeat(4));
         }
-        buffer.append(delimiter);
         buffer.append(this.getTelefone());
         buffer.append(delimiter);
+        buffer.append("null");
         return buffer.toString();
     }
 
     @Override
-    public BaseCliente objectBuilder(String csv) throws Exception {
-        String[] campos = csv.split(";");
-        int length = campos.length;
-
-        String   cpf      = campos[0];
-        String   nome     = campos[1];
-        Endereco endereco = !campos[2].equals("null") ? enderecoBuilder(campos) : null; // TODO: pergunta: devemos registrar o cliente sem endereço caso ele esteja errado?
-        // validar se a quantidade de campos bate com o correto
-        if ((endereco != null && length != 7) || (endereco == null & length != 4)) {
-            throw new Exception("Registro Inválido");
-        }
-        String telefone = campos[length - 1];
-
-        return new ClienteFisico(nome, cpf, telefone, endereco);
-    }
-
     public ClienteFisico getById(String id) throws Exception {
         return (ClienteFisico) super.getById(id);
     }
 
     public List<ClienteFisico> getAll() throws IOException {
-        File file = new File(DIR_PATH, fileName+".csv");
+        File file = new File(DIR_PATH, getFileName()+".csv");
         if (!file.exists() || !file.isFile()) {
             throw new IOException("Arquivo inválido");
         }
