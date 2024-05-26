@@ -78,24 +78,19 @@ public class ClienteJuridico extends BaseCliente {
 
 	@Override
 	public String getObjCsv() {
-    	//cpf/cnpj;tipo;nome/fantasia;logradouro;numero;complemento;cep;telefone;email
+		//cpf/cnpj;tipo;nome/fantasia;logradouro;numero;complemento;cep;telefone;email
 		String delimiter = ";";
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(this.cnpj);
-		buffer.append(delimiter);
-		buffer.append(this.getTipoCliente());
-		buffer.append(delimiter);
-		buffer.append(this.fantasia);
-		buffer.append(delimiter);
+		StringBuilder buffer = new StringBuilder(cnpj + delimiter + getTipoCliente() + delimiter + fantasia + delimiter);
 		if (this.getEndereco() != null) {
-			buffer.append(this.getEndereco().getObjCsv());
+			buffer.append(getEndereco().getObjCsv());
+			buffer.append(delimiter);
 		} else {
-			buffer.append("null");
+			String temp = "null" + delimiter;
+			buffer.append(temp.repeat(4));
 		}
+		buffer.append(getTelefone());
 		buffer.append(delimiter);
-		buffer.append(this.getTelefone());
-		buffer.append(delimiter);
-		buffer.append(this.email);
+		buffer.append(email);
 		return buffer.toString();
 	}
 

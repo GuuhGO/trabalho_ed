@@ -7,15 +7,27 @@ import model.Tipo;
 
 public class ProdutoCsvController extends BaseCsvController<Produto> {
 
+    private static final String HEADER = "código;nome;valor;quantidadeEstoque;códigoTipo";
+    private static final String FILE_NAME = "produtos";
     private final TipoHashTable TABLE_TIPOS;
 
-    public ProdutoCsvController(String dirPath, String fileName, String header, TipoHashTable tabelaTipos) {
-        super(dirPath, fileName, header);
+    public ProdutoCsvController(TipoHashTable tabelaTipos) {
         this.TABLE_TIPOS = tabelaTipos;
     }
 
     @Override
-    public Produto objectBuilder(String[] campos) throws Exception {
+    public String getHeader() {
+        return HEADER;
+    }
+
+    @Override
+    public String getFileName() {
+        return FILE_NAME;
+    }
+
+    @Override
+    public Produto objectBuilder(String csvLine) throws Exception {
+        String[] campos = csvLine.split(";");
         if (campos.length != 5) {
             throw new Exception("Registro Inválido");
         }

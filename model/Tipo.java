@@ -25,7 +25,7 @@ public class Tipo implements ICsv {
 
     public void setNome(String nome) {
         if(nome.isEmpty()) {
-            nome = "NULL";
+            nome = "null";
         }
         this.nome = nome;
     }
@@ -36,7 +36,7 @@ public class Tipo implements ICsv {
 
     public void setDescricao(String descricao) {
         if(descricao.isEmpty()) {
-            descricao = "NULL";
+            descricao = "null";
         }
         this.descricao = descricao;
     }
@@ -64,8 +64,6 @@ public class Tipo implements ICsv {
 
     @Override
     public String getObjCsv() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(codigo).append(";").append(nome).append(";").append(descricao);
-        return buffer.toString();
+        return codigo + ";" + nome + ";" + descricao;
     }
 }

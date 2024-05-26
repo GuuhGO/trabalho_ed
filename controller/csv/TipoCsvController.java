@@ -4,24 +4,36 @@ import model.Tipo;
 
 public class TipoCsvController extends BaseCsvController<Tipo> {
 
-    public TipoCsvController(String dirPath, String fileName, String header) {
-        super(dirPath, fileName, header);
+    private final static String HEADER = "código;nome;descrição";
+    private final static String FILE_NAME = "tipos";
+
+    public TipoCsvController() {}
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     @Override
-    public Tipo objectBuilder(String[] campos) throws Exception {
+    public String getFileName() {
+        return FILE_NAME;
+    }
+
+    @Override
+    public Tipo objectBuilder(String csvLine) throws Exception {
+        String[] campos = csvLine.split(";");
         if(campos.length != 3) {
             throw new Exception("Registro Inválido");
         }
 
-        int    codigo;
+        int codigo;
         String nome;
         String descricao;
 
         try {
-            codigo      = Integer.parseInt(campos[0]);
-            nome        = campos[1];
-            descricao   = campos[2];
+            codigo    = Integer.parseInt(campos[0]);
+            nome      = campos[1];
+            descricao = campos[2];
 
         } catch (NumberFormatException e) {
             throw new Exception("Registro Inválido");

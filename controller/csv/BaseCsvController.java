@@ -5,179 +5,178 @@ import model.ICsv;
 
 import java.io.*;
 
-public abstract class BaseCsvController<T> implements ICsvController<T> {
-    private String dirPath;
-    private String fileName;
-    private String header;
+public abstract class BaseCsvController<T extends ICsv> implements ICsvController<T> {
+    public static final String DIR_PATH = "./src/files";
 
-    public BaseCsvController(String dirPath, String fileName, String header) {
-        setFilePath(dirPath);
-        setFileName(fileName);
-        setHeader(header);
+    public BaseCsvController() {
     }
 
-    public String getHeader() {
-        return header;
-    }
+    // Usados na escrita/leitura do csv. Devem ser implementados pela classe filha
+    public abstract String getHeader();
+    public abstract String getFileName();
+    public abstract T objectBuilder(String csvLine) throws Exception;
 
-    protected void setHeader(String header) {
-        this.header = header;
-    }
+    @Override
+    public void save(T obj) throws IOException {
+        File file = getValidatedFile();
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    protected void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFilePath() {
-        return dirPath;
-    }
-
-    protected void setFilePath(String dirPath){
-        this.dirPath = dirPath;
+        PrintWriter pw = new PrintWriter(new FileWriter(file, true));
+        pw.write("\n" + obj.getObjCsv());
+        pw.flush();
+        pw.close();
     }
 
     @Override
-    public void addRegistro(ICsv obj) throws IOException {
-        File dir = new File(dirPath);
-        File arq = new File(dirPath, fileName+".csv");
-        if(dir.exists() && dir.isDirectory()) {
-            if(!arq.exists()) {
-                createFile();
-            }
+    public void delete(T obj) throws IOException {
+        File file = getValidatedFile();
+        File temp = new File(DIR_PATH, "temp" + getFileName() + ".csv");
 
-            FileWriter fw = new FileWriter(arq, true);
-            PrintWriter pw = new PrintWriter(fw);
-            pw.write("\n");
-            pw.write(obj.getObjCsv());
-            pw.flush();
-            pw.close();
-            fw.close();
-        }
-        else {
-            throw new IOException("Diretório inválido");
-        }
-    }
-
-    @Override
-    public void deleteRegistro(ICsv obj) throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        File tempFile = new File(dirPath, "temp" + fileName+".csv");
-
-        if(file.exists() && file.isFile()) {
-            FileInputStream  stream = new FileInputStream(file);
-            InputStreamReader reader = new InputStreamReader(stream);
-            BufferedReader buffer = new BufferedReader(reader);
-
-            FileWriter fw = new FileWriter(tempFile);
-            PrintWriter pw = new PrintWriter(fw);
-
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            PrintWriter pw = new PrintWriter(new FileWriter(temp));
             String lineToRemove = obj.getObjCsv();
-
             String currentLine;
-            while((currentLine = buffer.readLine()) != null) {
-                if(currentLine.equals(lineToRemove)) continue;
-                if(!currentLine.isEmpty()) {
-                    pw.println(currentLine);
-                    pw.flush();
+            boolean firstPrint = true;
+
+            while ((currentLine = buffer.readLine()) != null) {
+                // skip linhas vazias e o target
+                if (currentLine.equals(lineToRemove) || currentLine.isBlank()) {
+                    continue;
                 }
+                // garante que não haverão espaços em branco após a deleção
+                if(firstPrint) {
+                    pw.print(currentLine);
+                    firstPrint = false;
+                } else {
+                    pw.println();
+                    pw.print(currentLine);
+                }
+                pw.flush();
             }
-
             pw.close();
-            fw.close();
-            reader.close();
-            buffer.close();
-
-            if(!file.delete()) {
-                throw new IOException("Não foi possível apagar o arquivo");
-            }
-
-            if(!tempFile.renameTo(file)){
-                throw new IOException("Não foi possível renomear o arquivo");
-            }
         }
-        else {
-            throw new IOException("Arquivo inválido");
+
+        if (!file.delete()) {
+            throw new IOException("Não foi possível apagar o arquivo");
+        }
+
+        if (!temp.renameTo(file)) {
+            throw new IOException("Não foi possível renomear o arquivo");
+        }
+    }
+
+    @Override
+    public void delete(String id) throws IOException {
+        File file = getValidatedFile();
+        File temp = new File(DIR_PATH, "temp" + getFileName() + ".csv");
+
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            PrintWriter pw = new PrintWriter(new FileWriter(temp));
+            String currentLine;
+            boolean firstPrint = true;
+
+            while ((currentLine = buffer.readLine()) != null) {
+                // skip linhas vazias e o target
+                if ((currentLine.startsWith(id)) || currentLine.isBlank()) {
+                    continue;
+                }
+                if(firstPrint) {
+                    pw.print(currentLine);
+                    firstPrint = false;
+                } else {
+                    pw.println();
+                    pw.print(currentLine);
+                }
+                pw.flush();
+            }
+            pw.close();
+        }
+
+        if (!file.delete()) {
+            throw new IOException("Não foi possível apagar o arquivo");
+        }
+
+        if (!temp.renameTo(file)) {
+            throw new IOException("Não foi possível renomear o arquivo");
         }
 
     }
 
     private String getRegistroById(String id) throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        if(file.exists() && file.isFile()) {
-            FileInputStream  stream = new FileInputStream(file);
-            InputStreamReader reader = new InputStreamReader(stream);
-            BufferedReader buffer = new BufferedReader(reader);
+        File file = getValidatedFile();
+        String result = null;
+
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             String currentLine;
-            while((currentLine = buffer.readLine()) != null) {
-                if(currentLine.startsWith(id)) {
-                    return currentLine;
+            while ((currentLine = buffer.readLine()) != null) {
+                if (currentLine.startsWith(id)) {
+                    result = currentLine;
+                    break;
                 }
             }
-            return null;
         }
-        else {
-            throw new IOException("Arquivo inválido");
-        }
+        return result;
     }
 
     @Override
-    public void createFile() throws IOException {
-        File dir = new File(dirPath);
-        File arq = new File(dirPath, fileName + ".csv");
-        if(dir.exists() && dir.isDirectory()) {
-            if(!arq.exists()) {
-                FileWriter fw = new FileWriter(arq);
-                PrintWriter pw = new PrintWriter(fw);
-                pw.write(header);
-                pw.flush();
-                pw.close();
-                fw.close();
-            }
-            else {
-                throw new IOException("Arquivo já existe");
-            }
+    public T get(String id) throws Exception {
+        String registroCsv = getRegistroById(id);
+        if (registroCsv == null) {
+            throw new Exception("Produto não encontrado");
         }
-        else {
-            throw new IOException("Diretório Inválido");
-        }
+
+        return objectBuilder(registroCsv);
     }
 
     @Override
-    public List<T> getAllObjects() throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        if (!file.exists() || !file.isFile()) {
-            throw new IOException("Arquivo inválido");
-        }
+    public List<T> get() throws IOException {
+        File file = getValidatedFile();
 
         List<T> list = new List<>();
 
-        FileInputStream stream = new FileInputStream(file);
-        InputStreamReader reader = new InputStreamReader(stream);
-        BufferedReader buffer = new BufferedReader(reader);
-
-        String currentLine = buffer.readLine(); // pula a mãe de alguém
-        while((currentLine = buffer.readLine()) != null) {
-            try {
-                list.addLast(objectBuilder(currentLine.split(";")));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            buffer.readLine(); // pular o header
+            String currentLine;
+            while ((currentLine = buffer.readLine()) != null) {
+                try {
+                    list.addLast(objectBuilder(currentLine));
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
             }
         }
 
         return list;
     }
 
-    @Override
-    public T getObjectById(int id) throws Exception {
-        String registroCsv = getRegistroById(String.valueOf(id));
-        if (registroCsv == null) {
-            throw new Exception("Produto não encontrado");
+    private void createFile() throws IOException {
+        File dir = new File(DIR_PATH);
+        File arq = new File(DIR_PATH, getFileName() + ".csv");
+        if (!dir.exists() || !dir.isDirectory()) {
+            throw new IOException("Diretório Inválido");
+        }
+        if (arq.exists()) {
+            throw new IOException("Arquivo já existe");
         }
 
-        return objectBuilder(registroCsv.split(";"));
+        PrintWriter pw = new PrintWriter(new FileWriter(arq));
+        pw.write(getHeader());
+        pw.flush();
+        pw.close();
+    }
+
+    private File getValidatedFile() throws IOException {
+        try {
+            // Cria o arquivo ainda não existe
+            createFile();
+        } catch (IOException e) {
+            if (e.getMessage().equals("Diretório Inválido")) {
+                throw e;
+            }
+        }
+        File file = new File(DIR_PATH, getFileName() + ".csv");
+        if (!file.isFile()) {
+            throw new IOException("Arquivo inválido");
+        }
+        return file;
     }
 }

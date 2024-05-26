@@ -1,0 +1,3 @@
+cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email
+12345678974;Físico;João;Rua dos loucos;69;null;4206900;11999999999;null
+000000000000;Jurídico;Plataforma 935;Rua dos loucos;69;null;4206900;11988888888;comercio@plataforma.com

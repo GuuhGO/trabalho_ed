@@ -62,21 +62,17 @@ public class ClienteFisico extends BaseCliente {
     public String getObjCsv() {
         //cpf/cnpj;tipo;nome/fantasia;logradouro;numero;complemento;cep;telefone;email
         String delimiter = ";";
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(this.cpf);
-        buffer.append(delimiter);
-        buffer.append(this.getTipoCliente());
-        buffer.append(delimiter);
-        buffer.append(this.nome);
-        buffer.append(delimiter);
+        StringBuilder buffer = new StringBuilder(cpf + delimiter + getTipoCliente() + delimiter + nome + delimiter);
         if (this.getEndereco() != null) {
-            buffer.append(this.getEndereco().getObjCsv());
+            buffer.append(getEndereco().getObjCsv());
+            buffer.append(delimiter);
         } else {
-            buffer.append("null");
+            String temp = "null" + delimiter;
+            buffer.append(temp.repeat(4));
         }
+        buffer.append(getTelefone());
         buffer.append(delimiter);
-        buffer.append(this.getTelefone());
-        buffer.append(delimiter);
+        buffer.append("null");
         return buffer.toString();
     }
 }
