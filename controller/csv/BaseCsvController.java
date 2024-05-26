@@ -7,6 +7,7 @@ import java.io.*;
 
 public abstract class BaseCsvController<T extends ICsv> implements ICsvController<T> {
     public static final String DIR_PATH = "./src/files";
+    public static final String DELIMITER = ";";
 
     public BaseCsvController() {
     }

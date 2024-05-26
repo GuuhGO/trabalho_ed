@@ -6,36 +6,8 @@ public class ClienteJuridico extends BaseCliente {
 	private String fantasia;
 	private String email;
 
-	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email) throws Exception {
-		this.setTipoCliente("Jurídico");
-		setCnpj(cnpj);
-		setFantasia(fantasia);
-		setTelefone(telefone);
-		setEmail(email);
-	}
-
-	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, String logradouro,
-			String complemento, int numero, String cep) throws Exception {
-		this.setTipoCliente("Jurídico");
-		setCnpj(cnpj);
-		setFantasia(fantasia);
-		setTelefone(telefone);
-		setEmail(email);
-		setEndereco(logradouro, numero, complemento, cep);
-	}
-
-	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, String logradouro, int numero,
-			String cep) throws Exception {
-		this.setTipoCliente("Jurídico");
-		setCnpj(cnpj);
-		setFantasia(fantasia);
-		setTelefone(telefone);
-		setEmail(email);
-		setEndereco(logradouro, numero, cep);
-	}
-
 	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, Endereco endereco) throws Exception{
-		this.setTipoCliente("Jurídico");
+		setTipoCliente("Jurídico");
 		setCnpj(cnpj);
 		setFantasia(fantasia);
 		setTelefone(telefone);
@@ -48,7 +20,7 @@ public class ClienteJuridico extends BaseCliente {
 	}
 
 	public void setCnpj(String cnpj) throws Exception {
-		if (cnpj.isEmpty()) {
+		if (cnpj.isEmpty() || cnpj.equals("null")) {
 			throw new Exception("Campo 'cnpj' não pode ser vazio");
 		}
 		this.cnpj = cnpj;
@@ -59,7 +31,7 @@ public class ClienteJuridico extends BaseCliente {
 	}
 
 	public void setFantasia(String fantasia) throws Exception {
-		if (fantasia.isEmpty()) {
+		if (fantasia.isEmpty() || fantasia.equals("null")) {
 			throw new Exception("Campo 'fantasia' não pode ser vazio");
 		}
 		this.fantasia = fantasia;
@@ -70,7 +42,7 @@ public class ClienteJuridico extends BaseCliente {
 	}
 
 	public void setEmail(String email) throws Exception {
-		if (email.isEmpty()) {
+		if (email.isEmpty() || email.equals("null")) {
 			throw new Exception("Campo email não pode ser vazio!");
 		}
 		this.email = email;

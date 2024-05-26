@@ -21,7 +21,7 @@ public class Endereco implements ICsv {
 	}
 
 	public void setLogradouro(String logradouro) throws Exception {
-		boolean bLog = (!logradouro.isEmpty());
+		boolean bLog = (!logradouro.isEmpty() || !logradouro.equals("null"));
 		if (!bLog) {
 			errorMessage.append("Logradouro NÃO pode ser vazio\n");
 			throw new Exception(errorMessage.toString());

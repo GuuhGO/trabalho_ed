@@ -5,35 +5,12 @@ public class ClienteFisico extends BaseCliente {
     private String cpf;
     private String nome;
 
-    public ClienteFisico(String nome, String cpf, String telefone) throws Exception {
-        this.setTipoCliente("Físico");
-        setNome(nome);
-        setCpf(cpf);
-        setTelefone(telefone);
-    }
-
-    public ClienteFisico(String nome, String cpf, String telefone, String logradouro, int numero, String complemento, String cep) throws Exception {
-        this.setTipoCliente("Físico");
-        setNome(nome);
-        setCpf(cpf);
-        setTelefone(telefone);
-        setEndereco(logradouro, numero, complemento, cep);
-    }
-
     public ClienteFisico(String nome, String cpf, String telefone, Endereco endereco) throws Exception {
-        this.setTipoCliente("Físico");
+        setTipoCliente("Físico");
         setNome(nome);
         setCpf(cpf);
         setTelefone(telefone);
         this.endereco = endereco;
-    }
-
-    public ClienteFisico(String nome, String cpf, String telefone, String logradouro, int numero, String cep) throws Exception {
-        this.setTipoCliente("Físico");
-        setNome(nome);
-        setCpf(cpf);
-        setTelefone(telefone);
-        setEndereco(logradouro, numero, "", cep);
     }
 
     public String getCpf() {
@@ -41,7 +18,7 @@ public class ClienteFisico extends BaseCliente {
     }
 
     public void setCpf(String cpf) throws Exception {
-        if (cpf.isEmpty()) {
+        if (cpf.isEmpty() || cpf.equals("null")) {
             throw new Exception("Campo 'cpf' não pode ser vazio");
         }
         this.cpf = cpf;
@@ -52,7 +29,7 @@ public class ClienteFisico extends BaseCliente {
     }
 
     public void setNome(String nome) throws Exception {
-        if (nome.isEmpty()) {
+        if (nome.isEmpty() || nome.equals("null")) {
             throw new Exception("Campo 'nome' não pode ser vazio");
         }
         this.nome = nome;
