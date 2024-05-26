@@ -1,12 +1,13 @@
 package controller.csv;
 
+import model.BaseCsvWriter;
 import model.cliente.BaseCliente;
 import model.cliente.ClienteFisico;
 import model.cliente.ClienteJuridico;
 import model.cliente.Endereco;
 
 
-public class ClienteCsvController extends BaseCsvController<BaseCliente> {
+public class ClienteCsvController extends BaseCsvWriter<BaseCliente> {
 
     public ClienteCsvController(String dirPath, String fileName, String header) {
         super(dirPath, fileName, header);

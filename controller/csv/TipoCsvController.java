@@ -1,8 +1,9 @@
 package controller.csv;
 
+import model.BaseCsvWriter;
 import model.Tipo;
 
-public class TipoCsvController extends BaseCsvController<Tipo> {
+public class TipoCsvController extends BaseCsvWriter<Tipo> {
 
     public TipoCsvController(String dirPath, String fileName, String header) {
         super(dirPath, fileName, header);

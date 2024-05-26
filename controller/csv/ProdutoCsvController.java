@@ -1,11 +1,12 @@
 package controller.csv;
 
 import controller.hashTables.TipoHashTable;
+import model.BaseCsvWriter;
 import model.Produto;
 import model.Tipo;
 
 
-public class ProdutoCsvController extends BaseCsvController<Produto> {
+public class ProdutoCsvController extends BaseCsvWriter<Produto> {
 
     private final TipoHashTable TABLE_TIPOS;
 

@@ -1,49 +1,19 @@
-package controller.csv;
+package model;
 
-import datastrucures.genericList.List;
-import model.ICsv;
 
 import java.io.*;
 
-public abstract class BaseCsvController<T> implements ICsvController<T> {
-    private String dirPath;
-    private String fileName;
-    private String header;
+public abstract class BaseCsvWriter<T extends  ICsv> implements ICsvWriter<T> {
+    protected static final String DIR_PATH = "./src/files/";
+    protected static String fileName;
+    protected static String header;
 
-    public BaseCsvController(String dirPath, String fileName, String header) {
-        setFilePath(dirPath);
-        setFileName(fileName);
-        setHeader(header);
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
-    protected void setHeader(String header) {
-        this.header = header;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    protected void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFilePath() {
-        return dirPath;
-    }
-
-    protected void setFilePath(String dirPath){
-        this.dirPath = dirPath;
-    }
+    public BaseCsvWriter() {}
 
     @Override
-    public void addRegistro(ICsv obj) throws IOException {
-        File dir = new File(dirPath);
-        File arq = new File(dirPath, fileName+".csv");
+    public void save(ICsv obj) throws IOException {
+        File dir = new File(DIR_PATH);
+        File arq = new File(DIR_PATH, fileName+".csv");
         if(dir.exists() && dir.isDirectory()) {
             if(!arq.exists()) {
                 createFile();
@@ -63,9 +33,9 @@ public abstract class BaseCsvController<T> implements ICsvController<T> {
     }
 
     @Override
-    public void deleteRegistro(ICsv obj) throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        File tempFile = new File(dirPath, "temp" + fileName+".csv");
+    public void delete(ICsv obj) throws IOException {
+        File file = new File(DIR_PATH, fileName+".csv");
+        File tempFile = new File(DIR_PATH, "temp" + fileName+".csv");
 
         if(file.exists() && file.isFile()) {
             FileInputStream  stream = new FileInputStream(file);
@@ -106,7 +76,7 @@ public abstract class BaseCsvController<T> implements ICsvController<T> {
     }
 
     private String getRegistroById(String id) throws IOException {
-        File file = new File(dirPath, fileName+".csv");
+        File file = new File(DIR_PATH, fileName+".csv");
         if(file.exists() && file.isFile()) {
             FileInputStream  stream = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(stream);
@@ -124,10 +94,9 @@ public abstract class BaseCsvController<T> implements ICsvController<T> {
         }
     }
 
-    @Override
-    public void createFile() throws IOException {
-        File dir = new File(dirPath);
-        File arq = new File(dirPath, fileName + ".csv");
+    private void createFile() throws IOException {
+        File dir = new File(DIR_PATH);
+        File arq = new File(DIR_PATH, fileName + ".csv");
         if(dir.exists() && dir.isDirectory()) {
             if(!arq.exists()) {
                 FileWriter fw = new FileWriter(arq);
@@ -146,38 +115,14 @@ public abstract class BaseCsvController<T> implements ICsvController<T> {
         }
     }
 
-    @Override
-    public List<T> getAllObjects() throws IOException {
-        File file = new File(dirPath, fileName+".csv");
-        if (!file.exists() || !file.isFile()) {
-            throw new IOException("Arquivo inválido");
-        }
-
-        List<T> list = new List<>();
-
-        FileInputStream stream = new FileInputStream(file);
-        InputStreamReader reader = new InputStreamReader(stream);
-        BufferedReader buffer = new BufferedReader(reader);
-
-        String currentLine = buffer.readLine(); // pula a mãe de alguém
-        while((currentLine = buffer.readLine()) != null) {
-            try {
-                list.addLast(objectBuilder(currentLine.split(";")));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-
-        return list;
-    }
 
     @Override
-    public T getObjectById(int id) throws Exception {
+    public T getById(String id) throws Exception {
         String registroCsv = getRegistroById(String.valueOf(id));
         if (registroCsv == null) {
             throw new Exception("Produto não encontrado");
         }
 
-        return objectBuilder(registroCsv.split(";"));
+        return objectBuilder(registroCsv);
     }
 }

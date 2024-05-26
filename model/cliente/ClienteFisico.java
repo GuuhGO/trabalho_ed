@@ -1,6 +1,10 @@
 package model.cliente;
 
 
+import datastrucures.genericList.List;
+
+import java.io.*;
+
 public class ClienteFisico extends BaseCliente {
     private String cpf;
     private String nome;
@@ -78,5 +82,51 @@ public class ClienteFisico extends BaseCliente {
         buffer.append(this.getTelefone());
         buffer.append(delimiter);
         return buffer.toString();
+    }
+
+    @Override
+    public BaseCliente objectBuilder(String csv) throws Exception {
+        String[] campos = csv.split(";");
+        int length = campos.length;
+
+        String   cpf      = campos[0];
+        String   nome     = campos[1];
+        Endereco endereco = !campos[2].equals("null") ? enderecoBuilder(campos) : null; // TODO: pergunta: devemos registrar o cliente sem endereço caso ele esteja errado?
+        // validar se a quantidade de campos bate com o correto
+        if ((endereco != null && length != 7) || (endereco == null & length != 4)) {
+            throw new Exception("Registro Inválido");
+        }
+        String telefone = campos[length - 1];
+
+        return new ClienteFisico(nome, cpf, telefone, endereco);
+    }
+
+    public ClienteFisico getById(String id) throws Exception {
+        return (ClienteFisico) super.getById(id);
+    }
+
+    public List<ClienteFisico> getAll() throws IOException {
+        File file = new File(DIR_PATH, fileName+".csv");
+        if (!file.exists() || !file.isFile()) {
+            throw new IOException("Arquivo inválido");
+        }
+
+        List<ClienteFisico> list = new List<>();
+
+        FileInputStream stream = new FileInputStream(file);
+        InputStreamReader reader = new InputStreamReader(stream);
+        BufferedReader buffer = new BufferedReader(reader);
+
+
+        String currentLine = buffer.readLine(); // pula a mãe de alguém
+        while((currentLine = buffer.readLine()) != null) {
+            try {
+                list.addLast((ClienteFisico) objectBuilder(currentLine));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+
+        return list;
     }
 }
