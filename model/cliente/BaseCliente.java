@@ -15,7 +15,7 @@ public abstract class BaseCliente implements ICsv {
 	}
 
 	public void setTelefone(String telefone) throws Exception {
-		if (telefone.isEmpty()) {
+		if (telefone.isEmpty() || telefone.equals("null")) {
 			throw new Exception("Campo 'telefone' não pode ser vazio");
 		}
 		this.telefone = telefone;

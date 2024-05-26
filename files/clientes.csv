@@ -1,0 +1,3 @@
+cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email
+12345678910;Físico;Gustavo;Avenida Águia de Haia;123;B;08382469;11919999999;null
+11482101998;Jurídico;Consultoria LTDA;Avenida Ragueb Chohfi;20;405A;0812345678;1127312323;consultoria@email.com
