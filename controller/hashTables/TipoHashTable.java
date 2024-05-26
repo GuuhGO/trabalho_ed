@@ -23,6 +23,7 @@ public class TipoHashTable implements IHashTable<Integer, Tipo> {
     @Override
     public void put(Tipo item) throws Exception {
         int bucketIndex = item.hashCode();
+        @SuppressWarnings("unchecked")
         List<Tipo> list = this.buckets[bucketIndex];
 
         int qtd = list.size();

@@ -108,7 +108,8 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             String currentLine;
             while ((currentLine = buffer.readLine()) != null) {
-                if (currentLine.startsWith(id)) {
+                if(currentLine.isBlank()) continue;
+                if (currentLine.substring(0, currentLine.indexOf(';')).equals(id)) {
                     result = currentLine;
                     break;
                 }

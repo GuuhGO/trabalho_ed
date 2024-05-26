@@ -1,2 +1,4 @@
 código;nome;descrição
 0;bens de consumo;usados por usuários-finais
+1;produtos industriais;usados na produção de outros bens
+2;bens de conveniência;adquiridos frequentemente e com um esforço mínimo
