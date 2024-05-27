@@ -77,7 +77,7 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
 
             while ((currentLine = buffer.readLine()) != null) {
                 // skip linhas vazias e o target
-                if ((currentLine.startsWith(id)) || currentLine.isBlank()) {
+                if (currentLine.isBlank() || currentLine.substring(0, currentLine.indexOf(';')).equals(id)) {
                     continue;
                 }
                 if(firstPrint) {
