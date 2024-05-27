@@ -1,5 +1,6 @@
 package view;
 
+import controller.ProdutoCsvSyncHashTable;
 import controller.csv.ClienteCsvController;
 import controller.csv.ProdutoCsvController;
 import controller.csv.TipoCsvController;
@@ -16,11 +17,21 @@ import model.cliente.Endereco;
 public class TestesNaner {
     static ClienteCsvController dbCliente = new ClienteCsvController();
     static TipoCsvController dbTipo = new TipoCsvController();
-    static final List<Tipo> TIPO_LIST = new List<>();
+    static List<Tipo> TIPO_LIST = new List<>();
     static ProdutoCsvController dbProduto = new ProdutoCsvController(TIPO_LIST);
 
     public static void main(String[] args) {
-        testeReadProduto();
+        try {
+            TIPO_LIST = dbTipo.get();
+            ProdutoCsvSyncHashTable syncHashTable = new ProdutoCsvSyncHashTable(TIPO_LIST);
+            List<Produto> produtoList = syncHashTable.get();
+            Produto pOld = new Produto(2, "Laranja", TIPO_LIST.get(0), 5.60, 100);
+            syncHashTable.add(pOld);
+            System.out.println(produtoList);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void testeHashTableProduto() {
