@@ -4,6 +4,7 @@ import model.cliente.BaseCliente;
 import model.cliente.ClienteFisico;
 import model.cliente.ClienteJuridico;
 import model.cliente.Endereco;
+import view.TelaEclipse;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class ClienteCsvController extends BaseCsvController<BaseCliente> implements ActionListener {
+	private TelaEclipse tela;
 	private JTextField tfClienteNome;
 	private JTextField tfClienteCpf_Cnpj;
 	private JTextField tfClienteTelefone;
@@ -24,9 +26,10 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 	public ClienteCsvController() {
 	}
 
-	public ClienteCsvController(JComboBox<String> cbClienteTipo, JTextField tfClienteNome, JTextField tfClienteCpf_Cnpj,
-			JTextField tfClienteTelefone, JTextField tfClienteEmail, JTextField tfEndLogradouro, JTextField tfEndNumero,
-			JTextField tfEndComplemento, JTextField tfEndCep) {
+	public ClienteCsvController(TelaEclipse tela, JComboBox<String> cbClienteTipo, JTextField tfClienteNome,
+			JTextField tfClienteCpf_Cnpj, JTextField tfClienteTelefone, JTextField tfClienteEmail,
+			JTextField tfEndLogradouro, JTextField tfEndNumero, JTextField tfEndComplemento, JTextField tfEndCep) {
+		this.tela = tela;
 		this.cbClienteTipo = cbClienteTipo;
 		this.tfClienteNome = tfClienteNome;
 		this.tfClienteCpf_Cnpj = tfClienteCpf_Cnpj;
@@ -51,9 +54,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 	@Override
 	public BaseCliente objectBuilder(String csvLine) throws Exception {
 		String[] campos = csvLine.split(DELIMITER);
-		System.out.println(csvLine);
 		int length = campos.length;
-		System.out.println(length);
 		if (length != 9) {
 			throw new Exception("Registro Inválido");
 		}
@@ -105,14 +106,19 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 	public void actionPerformed(ActionEvent evt) {
 		String actionCommand = evt.getActionCommand();
 		if (actionCommand.toUpperCase().equals("SALVAR")) {
-			String strFields = viewToCsv();
-			clearTextFields();
-			try {
-				BaseCliente cli = objectBuilder(strFields);
-				save(cli);
-			} catch (Exception err) {
-				err.printStackTrace();
-			}
+			cadastrar();
+		}
+	}
+
+	private void cadastrar() {
+		String strFields = viewToCsv();
+		clearTextFields();
+		try {
+			BaseCliente cli = objectBuilder(strFields);
+			save(cli);
+			tela.initializeTable();
+		} catch (Exception err) {
+			err.printStackTrace();
 		}
 	}
 

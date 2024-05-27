@@ -1,12 +1,11 @@
 package view;
 
-import controller.csv.ClienteCsvController;
-
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -15,11 +14,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import controller.csv.ClienteCsvController;
+import datastrucures.genericList.List;
+import model.cliente.BaseCliente;
 
 public class TelaEclipse extends JFrame {
 
@@ -32,9 +37,15 @@ public class TelaEclipse extends JFrame {
 	private JTextField tfEndLogradouro;
 	private JTextField tfEndNumero;
 	private JTextField tfEndComplemento;
-	private JTable table;
 	private JTextField tfBusca;
 	private JTextField tfEndCep;
+	private JPanel listaClientes;
+	private JPanel cadastroClientes;
+	private DefaultTableModel tableModel;
+	private JTable table;
+	private ClienteCsvController cliCont;
+	private JComboBox<String> cbClienteTipo;
+	private JScrollPane scrollPane; 
 
 	/**
 	 * Launch the application.
@@ -56,6 +67,11 @@ public class TelaEclipse extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaEclipse() {
+		initialize();
+		initializeTable();
+	}
+
+	private void initialize() {
 		setTitle("Loja");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 640, 400);
@@ -73,7 +89,51 @@ public class TelaEclipse extends JFrame {
 		tabbedPane.addTab("Cliente", null, tabCliente, "Cadastro de Cliente");
 		tabCliente.setLayout(null);
 
-		JPanel cadastroClientes = new JPanel();
+		listaClientes = new JPanel();
+		listaClientes.setBounds(0, 0, 621, 336);
+		tabCliente.add(listaClientes);
+		listaClientes.setLayout(null);
+
+		tfBusca = new JTextField();
+		tfBusca.setToolTipText("Pesquisar CPF/CNPJ");
+		tfBusca.setBounds(24, 51, 150, 19);
+		listaClientes.add(tfBusca);
+		tfBusca.setColumns(10);
+
+		JButton btnNewButton = new JButton("Pesquisar");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton.setBounds(184, 50, 100, 21);
+		listaClientes.add(btnNewButton);
+
+		JButton btnNovoCliente = new JButton("Novo Cliente");
+		btnNovoCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				listaClientes.setVisible(false);
+				cadastroClientes.setVisible(true);
+			}
+		});
+		btnNovoCliente.setBounds(487, 50, 109, 21);
+
+		listaClientes.add(btnNovoCliente);
+
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setBounds(290, 50, 100, 21);
+		listaClientes.add(btnExcluir);
+
+		JLabel lblNewLabel = new JLabel("CLIENTES");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel.setBounds(266, 5, 88, 30);
+		listaClientes.add(lblNewLabel);
+
+		JLabel lblSearch = new JLabel("Pesquisar CPF/CNPJ");
+		lblSearch.setBounds(24, 27, 150, 21);
+		listaClientes.add(lblSearch);
+
+		cadastroClientes = new JPanel();
+		cadastroClientes.setVisible(false);
 		cadastroClientes.setBounds(0, 0, 621, 336);
 		tabCliente.add(cadastroClientes);
 		cadastroClientes.setLayout(null);
@@ -112,9 +172,9 @@ public class TelaEclipse extends JFrame {
 		lblClienteEmail.setBounds(324, 108, 60, 38);
 		lyrFields.add(lblClienteEmail);
 
-		JComboBox<String> cbClienteTipo = new JComboBox<>();
+		cbClienteTipo = new JComboBox<>();
 		cbClienteTipo.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbClienteTipo.setModel(new DefaultComboBoxModel(new String[] { "Físico", "Jurídico" }));
+		cbClienteTipo.setModel(new DefaultComboBoxModel<String>(new String[] { "Físico", "Jurídico" }));
 		cbClienteTipo.setBounds(65, 58, 86, 26);
 		cbClienteTipo.addActionListener(new ActionListener() {
 			@Override
@@ -188,16 +248,19 @@ public class TelaEclipse extends JFrame {
 		tfEndComplemento.setBounds(545, 181, 60, 24);
 		lyrFields.add(tfEndComplemento);
 
+		// BOTÃO SALVAR
 		JButton btnSalvar = new JButton("SALVAR");
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnSalvar.setForeground(new Color(0, 128, 0));
 		btnSalvar.setBounds(511, 288, 87, 29);
 		cadastroClientes.add(btnSalvar);
 
+		// BOTÃO CANCELAR
 		JButton btnCancelar = new JButton("CANCELAR");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				cadastroClientes.setVisible(false);
+				listaClientes.setVisible(true);
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -216,48 +279,51 @@ public class TelaEclipse extends JFrame {
 		tfEndCep.setBounds(120, 234, 190, 24);
 		lyrFields.add(tfEndCep);
 
-		ClienteCsvController cliCont = new ClienteCsvController(cbClienteTipo, tfClienteNome, tfClienteCpf_Cnpj,
-				tfClienteTelefone, tfClienteEmail, tfEndLogradouro, tfEndNumero, tfEndComplemento, tfEndCep);
-
 		JLabel lblCadastrarCliente = new JLabel("CADASTRAR CLIENTE");
 		lblCadastrarCliente.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCadastrarCliente.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblCadastrarCliente.setBounds(213, 3, 194, 38);
 		lyrFields.add(lblCadastrarCliente);
+
+		cliCont = new ClienteCsvController(this, cbClienteTipo, tfClienteNome, tfClienteCpf_Cnpj, tfClienteTelefone,
+				tfClienteEmail, tfEndLogradouro, tfEndNumero, tfEndComplemento, tfEndCep);
 		btnSalvar.addActionListener(cliCont);
+		
+	}
 
-		JPanel listaClientes = new JPanel();
-		listaClientes.setVisible(false);
-		listaClientes.setBounds(0, 0, 621, 336);
-		tabCliente.add(listaClientes);
-		listaClientes.setLayout(null);
+	public void initializeTable() {
+		if(scrollPane != null) {
+			scrollPane.remove(table);
+			listaClientes.remove(scrollPane);
+		}
+		String[] columnNames = ("#;" + cliCont.getHeader()).split(";");
+		tableModel = new DefaultTableModel(columnNames, 0);
+		table = new JTable(tableModel);
+		scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(14, 109, 592, 227);
+		listaClientes.add(scrollPane);
+		listaClientes.revalidate();
+		listaClientes.repaint();
+		
+		List<BaseCliente> clientes;
+		try {
+			clientes = cliCont.get();
+		} catch (IOException e1) {
+			clientes = new List<BaseCliente>();
+			e1.printStackTrace();
+		}
 
-		tfBusca = new JTextField();
-		tfBusca.setText("Pesquisar CPF/CNPJ");
-		tfBusca.setToolTipText("Pesquisar CPF/CNPJ");
-		tfBusca.setBounds(24, 17, 150, 19);
-		listaClientes.add(tfBusca);
-		tfBusca.setColumns(10);
-
-		table = new JTable();
-		table.setBounds(24, 119, 572, 207);
-		listaClientes.add(table);
-
-		JButton btnNewButton = new JButton("Pesquisar");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		int tamanho = clientes.size();
+		List<String[]> data = new List<String[]>();
+		for (int i = 0; i < tamanho; i++) {
+			try {
+				BaseCliente c = clientes.get(i);
+				String campos[] = ((i+1) + ";" + c.getObjCsv()).split(";");
+				data.addLast(campos);
+				tableModel.addRow(campos);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		});
-		btnNewButton.setBounds(182, 16, 100, 21);
-		listaClientes.add(btnNewButton);
-
-		JButton btnNovoCliente = new JButton("Novo Cliente");
-		btnNovoCliente.setBounds(479, 16, 100, 21);
-		listaClientes.add(btnNovoCliente);
-
-		JButton btnNovoCliente_1 = new JButton("Novo Cliente");
-		btnNovoCliente_1.setBounds(290, 16, 100, 21);
-		listaClientes.add(btnNovoCliente_1);
-
+		}
 	}
 }
