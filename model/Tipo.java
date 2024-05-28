@@ -66,4 +66,9 @@ public class Tipo implements ICsv {
     public String getObjCsv() {
         return codigo + ";" + nome + ";" + descricao;
     }
+
+    @Override
+    public String getCsvId() {
+        return String.valueOf(getCodigo());
+    }
 }

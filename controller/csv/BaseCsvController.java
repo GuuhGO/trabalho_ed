@@ -28,44 +28,6 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
     }
 
     @Override
-    public void delete(T obj) throws IOException {
-        File file = getValidatedFile();
-        File temp = new File(DIR_PATH, "temp" + getFileName() + ".csv");
-
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-            PrintWriter pw = new PrintWriter(new FileWriter(temp));
-            String lineToRemove = obj.getObjCsv();
-            String currentLine;
-            boolean firstPrint = true;
-
-            while ((currentLine = buffer.readLine()) != null) {
-                // skip linhas vazias e o target
-                if (currentLine.equals(lineToRemove) || currentLine.isBlank()) {
-                    continue;
-                }
-                // garante que não haverão espaços em branco após a deleção
-                if(firstPrint) {
-                    pw.print(currentLine);
-                    firstPrint = false;
-                } else {
-                    pw.println();
-                    pw.print(currentLine);
-                }
-                pw.flush();
-            }
-            pw.close();
-        }
-
-        if (!file.delete()) {
-            throw new IOException("Não foi possível apagar o arquivo");
-        }
-
-        if (!temp.renameTo(file)) {
-            throw new IOException("Não foi possível renomear o arquivo");
-        }
-    }
-
-    @Override
     public void delete(String id) throws IOException {
         File file = getValidatedFile();
         File temp = new File(DIR_PATH, "temp" + getFileName() + ".csv");
@@ -100,6 +62,11 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
             throw new IOException("Não foi possível renomear o arquivo");
         }
 
+    }
+
+    @Override
+    public void delete(T obj) throws IOException {
+        delete(obj.getCsvId());
     }
 
     private String getRegistroById(String id) throws IOException {

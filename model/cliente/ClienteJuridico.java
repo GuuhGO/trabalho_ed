@@ -66,4 +66,8 @@ public class ClienteJuridico extends BaseCliente {
 		return buffer.toString();
 	}
 
+	@Override
+	public String getCsvId() {
+		return getCnpj();
+	}
 }

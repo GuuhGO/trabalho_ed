@@ -96,4 +96,8 @@ public class Endereco implements ICsv {
 		return buffer.toString();
 	}
 
+	@Override
+	public String getCsvId() {
+		return logradouro + ";" + numero;
+	}
 }

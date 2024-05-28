@@ -52,4 +52,9 @@ public class ClienteFisico extends BaseCliente {
         buffer.append("null");
         return buffer.toString();
     }
+
+    @Override
+    public String getCsvId() {
+        return getCpf();
+    }
 }
