@@ -1,4 +1,17 @@
 código;nome;descrição
-0;bens de consumo;usados por usuários-finais
-1;produtos industriais;usados na produção de outros bens
-2;bens de conveniência;adquiridos frequentemente e com um esforço mínimo
+0;Produtos não categorizados;Bens sem alguma categorização específicada
+1;bens de consumo;usados por usuários-finais
+2;produtos industriais;usados na produção de outros bens
+3;bens de conveniência;adquiridos frequentemente e com um esforço mínimo
+4;bens de impulso;compra por estímulo sensorial imediato
+5;bens de emergência;bens necessários imediatamente
+6;bens de compra comparada;alguma comparação com outros bens como carros e TVs.
+7;bens de especialidade;comparação extensiva com outros bens e uma longa busca por informações
+8;bens perecíveis;bens que se deteriorarão rapidamente mesmo sem uso
+9;bens duráveis;bens que sobrevivem à ocasiões de múltiplo uso
+10;bens não duráveis;bens que serão consumidos em um única oportunidade
+11;bens de capital;instalações, equipamentos e construções
+12;partes e materiais;bens que são agregados a um produto final
+13;abastecimento e serviços;bens que facilitam a produção
+14;commodities;bens indiferenciáveis (ex. trigo, ouro, açúcar, etc)
+15;produtos intermediários;resulta da fabricação de outro produto
