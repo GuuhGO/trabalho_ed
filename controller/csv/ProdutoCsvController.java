@@ -1,5 +1,6 @@
 package controller.csv;
 
+import controller.TipoRegistry;
 import datastrucures.genericList.List;
 import model.Produto;
 import model.Tipo;
@@ -55,15 +56,20 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
 
     private Tipo searchTipo(int codigo) throws Exception {
         int size = TIPOS.size();
-        Tipo result = new Tipo(codigo, "Desconhecido", "Desconhecido");
+        Tipo result = null;
 
         for (int i = 0; i < size; i++) {
             Tipo tipo = TIPOS.get(i);
-            if(tipo.getCodigo() == codigo) {
+            if (tipo.getCodigo() == codigo) {
                 result = tipo;
                 break;
             }
         }
+
+        if (result == null) {
+            result = TipoRegistry.getInstance().getUncategorizedType();
+        }
+
         return result;
     }
 }
