@@ -97,10 +97,10 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
     }
 
     @Override
-    public List<T> get() throws IOException {
+    public List<ICsv> get() throws IOException {
         File file = getValidatedFile();
 
-        List<T> list = new List<>();
+        List<ICsv> list = new List<>();
 
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             buffer.readLine(); // pular o header

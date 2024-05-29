@@ -3,6 +3,7 @@ package controller;
 import controller.csv.ProdutoCsvController;
 import controller.hashTables.ProdutoHashTable;
 import datastrucures.genericList.List;
+import model.ICsv;
 import model.Produto;
 
 public final class ProdutoRegistry {
@@ -21,13 +22,13 @@ public final class ProdutoRegistry {
 
 
     void updateData() throws Exception {
-        List<Produto> produtoList = DB_PRODUTO.get();
+        List<ICsv> produtoList = DB_PRODUTO.get();
         int size = produtoList.size();
 
         TABLE_PRODUTO = new ProdutoHashTable();
 
         for (int i = 0; i < size; i++) {
-            Produto p = produtoList.get(i);
+            Produto p = (Produto) produtoList.get(i);
             if(p.getTipo().getCodigo() == 0) {
                 /*
                  Atualiza os códigos de tipos quando um produto

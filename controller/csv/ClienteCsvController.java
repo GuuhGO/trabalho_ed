@@ -9,7 +9,6 @@ import view.TelaEclipse;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class ClienteCsvController extends BaseCsvController<BaseCliente> implements ActionListener {
 	private TelaEclipse tela;
@@ -116,7 +115,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 		try {
 			BaseCliente cli = objectBuilder(strFields);
 			save(cli);
-			tela.initializeTable();
+			tela.carregarTableClientes();
 		} catch (Exception err) {
 			err.printStackTrace();
 		}

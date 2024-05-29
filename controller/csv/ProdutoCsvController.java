@@ -2,6 +2,7 @@ package controller.csv;
 
 import controller.TipoRegistry;
 import datastrucures.genericList.List;
+import model.ICsv;
 import model.Produto;
 import model.Tipo;
 
@@ -10,9 +11,9 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
 
     private static final String HEADER = "código;nome;valor;quantidadeEstoque;códigoTipo";
     private static final String FILE_NAME = "produtos";
-    private final List<Tipo> TIPOS;
+    private final List<ICsv> TIPOS;
 
-    public ProdutoCsvController(List<Tipo> tabelaTipos) {
+    public ProdutoCsvController(List<ICsv> tabelaTipos) {
         this.TIPOS = tabelaTipos;
     }
 
@@ -59,7 +60,7 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
         Tipo result = null;
 
         for (int i = 0; i < size; i++) {
-            Tipo tipo = TIPOS.get(i);
+            Tipo tipo = (Tipo) TIPOS.get(i);
             if (tipo.getCodigo() == codigo) {
                 result = tipo;
                 break;
