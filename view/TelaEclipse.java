@@ -19,7 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
+import controller.TipoRegistry;
 import controller.csv.ClienteCsvController;
 import datastrucures.genericList.List;
 import model.ICsv;
@@ -58,6 +60,7 @@ public class TelaEclipse extends JFrame {
 			public void run() {
 				try {
 					TelaEclipse frame = new TelaEclipse();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -72,6 +75,7 @@ public class TelaEclipse extends JFrame {
 	public TelaEclipse() {
 		initialize();
 		carregarTableClientes();
+		carregarTableTipo();
 	}
 
 	private void initialize() {
@@ -351,22 +355,83 @@ public class TelaEclipse extends JFrame {
 		JButton btnPesquisaTipo = new JButton("Pesquisar");
 		btnPesquisaTipo.setBounds(184, 50, 100, 21);
 		listaTipos.add(btnPesquisaTipo);
+		btnPesquisaTipo.addActionListener(e -> {
+			pesquisarTipo(tfBuscaTipo.getText());
+			tfBuscaTipo.setText("");
+		});
 
 
 		JButton btnExcluiTipo = new JButton("Excluir");
 		btnExcluiTipo.setBounds(290, 50, 100, 21);
 		listaTipos.add(btnExcluiTipo);
+		btnExcluiTipo.addActionListener(e -> {
+			excluirTipo();
+			carregarTableTipo();
+		});
 		
 		JButton btnNovoTipo = new JButton("Novo Tipo");
 		btnNovoTipo.setBounds(487, 50, 89, 23);
 		listaTipos.add(btnNovoTipo);
-		
-		JScrollPane scrollPaneTipos = new JScrollPane((Component) null);
+
+		tableTipos = new JTable();
+		JScrollPane scrollPaneTipos = new JScrollPane(tableTipos);
 		scrollPaneTipos.setBounds(14, 109, 592, 227);
 		listaTipos.add(scrollPaneTipos);
-		
-		tableTipos = new JTable();
-		scrollPaneTipos.setColumnHeaderView(tableTipos);
+	}
+
+
+	private void excluirTipo() {
+		int selectedRow = tableTipos.getSelectedRow();
+		TableModel model = tableTipos.getModel();
+		String codigoTipo = (String) model.getValueAt(selectedRow, 1);
+		try {
+			int id = Integer.parseInt(codigoTipo);
+			TipoRegistry instance = TipoRegistry.getInstance();
+			instance.remove(id);
+		}
+		catch (NumberFormatException error) {/*TODO*/}
+		catch (Exception errorGeral) {/*TODO 2*/}
+	}
+
+
+	public void pesquisarTipo(String codigo) {
+		if(codigo == null || codigo.isBlank()) {
+			carregarTableTipo();
+			return;
+		}
+		try {
+			Integer.parseInt(codigo);
+		} catch (NumberFormatException e) {
+			return;
+		}
+		List<ICsv> listTipos = new List<>();
+		String csvHeader;
+		try {
+			TipoRegistry registry = TipoRegistry.getInstance();
+			ICsv item = registry.get(codigo);
+			listTipos.addLast(item);
+			csvHeader = registry.getHeader();
+			carregarDados(tableTipos, csvHeader, listTipos);
+			tableTipos.getColumnModel().getColumn(0).setMaxWidth(26);
+			tableTipos.getColumnModel().getColumn(1).setMaxWidth(46);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void carregarTableTipo() {
+		List<ICsv> listTipos;
+		String csvHeader;
+		try {
+			TipoRegistry registry = TipoRegistry.getInstance();
+			listTipos = registry.get();
+			csvHeader = registry.getHeader();
+			carregarDados(tableTipos, csvHeader, listTipos);
+			tableTipos.getColumnModel().getColumn(0).setMaxWidth(26);
+			tableTipos.getColumnModel().getColumn(1).setMaxWidth(46);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -374,23 +439,24 @@ public class TelaEclipse extends JFrame {
 		List<ICsv> listClientes;
 		try {
 			listClientes = clienteController.get();
+			carregarDados(tableCliente, clienteController.getHeader(), listClientes);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
-		carregarDados(tableCliente, clienteController.getHeader(), listClientes);
 	}
 
 
 	public void carregarDados(JTable table, String csvHeader, List<ICsv> list) {
 		String[] columnNames = ("#;" + csvHeader).split(";");
 		DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-		table.setModel(tableModel);
 		int tamanho = list.size();
 		for (int i = 0; i < tamanho; i++) {
 			try {
 				ICsv data = list.get(i);
-				String[] campos = ((i+1) + ";" + data.getObjCsv()).split(";");
-				tableModel.addRow(campos);
+				if(data != null) {
+					String[] campos = ((i+1) + ";" + data.getObjCsv()).split(";");
+					tableModel.addRow(campos);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
