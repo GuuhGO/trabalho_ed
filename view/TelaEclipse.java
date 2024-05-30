@@ -292,7 +292,6 @@ public class TelaEclipse extends JFrame {
 		btnSalvar.setForeground(new Color(0, 128, 0));
 		btnSalvar.setBounds(511, 288, 87, 29);
 		cadastroClientes.add(btnSalvar);
-		btnSalvar.addActionListener(clienteController);
 
 
 		// BOTÃO CANCELAR
@@ -319,6 +318,7 @@ public class TelaEclipse extends JFrame {
 				tfEndComplemento,
 				tfEndCep
 		);
+		btnSalvar.addActionListener(clienteController);
 
 
 		// TIPOS ################################################################################
