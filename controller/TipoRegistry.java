@@ -210,6 +210,10 @@ public final class TipoRegistry implements ActionListener {
         if (actionPerformed.equalsIgnoreCase("EDITAR")) {
             try {
                 editar();
+                tela.carregarTableTipo();
+                tfNome.setText("");
+                tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
+                taDescricao.setText("");
             } catch (Exception e) {/*TODO*/}
         }
     }

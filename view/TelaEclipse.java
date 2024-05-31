@@ -16,6 +16,7 @@ import controller.TipoRegistry;
 import controller.csv.ClienteCsvController;
 import datastrucures.genericList.List;
 import model.ICsv;
+import model.Tipo;
 
 public class TelaEclipse extends JFrame {
 
@@ -129,6 +130,27 @@ public class TelaEclipse extends JFrame {
         tabbedPane.addChangeListener(this::updateResolution);
     }
 
+
+
+    private boolean prepararCamposParaEditarTipo() {
+		// TODO Auto-generated method stub
+    	int selectedRow = tableTipos.getSelectedRow();
+        String codigoTipo = (String) tableTipos.getModel().getValueAt(selectedRow, 1);
+        try {
+        	Tipo t = (Tipo) TipoRegistry.getInstance().get(codigoTipo);
+        	if (t == null) {
+				return false;
+			}
+        	tfCodigoTipo.setText(String.valueOf(codigoTipo));
+        	tfNomeTipo.setText(t.getNome());
+        	taDescricaoTipo.setText(t.getDescricao());
+        	return true;
+        } catch(Exception e) {
+        	return false;
+        }
+	}
+
+
     private void excluirTipo() {
         int selectedRow = tableTipos.getSelectedRow();
         TableModel model = tableTipos.getModel();
@@ -139,6 +161,7 @@ public class TelaEclipse extends JFrame {
             instance.remove(id);
         } catch (NumberFormatException error) {/*TODO*/} catch (Exception errorGeral) {/*TODO 2*/}
     }
+
 
     public void pesquisarTipo(String codigo) {
         if (codigo == null || codigo.isBlank()) {
@@ -487,9 +510,21 @@ public class TelaEclipse extends JFrame {
         listaTipos.add(scrollPaneTipos);
 
         tabTipos.add(listaTipos);
+        
+        JButton btnEditarTipo = new JButton("Editar");
+        btnEditarTipo.setBounds(290, 82, 100, 21);
+        listaTipos.add(btnEditarTipo);
+        btnEditarTipo.addActionListener(e -> {
+        	if(prepararCamposParaEditarTipo()) {
+				btnSalvarTipoCadastro.setActionCommand("EDITAR");
+				listaTipos.setVisible(false);
+				cadastroTipo.setVisible(true);
+        	}
+        });
     }
 
-    private void initCadastroTipos(){
+
+	private void initCadastroTipos(){
         cadastroTipo = new JPanel();
         cadastroTipo.setBounds(0, 0, 621, 336);
         cadastroTipo.setLayout(null);
@@ -555,6 +590,9 @@ public class TelaEclipse extends JFrame {
             registry.setView(this, tfCodigoTipo, tfNomeTipo, taDescricaoTipo);
             tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
         } catch (Exception e) { /*TODO*/ }
+        btnSalvarTipoCadastro.addActionListener(e -> {
+        	btnSalvarTipoCadastro.setActionCommand("SALVAR");
+        });
 
 
         btnCancelarTipoCadastro = new JButton("CANCELAR");
@@ -565,6 +603,13 @@ public class TelaEclipse extends JFrame {
         btnCancelarTipoCadastro.addActionListener(e -> {
             listaTipos.setVisible(true);
             cadastroTipo.setVisible(false);
+            btnSalvarTipoCadastro.setActionCommand("SALVAR");
+			taDescricaoTipo.setText("");
+			tfNomeTipo.setText("");
+			try {
+				TipoRegistry registry = TipoRegistry.getInstance();
+				tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+			} catch (Exception ex) {/*TODO*/}
         });
 
         tabTipos.add(cadastroTipo);
