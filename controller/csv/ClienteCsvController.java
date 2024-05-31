@@ -25,10 +25,9 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 	public ClienteCsvController() {
 	}
 
-	public ClienteCsvController(TelaEclipse tela, JComboBox<String> cbClienteTipo, JTextField tfClienteNome,
+	public ClienteCsvController(JComboBox<String> cbClienteTipo, JTextField tfClienteNome,
 			JTextField tfClienteCpf_Cnpj, JTextField tfClienteTelefone, JTextField tfClienteEmail,
 			JTextField tfEndLogradouro, JTextField tfEndNumero, JTextField tfEndComplemento, JTextField tfEndCep) {
-		this.tela = tela;
 		this.cbClienteTipo = cbClienteTipo;
 		this.tfClienteNome = tfClienteNome;
 		this.tfClienteCpf_Cnpj = tfClienteCpf_Cnpj;
