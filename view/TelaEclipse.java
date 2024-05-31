@@ -5,19 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -68,6 +58,24 @@ public class TelaEclipse extends JFrame {
     private JButton btnSalvar;
     private JButton btnCancelar;
     private JTabbedPane tabbedPane;
+    private JPanel tabTipos = new JPanel();
+    private JLabel lblTituloTipos;
+    private JLabel lblBuscaTipo;
+    private JButton btnPesquisaTipo;
+    private JButton btnExcluiTipo;
+    private JButton btnNovoTipo;
+    private JScrollPane scrollPaneTipos;
+    private JPanel cadastroTipo;
+    private JLayeredPane layerCadastroTipo;
+    private JLabel lblCadastrarTipo;
+    private JLabel lblCodigo;
+    private JTextField tfCodigoTipo;
+    private JLabel lblNomeTipo;
+    private JTextField tfNomeTipo;
+    private JLabel lblDescricao;
+    private JTextArea taDescricaoTipo;
+    private JButton btnSalvarTipoCadastro;
+    private JButton btnCancelarTipoCadastro;
 
     /**
      * Launch the application.
@@ -106,73 +114,20 @@ public class TelaEclipse extends JFrame {
 
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setBounds(0, 0, 727, 363);
+        tabbedPane.addTab("Clientes", null, tabCliente, "Cliente");
+        tabbedPane.addTab("Tipos", null, tabTipos, "Tipo");
         contentPane.add(tabbedPane);
 
-        // TAB CLIENTE
-        // ##########################################################################
-        // TELA LISTAR
-        // ##########################################################################
-
         tabCliente.setLayout(null);
-        initCadastroClientes();
-        initListaClientes();
-        tabbedPane.addTab("Cliente", null, tabCliente, "Cliente");
-
-
-        // TAB TIPOS
-        // ################################################################################
-        // LISTAR TIPOS
-        // #########################################################################
-
-        JPanel tabTipos = new JPanel();
-        tabbedPane.addTab("Tipos", null, tabTipos, null);
         tabTipos.setLayout(null);
 
-        listaTipos = new JPanel();
-        listaTipos.setBounds(0, 0, 621, 336);
-        tabTipos.add(listaTipos);
-        listaTipos.setLayout(null);
+        initCadastroClientes();
+        initListaClientes();
+        initListaTipos();
+        initCadastroTipos();
 
-        JLabel lblTituloTipos = new JLabel("TIPOS");
-        lblTituloTipos.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        lblTituloTipos.setBounds(273, 11, 60, 30);
-        listaTipos.add(lblTituloTipos);
-
-        JLabel lblBuscaTipo = new JLabel("Pesquisar Código");
-        lblBuscaTipo.setBounds(24, 27, 150, 21);
-        listaTipos.add(lblBuscaTipo);
-
-        tfBuscaTipo = new JTextField();
-        tfBuscaTipo.setBounds(24, 51, 150, 19);
-        listaTipos.add(tfBuscaTipo);
-        tfBuscaTipo.setColumns(10);
-
-        JButton btnPesquisaTipo = new JButton("Pesquisar");
-        btnPesquisaTipo.setBounds(184, 50, 100, 21);
-        listaTipos.add(btnPesquisaTipo);
-        btnPesquisaTipo.addActionListener(e -> {
-            pesquisarTipo(tfBuscaTipo.getText());
-            tfBuscaTipo.setText("");
-        });
-
-        JButton btnExcluiTipo = new JButton("Excluir");
-        btnExcluiTipo.setBounds(290, 50, 100, 21);
-        listaTipos.add(btnExcluiTipo);
-        btnExcluiTipo.addActionListener(e -> {
-            excluirTipo();
-            carregarTableTipo();
-        });
-
-        JButton btnNovoTipo = new JButton("Novo Tipo");
-        btnNovoTipo.setBounds(487, 50, 89, 23);
-        listaTipos.add(btnNovoTipo);
-
-        tableTipos = new JTable();
-        JScrollPane scrollPaneTipos = new JScrollPane(tableTipos);
-        scrollPaneTipos.setBounds(14, 109, 592, 227);
-        listaTipos.add(scrollPaneTipos);
+        tabbedPane.addChangeListener(this::updateResolution);
     }
-
 
     private void excluirTipo() {
         int selectedRow = tableTipos.getSelectedRow();
@@ -185,7 +140,6 @@ public class TelaEclipse extends JFrame {
         } catch (NumberFormatException error) {/*TODO*/} catch (Exception errorGeral) {/*TODO 2*/}
     }
 
-
     public void pesquisarTipo(String codigo) {
         if (codigo == null || codigo.isBlank()) {
             carregarTableTipo();
@@ -196,7 +150,7 @@ public class TelaEclipse extends JFrame {
         } catch (NumberFormatException e) {
             return;
         }
-        datastrucures.genericList.List<ICsv> listTipos = new datastrucures.genericList.List<>();
+        List<ICsv> listTipos = new List<>();
         String csvHeader;
         try {
             TipoRegistry registry = TipoRegistry.getInstance();
@@ -226,7 +180,7 @@ public class TelaEclipse extends JFrame {
         }
     }
 
-    private void changeResolution(ChangeEvent e) {
+    private void updateResolution(ChangeEvent e) {
         int selectedIndex = tabbedPane.getSelectedIndex();
         int x = (int) getX();
         int y = (int) getY();
@@ -481,7 +435,142 @@ public class TelaEclipse extends JFrame {
         tabCliente.add(cadastroClientes);
     }
 
-    private void enableDisableEmailField(ActionEvent actionevent1) {
+    private void initListaTipos() {
+        listaTipos = new JPanel();
+        listaTipos.setBounds(0, 0, 621, 336);
+        listaTipos.setLayout(null);
+
+
+        lblTituloTipos = new JLabel("TIPOS");
+        lblTituloTipos.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblTituloTipos.setBounds(273, 11, 60, 30);
+        listaTipos.add(lblTituloTipos);
+
+
+        lblBuscaTipo = new JLabel("Pesquisar Código");
+        lblBuscaTipo.setBounds(24, 27, 150, 21);
+        listaTipos.add(lblBuscaTipo);
+
+        tfBuscaTipo = new JTextField();
+        tfBuscaTipo.setBounds(24, 51, 150, 19);
+        listaTipos.add(tfBuscaTipo);
+        tfBuscaTipo.setColumns(10);
+
+        btnPesquisaTipo = new JButton("Pesquisar");
+        btnPesquisaTipo.setBounds(184, 50, 100, 21);
+        listaTipos.add(btnPesquisaTipo);
+        btnPesquisaTipo.addActionListener(e -> {
+            pesquisarTipo(tfBuscaTipo.getText());
+            tfBuscaTipo.setText("");
+        });
+
+
+        btnExcluiTipo = new JButton("Excluir");
+        btnExcluiTipo.setBounds(290, 50, 100, 21);
+        listaTipos.add(btnExcluiTipo);
+        btnExcluiTipo.addActionListener(e -> {
+            excluirTipo();
+            carregarTableTipo();
+        });
+
+        btnNovoTipo = new JButton("Novo Tipo");
+        btnNovoTipo.setBounds(487, 50, 89, 23);
+        listaTipos.add(btnNovoTipo);
+        btnNovoTipo.addActionListener(e -> {
+            cadastroTipo.setVisible(true);
+            listaTipos.setVisible(false);
+        });
+
+        tableTipos = new JTable();
+        scrollPaneTipos = new JScrollPane(tableTipos);
+        scrollPaneTipos.setBounds(14, 109, 592, 227);
+        listaTipos.add(scrollPaneTipos);
+
+        tabTipos.add(listaTipos);
+    }
+
+    private void initCadastroTipos(){
+        cadastroTipo = new JPanel();
+        cadastroTipo.setBounds(0, 0, 621, 336);
+        cadastroTipo.setLayout(null);
+
+        layerCadastroTipo = new JLayeredPane();
+        layerCadastroTipo.setBounds(0, 0, 621, 278);
+        cadastroTipo.add(layerCadastroTipo);
+
+        cadastroTipo.setVisible(false);
+
+        lblCadastrarTipo = new JLabel("CADASTRAR TIPO");
+        lblCadastrarTipo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCadastrarTipo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblCadastrarTipo.setBounds(213, 3, 194, 38);
+        layerCadastroTipo.add(lblCadastrarTipo);
+
+        lblCodigo = new JLabel("Código:");
+        lblCodigo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblCodigo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCodigo.setBounds(10, 58, 75, 38);
+        layerCadastroTipo.add(lblCodigo);
+
+        tfCodigoTipo = new JTextField();
+        tfCodigoTipo.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfCodigoTipo.setEditable(false);
+        tfCodigoTipo.setEnabled(false);
+        tfCodigoTipo.setBounds(95, 65, 61, 24);
+        layerCadastroTipo.add(tfCodigoTipo);
+        tfCodigoTipo.setColumns(10);
+
+        lblNomeTipo = new JLabel("Nome:");
+        lblNomeTipo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblNomeTipo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblNomeTipo.setBounds(207, 58, 75, 38);
+        layerCadastroTipo.add(lblNomeTipo);
+
+        tfNomeTipo = new JTextField();
+        tfNomeTipo.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfNomeTipo.setColumns(10);
+        tfNomeTipo.setBounds(292, 65, 319, 24);
+        layerCadastroTipo.add(tfNomeTipo);
+
+        lblDescricao = new JLabel("Descrição:");
+        lblDescricao.setHorizontalAlignment(SwingConstants.LEFT);
+        lblDescricao.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblDescricao.setBounds(10, 107, 101, 38);
+        layerCadastroTipo.add(lblDescricao);
+
+        taDescricaoTipo = new JTextArea();
+        taDescricaoTipo.setLineWrap(true);
+        taDescricaoTipo.setBorder(new LineBorder(new Color(0, 0, 0)));
+        taDescricaoTipo.setBounds(10, 156, 601, 111);
+        layerCadastroTipo.add(taDescricaoTipo);
+
+        btnSalvarTipoCadastro = new JButton("SALVAR");
+        btnSalvarTipoCadastro.setForeground(new Color(0, 128, 0));
+        btnSalvarTipoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnSalvarTipoCadastro.setBounds(511, 288, 87, 29);
+        cadastroTipo.add(btnSalvarTipoCadastro);
+        try {
+            TipoRegistry registry = TipoRegistry.getInstance();
+            btnSalvarTipoCadastro.addActionListener(registry);
+            registry.setView(this, tfCodigoTipo, tfNomeTipo, taDescricaoTipo);
+            tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+        } catch (Exception e) { /*TODO*/ }
+
+
+        btnCancelarTipoCadastro = new JButton("CANCELAR");
+        btnCancelarTipoCadastro.setForeground(Color.RED);
+        btnCancelarTipoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnCancelarTipoCadastro.setBounds(394, 288, 107, 29);
+        cadastroTipo.add(btnCancelarTipoCadastro);
+        btnCancelarTipoCadastro.addActionListener(e -> {
+            listaTipos.setVisible(true);
+            cadastroTipo.setVisible(false);
+        });
+
+        tabTipos.add(cadastroTipo);
+    }
+
+    private void enableDisableEmailField(ActionEvent e) {
         String selectedItem = (String) cbClienteTipo.getSelectedItem();
         if (selectedItem.toUpperCase().equals("FÍSICO")) {
             tfClienteEmail.setEnabled(false);

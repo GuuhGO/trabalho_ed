@@ -22,7 +22,7 @@ public final class TipoRegistry implements ActionListener {
     private TelaEclipse tela;
     private JTextField tfCodigo;
     private JTextField tfNome;
-    private JTextField tfDescricao;
+    private JTextArea taDescricao;
 
 
     private TipoRegistry() throws Exception {
@@ -165,12 +165,12 @@ public final class TipoRegistry implements ActionListener {
     }
 
 
-    public void setView(TelaEclipse tela, JTextField tfCodigo, JTextField tfNome, JTextField tfDescricao) throws Exception {
+    public void setView(TelaEclipse tela, JTextField tfCodigo, JTextField tfNome, JTextArea taDescricao) throws Exception {
         if (!viewSetted) {
             this.tela = tela;
             this.tfCodigo = tfCodigo;
             this.tfNome = tfNome;
-            this.tfDescricao = tfDescricao;
+            this.taDescricao = taDescricao;
             this.viewSetted = true;
         }
         else {
@@ -182,14 +182,14 @@ public final class TipoRegistry implements ActionListener {
     private Tipo viewToTipo() {
         int codigo = Integer.parseInt((tfCodigo.getText()));
         String nome = tfNome.getText();
-        String descricao = tfDescricao.getText();
+        String descricao = taDescricao.getText();
 
         return new Tipo(codigo, nome, descricao);
     }
 
 
     private void clearTextFields() {
-        tfDescricao.setText("");
+        taDescricao.setText("");
         tfNome.setText("");
         tfCodigo.setText(String.valueOf(this.getProximoCodigoDisponivel()));
     }
@@ -201,6 +201,10 @@ public final class TipoRegistry implements ActionListener {
         if (actionPerformed.equalsIgnoreCase("SALVAR")) {
             try {
                 cadastrar();
+                tela.carregarTableTipo();
+                tfNome.setText("");
+                tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
+                taDescricao.setText("");
             } catch (Exception e) {/*TODO*/}
         }
         if (actionPerformed.equalsIgnoreCase("EDITAR")) {
