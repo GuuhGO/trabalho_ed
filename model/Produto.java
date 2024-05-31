@@ -65,16 +65,11 @@ public class Produto implements ICsv {
 
     @Override
     public String getObjCsv() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(codigo);
-        buffer.append(";");
-        buffer.append(nome);
-        buffer.append(";");
-        buffer.append(valor);
-        buffer.append(";");
-        buffer.append(quantidadeEstoque);
-        buffer.append(";");
-        buffer.append(tipo.getCodigo());
-        return buffer.toString();
+        return codigo + ";" + nome + ";" + valor + ";" + quantidadeEstoque + ";" + tipo.getCodigo();
+    }
+
+    @Override
+    public String getCsvId() {
+        return String.valueOf(getCodigo());
     }
 }
