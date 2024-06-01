@@ -90,7 +90,7 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
     public T get(String id) throws Exception {
         String registroCsv = getRegistroById(id);
         if (registroCsv == null) {
-            throw new Exception("Produto não encontrado");
+            throw new Exception("Registro não encontrado");
         }
 
         return objectBuilder(registroCsv);
