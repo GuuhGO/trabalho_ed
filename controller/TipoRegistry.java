@@ -202,19 +202,20 @@ public final class TipoRegistry implements ActionListener {
             try {
                 cadastrar();
                 tela.carregarTableTipo();
-                tfNome.setText("");
-                tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
-                taDescricao.setText("");
-            } catch (Exception e) {/*TODO*/}
+            } catch (Exception e) {
+                /*TODO*/
+                e.printStackTrace();
+            }
         }
         if (actionPerformed.equalsIgnoreCase("EDITAR")) {
             try {
                 editar();
                 tela.carregarTableTipo();
-                tfNome.setText("");
-                tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
-                taDescricao.setText("");
-            } catch (Exception e) {/*TODO*/}
+                tela.carregarTableProduto();
+            } catch (Exception e) {
+                /*TODO*/
+                e.printStackTrace();
+            }
         }
     }
 
@@ -230,7 +231,7 @@ public final class TipoRegistry implements ActionListener {
     private void cadastrar() throws Exception{
         Tipo tipo = viewToTipo();
         if(get(tipo.getCodigo()) != null) {
-            throw new Exception("Já existe um produto com esse código");
+            throw new Exception("Já existe um tipo com esse código");
         }
         clearTextFields();
         add(tipo);

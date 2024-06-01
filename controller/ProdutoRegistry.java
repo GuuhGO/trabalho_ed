@@ -5,12 +5,25 @@ import controller.hashTables.ProdutoHashTable;
 import datastrucures.genericList.List;
 import model.ICsv;
 import model.Produto;
+import model.Tipo;
+import view.TelaEclipse;
 
-public final class ProdutoRegistry {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public final class ProdutoRegistry implements ActionListener {
     private static ProdutoRegistry INSTANCE = null;
 
     private final ProdutoCsvController DB_PRODUTO;
     private ProdutoHashTable TABLE_PRODUTO;
+    private boolean viewSetted;
+    private TelaEclipse tela;
+    private JTextField tfCodigo;
+    private JTextField tfNome;
+    private JTextField tfValor;
+    private JTextField tfQuantidade;
+    private JComboBox<String> cbTipo;
 
 
     private ProdutoRegistry() throws Exception {
@@ -71,11 +84,6 @@ public final class ProdutoRegistry {
     }
 
 
-    public Produto objectBuilder(String csvLine) throws Exception {
-        return DB_PRODUTO.objectBuilder(csvLine);
-    }
-
-
     public void add(Produto p) throws Exception {
         DB_PRODUTO.save(p);
         TABLE_PRODUTO.put(p);
@@ -123,5 +131,79 @@ public final class ProdutoRegistry {
 
     public List<ICsv> getByTipe(int codigoTipo) throws Exception {
         return TABLE_PRODUTO.getByType(codigoTipo);
+    }
+
+    public void setView(TelaEclipse tela, JTextField tfCodigo, JTextField tfNome, JTextField tfValor, JTextField tfQuantidade, JComboBox<String> cbTipo) throws Exception {
+        if (!viewSetted) {
+            this.tela = tela;
+            this.tfCodigo = tfCodigo;
+            this.tfNome = tfNome;
+            this.tfValor = tfValor;
+            this.tfQuantidade = tfQuantidade;
+            this.cbTipo = cbTipo;
+            this.viewSetted = true;
+        }
+        else {
+            throw new Exception("View já definida");
+        }
+    }
+
+    public Produto viewToProduto() throws Exception {
+        int codigo = Integer.parseInt(tfCodigo.getText());
+        String nome = tfNome.getText();
+        double valor = Double.parseDouble(tfValor.getText());
+        int quantidade = Integer.parseInt(tfQuantidade.getText());
+        String tipoSelecionado = (String) cbTipo.getSelectedItem();
+        Tipo tipo = (Tipo) TipoRegistry.getInstance().get(tipoSelecionado.split("-")[0]);
+        return new Produto(codigo, nome, tipo, valor, quantidade);
+    }
+
+    public void clearTextFields() {
+        tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
+        tfNome.setText("");
+        tfValor.setText("");
+        tfQuantidade.setText("");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        String actionPerformed = evt.getActionCommand();
+        if (actionPerformed.equalsIgnoreCase("SALVAR")) {
+            try {
+                cadastrar();
+                tela.carregarTableProduto();
+            } catch (Exception e) {
+                /*TODO*/
+                e.printStackTrace();
+            }
+        }
+        if (actionPerformed.equalsIgnoreCase("EDITAR")) {
+            try {
+                editar();
+                tela.carregarTableProduto();
+            } catch (Exception e) {
+                /*TODO*/
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void editar() throws Exception {
+        Produto _new = viewToProduto();
+        Produto old =  (Produto) get(_new.getCodigo());
+        clearTextFields();
+        edit(old, _new);
+    }
+
+    private void cadastrar() throws Exception {
+        Produto p = viewToProduto();
+        try {
+            get(p.getCodigo());
+        } catch (Exception e) {
+            if(e.getMessage().equals("Produto não encontrado")) {
+                add(p);
+            }
+        }
+        clearTextFields();
     }
 }

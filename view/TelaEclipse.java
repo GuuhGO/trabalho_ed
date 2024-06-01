@@ -5,6 +5,7 @@ import controller.TipoRegistry;
 import controller.csv.ClienteCsvController;
 import datastrucures.genericList.List;
 import model.ICsv;
+import model.Produto;
 import model.Tipo;
 
 import javax.swing.*;
@@ -266,6 +267,22 @@ public class TelaEclipse extends JFrame {
     }
 
 
+    private boolean prepararCamposParaEditarProduto() {
+        int selectedRow = tableProduto.getSelectedRow();
+        try {
+            int codigoProduto = Integer.parseInt((String) tableProduto.getModel().getValueAt(selectedRow, 1));
+            Produto p = (Produto) ProdutoRegistry.getInstance().get(codigoProduto);
+            tfCodigoProduto.setText(String.valueOf(codigoProduto));
+            tfNomeProduto.setText(p.getNome());
+            tfValorProduto.setText(String.valueOf(p.getValor()));
+            tfQuantidadeProduto.setText(String.valueOf(p.getQuantidadeEstoque()));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
     private boolean prepararCamposParaEditarTipo() {
         int selectedRow = tableTipos.getSelectedRow();
         String codigoTipo = (String) tableTipos.getModel().getValueAt(selectedRow, 1);
@@ -274,7 +291,7 @@ public class TelaEclipse extends JFrame {
             if (t == null) {
                 return false;
             }
-            tfCodigoTipo.setText(String.valueOf(codigoTipo));
+            tfCodigoTipo.setText(codigoTipo);
             tfNomeTipo.setText(t.getNome());
             taDescricaoTipo.setText(t.getDescricao());
             return true;
@@ -634,6 +651,7 @@ public class TelaEclipse extends JFrame {
         btnExcluiTipo.addActionListener(e -> {
             excluirTipo();
             carregarTableTipo();
+            carregarTableProduto();
         });
 
         btnNovoTipo = new JButton("Novo Tipo");
@@ -806,9 +824,11 @@ public class TelaEclipse extends JFrame {
         btnEditarProduto.setBounds(495, 50, 100, 21);
         listaProdutos.add(btnEditarProduto);
         btnEditarProduto.addActionListener(e -> {
-            listaProdutos.setVisible(false);
-            cadastroProduto.setVisible(true);
-            btnSalvarProduto.setActionCommand("EDITAR");
+            if (prepararCamposParaEditarProduto()) {
+                listaProdutos.setVisible(false);
+                cadastroProduto.setVisible(true);
+                btnSalvarProduto.setActionCommand("EDITAR");
+            }
         });
 
         btnFiltraProduto = new JButton("Filtrar");
@@ -828,9 +848,7 @@ public class TelaEclipse extends JFrame {
         cbListaTipo = criarComboBoxTipos(true);
         cbListaTipo.setBounds(24, 76, 238, 22);
         listaProdutos.add(cbListaTipo);
-
     }
-
 
 
     private void initCadastroProduto() {
@@ -914,10 +932,14 @@ public class TelaEclipse extends JFrame {
         layerCadastroProduto.add(cbTipoProduto);
         
         btnSalvarProduto = new JButton("SALVAR");
+        btnSalvarProduto.setActionCommand("SALVAR");
         btnSalvarProduto.setForeground(new Color(0, 128, 0));
         btnSalvarProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
         btnSalvarProduto.setBounds(618, 290, 87, 29);
         layerCadastroProduto.add(btnSalvarProduto);
+        try {
+            btnSalvarProduto.addActionListener(ProdutoRegistry.getInstance());
+        } catch (Exception e) {/*TODO*/}
         btnSalvarProduto.addActionListener(e -> {
             btnSalvarProduto.setActionCommand("SALVAR");
         });
@@ -939,6 +961,10 @@ public class TelaEclipse extends JFrame {
                 tfCodigoProduto.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
             } catch (Exception ex) {/*TODO*/}
         });
+
+        try {
+            ProdutoRegistry.getInstance().setView(this, tfCodigoProduto, tfNomeProduto, tfValorProduto, tfQuantidadeProduto, cbTipoProduto);
+        } catch (Exception e) {/*TODO*/}
 
         tabProdutos.add(cadastroProduto);
     }
