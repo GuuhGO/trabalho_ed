@@ -1,5 +1,5 @@
-código;nome;valor;quantidadeEstoque;códigoTipo
-0;Celular;650.6;10;3
-1;Concreto;65.6;50;2
-2;Corante laranja;4.5;754;12
-3;Manga;8.0;898;1
+código;tipo;nome;valor;estoque
+0;3;Celular;650.6;10
+1;2;Concreto;65.6;50
+2;12;Corante laranja;4.5;754
+3;1;Manga;8.0;898

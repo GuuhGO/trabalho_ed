@@ -72,6 +72,11 @@ public final class ProdutoRegistry {
         DB_PRODUTO.delete(p);
         TABLE_PRODUTO.remove(p);
     }
+    
+    public void remove(int codigoProduto) throws Exception {
+    	Produto produto = TABLE_PRODUTO.get(codigoProduto);
+    	remove(produto);
+    }
 
 
     public void edit(Produto old, Produto _new) throws Exception {
@@ -80,20 +85,29 @@ public final class ProdutoRegistry {
     }
 
 
-    public List<Produto> get() throws Exception {
+    public List<ICsv> get() throws Exception {
         return TABLE_PRODUTO.getAllProducts();
     }
 
+    
+    public ICsv get(int codigoProduto, int codigoTipo) throws Exception {
+    	List<ICsv> produtos = getByTipe(codigoTipo);
+    	int size = produtos.size();
+    	for(int i = 0; i < size; i++) {
+    		Produto p = (Produto) produtos.get(i);
+    		if(p.getCodigo() == codigoProduto) {
+    			return p;
+    		}
+    	}
+    	throw new Exception("Produto não encontrado");
+    }
 
-    public Produto get(int codigoProduto) throws Exception {
+    public ICsv get(int codigoProduto) throws Exception {
         return TABLE_PRODUTO.get(codigoProduto);
     }
 
 
-    public List<Produto> get(int codigoTipo, boolean searchTipo) throws Exception {
-        if (!searchTipo) {
-            return get();
-        }
+    public List<ICsv> getByTipe(int codigoTipo) throws Exception {
         return TABLE_PRODUTO.getByType(codigoTipo);
     }
 }

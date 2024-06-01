@@ -1,9 +1,11 @@
 package view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
+import controller.ProdutoRegistry;
+import controller.TipoRegistry;
+import controller.csv.ClienteCsvController;
+import datastrucures.genericList.List;
+import model.ICsv;
+import model.Tipo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,12 +13,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
-import controller.TipoRegistry;
-import controller.csv.ClienteCsvController;
-import datastrucures.genericList.List;
-import model.ICsv;
-import model.Tipo;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class TelaEclipse extends JFrame {
 
@@ -32,11 +32,14 @@ public class TelaEclipse extends JFrame {
     private JPanel contentPane;
     private JPanel listaClientes;
     private JPanel listaTipos;
+    private JPanel listaProdutos;
     private JScrollPane scrollPane;
     private JTable tableCliente;
     private JTable tableTipos;
+    private JTable tableProduto;
     private JTextField tfBusca;
     private JTextField tfBuscaTipo;
+    private JTextField tfBuscaProduto;
     private JTextField tfClienteCpf_Cnpj;
     private JTextField tfClienteEmail;
     private JTextField tfClienteNome;
@@ -65,6 +68,7 @@ public class TelaEclipse extends JFrame {
     private JButton btnPesquisaTipo;
     private JButton btnExcluiTipo;
     private JButton btnNovoTipo;
+    private JButton btnEditarTipo;
     private JScrollPane scrollPaneTipos;
     private JPanel cadastroTipo;
     private JLayeredPane layerCadastroTipo;
@@ -77,6 +81,16 @@ public class TelaEclipse extends JFrame {
     private JTextArea taDescricaoTipo;
     private JButton btnSalvarTipoCadastro;
     private JButton btnCancelarTipoCadastro;
+    private JPanel tabProdutos = new JPanel();
+    private JLabel lblTituloProdutos;
+    private JLabel lblBuscaProduto;
+    private JButton btnPesquisaProduto;
+    private JButton btnExcluiProduto;
+    private JButton btnNovoProduto;
+    private JButton btnEditarProduto;
+    private JScrollPane scrollPaneProdutos;
+    private JComboBox<String> cbListaTipo;
+    private JButton btnFiltraProduto;
 
     /**
      * Launch the application.
@@ -99,6 +113,7 @@ public class TelaEclipse extends JFrame {
         initialize();
         carregarTableClientes();
         carregarTableTipo();
+        carregarTableProduto();
     }
 
     private void initialize() {
@@ -117,38 +132,139 @@ public class TelaEclipse extends JFrame {
         tabbedPane.setBounds(0, 0, 727, 363);
         tabbedPane.addTab("Clientes", null, tabCliente, "Cliente");
         tabbedPane.addTab("Tipos", null, tabTipos, "Tipo");
+        tabbedPane.addTab("Produtos", null, tabProdutos, "Produto");
         contentPane.add(tabbedPane);
 
         tabCliente.setLayout(null);
         tabTipos.setLayout(null);
+        tabProdutos.setLayout(null);
 
         initCadastroClientes();
         initListaClientes();
         initListaTipos();
         initCadastroTipos();
+        initListaProdutos();
 
         tabbedPane.addChangeListener(this::updateResolution);
     }
 
 
+    private void excluirProduto() {
+        int selectedRow = tableProduto.getSelectedRow();
+        TableModel model = tableProduto.getModel();
+        String codigoProduto = (String) model.getValueAt(selectedRow, 1);
+        try {
+            int id = Integer.parseInt(codigoProduto);
+            ProdutoRegistry instance = ProdutoRegistry.getInstance();
+            instance.remove(id);
+        } catch (NumberFormatException error) {/*TODO*/} catch (Exception e) {/*TODO 2*/}
+    }
+
+
+    private void pesquisarProduto(String codigo) {
+        int codigoProduto;
+        if (codigo == null || codigo.isBlank()) {
+            carregarTableProduto();
+            return;
+        }
+        try {
+            codigoProduto = Integer.parseInt(codigo);
+        } catch (NumberFormatException e) {
+            return;
+        }
+
+        try {
+            List<ICsv> target = new List<>();
+            String csvHeader;
+
+            ProdutoRegistry pR = ProdutoRegistry.getInstance();
+
+            String selectedComboBox = (String) cbListaTipo.getSelectedItem();
+            if (selectedComboBox.equals("-")) {
+                target.addLast(pR.get(codigoProduto));
+            }
+            else {
+                int codigoTipo = Integer.parseInt(selectedComboBox.split("-")[0]);
+                target.addLast(pR.get(codigoProduto, codigoTipo));
+            }
+            csvHeader = pR.getHeader();
+            carregarDados(tableProduto, csvHeader, target);
+            tableProduto.getColumnModel().getColumn(0).setMaxWidth(26);
+            tableProduto.getColumnModel().getColumn(1).setMaxWidth(46);
+            tableProduto.getColumnModel().getColumn(2).setMaxWidth(46);
+            tableProduto.getColumnModel().getColumn(3).setMinWidth(270);
+        } catch (Exception e) {
+            //TODO: produto não encontrado
+        }
+
+    }
+
+
+    private JComboBox<String> criarComboBoxTipos() {
+        JComboBox<String> cb = new JComboBox<>();
+        DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
+        m.addElement("-");
+        try {
+            List<ICsv> tipos = TipoRegistry.getInstance().get();
+            int size = tipos.size();
+            for (int i = 0; i < size; i++) {
+                Tipo item = (Tipo) tipos.get(i);
+                m.addElement(item.getCodigo() + "-" + item.getNome());
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        cb.setModel(m);
+        return cb;
+    }
+
+
+    public void carregarTableProduto() {
+        try {
+            ProdutoRegistry produtoRegistry = ProdutoRegistry.getInstance();
+            List<ICsv> data = getProdutosFiltrados(produtoRegistry);
+            String csvHeader = produtoRegistry.getHeader();
+            carregarDados(tableProduto, csvHeader, data);
+            tableProduto.getColumnModel().getColumn(0).setMaxWidth(26);
+            tableProduto.getColumnModel().getColumn(1).setMaxWidth(46);
+            tableProduto.getColumnModel().getColumn(2).setMaxWidth(46);
+            tableProduto.getColumnModel().getColumn(3).setMinWidth(270);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<ICsv> getProdutosFiltrados(ProdutoRegistry produtoRegistry) throws Exception {
+        List<ICsv> data;
+        String selectedComboBox = (String) cbListaTipo.getSelectedItem();
+        if (selectedComboBox.equals("-")) {
+            data = produtoRegistry.get();
+        }
+        else {
+            int codigoTipo = Integer.parseInt(selectedComboBox.split("-")[0]);
+            data = produtoRegistry.getByTipe(codigoTipo);
+        }
+        return data;
+    }
+
 
     private boolean prepararCamposParaEditarTipo() {
-		// TODO Auto-generated method stub
-    	int selectedRow = tableTipos.getSelectedRow();
+        int selectedRow = tableTipos.getSelectedRow();
         String codigoTipo = (String) tableTipos.getModel().getValueAt(selectedRow, 1);
         try {
-        	Tipo t = (Tipo) TipoRegistry.getInstance().get(codigoTipo);
-        	if (t == null) {
-				return false;
-			}
-        	tfCodigoTipo.setText(String.valueOf(codigoTipo));
-        	tfNomeTipo.setText(t.getNome());
-        	taDescricaoTipo.setText(t.getDescricao());
-        	return true;
-        } catch(Exception e) {
-        	return false;
+            Tipo t = (Tipo) TipoRegistry.getInstance().get(codigoTipo);
+            if (t == null) {
+                return false;
+            }
+            tfCodigoTipo.setText(String.valueOf(codigoTipo));
+            tfNomeTipo.setText(t.getNome());
+            taDescricaoTipo.setText(t.getDescricao());
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-	}
+    }
 
 
     private void excluirTipo() {
@@ -207,14 +323,14 @@ public class TelaEclipse extends JFrame {
         int selectedIndex = tabbedPane.getSelectedIndex();
         int x = (int) getX();
         int y = (int) getY();
-        if (selectedIndex == 0)
+        if (selectedIndex == 0 || selectedIndex == 2)
             setBounds(x, y, 740, 400);
         if (selectedIndex == 1)
             setBounds(x, y, 640, 400);
     }
 
     public void carregarTableClientes() {
-        datastrucures.genericList.List<ICsv> listClientes;
+        List<ICsv> listClientes;
         try {
             listClientes = clienteController.get();
             carregarDados(tableCliente, clienteController.getHeader(), listClientes);
@@ -510,21 +626,21 @@ public class TelaEclipse extends JFrame {
         listaTipos.add(scrollPaneTipos);
 
         tabTipos.add(listaTipos);
-        
-        JButton btnEditarTipo = new JButton("Editar");
+
+        btnEditarTipo = new JButton("Editar");
         btnEditarTipo.setBounds(290, 82, 100, 21);
         listaTipos.add(btnEditarTipo);
         btnEditarTipo.addActionListener(e -> {
-        	if(prepararCamposParaEditarTipo()) {
-				btnSalvarTipoCadastro.setActionCommand("EDITAR");
-				listaTipos.setVisible(false);
-				cadastroTipo.setVisible(true);
-        	}
+            if (prepararCamposParaEditarTipo()) {
+                btnSalvarTipoCadastro.setActionCommand("EDITAR");
+                listaTipos.setVisible(false);
+                cadastroTipo.setVisible(true);
+            }
         });
     }
 
 
-	private void initCadastroTipos(){
+    private void initCadastroTipos() {
         cadastroTipo = new JPanel();
         cadastroTipo.setBounds(0, 0, 621, 336);
         cadastroTipo.setLayout(null);
@@ -591,7 +707,7 @@ public class TelaEclipse extends JFrame {
             tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
         } catch (Exception e) { /*TODO*/ }
         btnSalvarTipoCadastro.addActionListener(e -> {
-        	btnSalvarTipoCadastro.setActionCommand("SALVAR");
+            btnSalvarTipoCadastro.setActionCommand("SALVAR");
         });
 
 
@@ -604,23 +720,98 @@ public class TelaEclipse extends JFrame {
             listaTipos.setVisible(true);
             cadastroTipo.setVisible(false);
             btnSalvarTipoCadastro.setActionCommand("SALVAR");
-			taDescricaoTipo.setText("");
-			tfNomeTipo.setText("");
-			try {
-				TipoRegistry registry = TipoRegistry.getInstance();
-				tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-			} catch (Exception ex) {/*TODO*/}
+            taDescricaoTipo.setText("");
+            tfNomeTipo.setText("");
+            try {
+                TipoRegistry registry = TipoRegistry.getInstance();
+                tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+            } catch (Exception ex) {/*TODO*/}
         });
 
         tabTipos.add(cadastroTipo);
     }
+
+
+    private void initListaProdutos() {
+        listaProdutos = new JPanel();
+        listaProdutos.setBounds(0, 0, 722, 336);
+        listaProdutos.setLayout(null);
+
+
+        lblTituloProdutos = new JLabel("PRODUTOS");
+        lblTituloProdutos.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblTituloProdutos.setBounds(273, 11, 117, 30);
+        listaProdutos.add(lblTituloProdutos);
+
+
+        lblBuscaProduto = new JLabel("Pesquisar Código");
+        lblBuscaProduto.setBounds(24, 27, 150, 21);
+        listaProdutos.add(lblBuscaProduto);
+
+        tfBuscaProduto = new JTextField();
+        tfBuscaProduto.setBounds(24, 51, 238, 19);
+        listaProdutos.add(tfBuscaProduto);
+        tfBuscaProduto.setColumns(10);
+
+        btnPesquisaProduto = new JButton("Pesquisar");
+        btnPesquisaProduto.setBounds(283, 50, 100, 21);
+        listaProdutos.add(btnPesquisaProduto);
+        btnPesquisaProduto.addActionListener(e -> {
+            pesquisarProduto(tfBuscaProduto.getText());
+            tfBuscaProduto.setText("");
+        });
+
+        btnExcluiProduto = new JButton("Excluir");
+        btnExcluiProduto.setBounds(389, 50, 100, 21);
+        listaProdutos.add(btnExcluiProduto);
+        btnExcluiProduto.addActionListener(e -> {
+            excluirProduto();
+            carregarTableProduto();
+        });
+
+        btnNovoProduto = new JButton("Novo Produto");
+        btnNovoProduto.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnNovoProduto.setBounds(599, 50, 113, 23);
+        listaProdutos.add(btnNovoProduto);
+        btnNovoProduto.addActionListener(e -> {
+            /*TODO*/
+        });
+
+        btnEditarProduto = new JButton("Editar");
+        btnEditarProduto.setBounds(495, 50, 100, 21);
+        listaProdutos.add(btnEditarProduto);
+        btnEditarProduto.addActionListener(e -> {
+            /*TODO*/
+        });
+
+        btnFiltraProduto = new JButton("Filtrar");
+        btnFiltraProduto.setBounds(283, 75, 100, 21);
+        listaProdutos.add(btnFiltraProduto);
+        btnFiltraProduto.addActionListener(e -> {
+            carregarTableProduto();
+        });
+
+        tableProduto = new JTable();
+        scrollPaneProdutos = new JScrollPane(tableProduto);
+        scrollPaneProdutos.setBounds(14, 109, 698, 227);
+        listaProdutos.add(scrollPaneProdutos);
+
+        tabProdutos.add(listaProdutos);
+
+        cbListaTipo = criarComboBoxTipos();
+        cbListaTipo.setBounds(24, 76, 238, 22);
+        listaProdutos.add(cbListaTipo);
+
+    }
+
 
     private void enableDisableEmailField(ActionEvent e) {
         String selectedItem = (String) cbClienteTipo.getSelectedItem();
         if (selectedItem.toUpperCase().equals("FÍSICO")) {
             tfClienteEmail.setEnabled(false);
             tfClienteEmail.setBackground(Color.LIGHT_GRAY);
-        } else if (selectedItem.toUpperCase().equals("JURÍDICO")) {
+        }
+        else if (selectedItem.toUpperCase().equals("JURÍDICO")) {
             tfClienteEmail.setEnabled(true);
             tfClienteEmail.setBackground(Color.WHITE);
         }

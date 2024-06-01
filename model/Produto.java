@@ -65,7 +65,7 @@ public class Produto implements ICsv {
 
     @Override
     public String getObjCsv() {
-        return codigo + ";" + nome + ";" + valor + ";" + quantidadeEstoque + ";" + tipo.getCodigo();
+        return codigo + ";" +  tipo.getCodigo() + ";" + nome + ";" + valor + ";" + quantidadeEstoque;
     }
 
     @Override
