@@ -48,7 +48,7 @@ public class TelaEclipse extends JFrame {
     private JTextField tfEndComplemento;
     private JTextField tfEndLogradouro;
     private JTextField tfEndNumero;
-    private JPanel tabCliente = new JPanel();
+    private final JPanel tabCliente = new JPanel();
     private JLabel lblCadastrarCliente;
     private JLabel lblClienteNome;
     private JLabel lblClienteCpf_Cnpj;
@@ -62,7 +62,7 @@ public class TelaEclipse extends JFrame {
     private JButton btnSalvar;
     private JButton btnCancelar;
     private JTabbedPane tabbedPane;
-    private JPanel tabTipos = new JPanel();
+    private final JPanel tabTipos = new JPanel();
     private JLabel lblTituloTipos;
     private JLabel lblBuscaTipo;
     private JButton btnPesquisaTipo;
@@ -81,7 +81,7 @@ public class TelaEclipse extends JFrame {
     private JTextArea taDescricaoTipo;
     private JButton btnSalvarTipoCadastro;
     private JButton btnCancelarTipoCadastro;
-    private JPanel tabProdutos = new JPanel();
+    private final JPanel tabProdutos = new JPanel();
     private JLabel lblTituloProdutos;
     private JLabel lblBuscaProduto;
     private JButton btnPesquisaProduto;
@@ -91,6 +91,25 @@ public class TelaEclipse extends JFrame {
     private JScrollPane scrollPaneProdutos;
     private JComboBox<String> cbListaTipo;
     private JButton btnFiltraProduto;
+    private JPanel cadastroProduto;
+    private JLayeredPane layerCadastroProduto;
+    private JLabel lblCadastrarProduto;
+    private JLabel lblCodigoProduto;
+    private JTextField tfCodigoProduto;
+    private JLabel lblNomeProduto;
+    private JTextField tfNomeProduto;
+    private JTextField tfValorProduto;
+    private JTextField tfQuantidadeProduto;
+    private JButton btnSalvarProduto;
+
+
+    public TelaEclipse() {
+        initialize();
+        carregarTableClientes();
+        carregarTableTipo();
+        carregarTableProduto();
+    }
+
 
     /**
      * Launch the application.
@@ -109,12 +128,6 @@ public class TelaEclipse extends JFrame {
         });
     }
 
-    public TelaEclipse() {
-        initialize();
-        carregarTableClientes();
-        carregarTableTipo();
-        carregarTableProduto();
-    }
 
     private void initialize() {
 
@@ -143,6 +156,7 @@ public class TelaEclipse extends JFrame {
         initListaClientes();
         initListaTipos();
         initCadastroTipos();
+        initCadastroProduto();
         initListaProdutos();
 
         tabbedPane.addChangeListener(this::updateResolution);
@@ -200,10 +214,12 @@ public class TelaEclipse extends JFrame {
     }
 
 
-    private JComboBox<String> criarComboBoxTipos() {
+    private JComboBox<String> criarComboBoxTipos(boolean tipoVazio) {
         JComboBox<String> cb = new JComboBox<>();
         DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
-        m.addElement("-");
+        if(tipoVazio) {
+			m.addElement("-");
+        }
         try {
             List<ICsv> tipos = TipoRegistry.getInstance().get();
             int size = tipos.size();
@@ -234,6 +250,7 @@ public class TelaEclipse extends JFrame {
             e.printStackTrace();
         }
     }
+
 
     private List<ICsv> getProdutosFiltrados(ProdutoRegistry produtoRegistry) throws Exception {
         List<ICsv> data;
@@ -304,6 +321,7 @@ public class TelaEclipse extends JFrame {
         }
     }
 
+
     public void carregarTableTipo() {
         List<ICsv> listTipos;
         String csvHeader;
@@ -319,15 +337,17 @@ public class TelaEclipse extends JFrame {
         }
     }
 
+
     private void updateResolution(ChangeEvent e) {
         int selectedIndex = tabbedPane.getSelectedIndex();
-        int x = (int) getX();
-        int y = (int) getY();
+        int x = getX();
+        int y = getY();
         if (selectedIndex == 0 || selectedIndex == 2)
             setBounds(x, y, 740, 400);
         if (selectedIndex == 1)
             setBounds(x, y, 640, 400);
     }
+
 
     public void carregarTableClientes() {
         List<ICsv> listClientes;
@@ -338,6 +358,7 @@ public class TelaEclipse extends JFrame {
             e.printStackTrace();
         }
     }
+
 
     public void carregarDados(JTable table, String csvHeader, List<ICsv> list) {
         String[] columnNames = ("#;" + csvHeader).split(";");
@@ -356,6 +377,7 @@ public class TelaEclipse extends JFrame {
         }
         table.setModel(tableModel);
     }
+
 
     private void initListaClientes() {
         // Tela de Lista de Clientes
@@ -414,6 +436,7 @@ public class TelaEclipse extends JFrame {
 
         tabCliente.add(listaClientes);
     }
+
 
     private void initCadastroClientes() {
         // Tela de Cadastro de Clientes
@@ -574,6 +597,7 @@ public class TelaEclipse extends JFrame {
         tabCliente.add(cadastroClientes);
     }
 
+
     private void initListaTipos() {
         listaTipos = new JPanel();
         listaTipos.setBounds(0, 0, 621, 336);
@@ -700,15 +724,15 @@ public class TelaEclipse extends JFrame {
         btnSalvarTipoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 14));
         btnSalvarTipoCadastro.setBounds(511, 288, 87, 29);
         cadastroTipo.add(btnSalvarTipoCadastro);
+        btnSalvarTipoCadastro.addActionListener(e -> {
+            btnSalvarTipoCadastro.setActionCommand("SALVAR");
+        });
         try {
             TipoRegistry registry = TipoRegistry.getInstance();
             btnSalvarTipoCadastro.addActionListener(registry);
             registry.setView(this, tfCodigoTipo, tfNomeTipo, taDescricaoTipo);
             tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
         } catch (Exception e) { /*TODO*/ }
-        btnSalvarTipoCadastro.addActionListener(e -> {
-            btnSalvarTipoCadastro.setActionCommand("SALVAR");
-        });
 
 
         btnCancelarTipoCadastro = new JButton("CANCELAR");
@@ -774,14 +798,17 @@ public class TelaEclipse extends JFrame {
         btnNovoProduto.setBounds(599, 50, 113, 23);
         listaProdutos.add(btnNovoProduto);
         btnNovoProduto.addActionListener(e -> {
-            /*TODO*/
+        	listaProdutos.setVisible(false);
+        	cadastroProduto.setVisible(true);
         });
 
         btnEditarProduto = new JButton("Editar");
         btnEditarProduto.setBounds(495, 50, 100, 21);
         listaProdutos.add(btnEditarProduto);
         btnEditarProduto.addActionListener(e -> {
-            /*TODO*/
+            listaProdutos.setVisible(false);
+            cadastroProduto.setVisible(true);
+            btnSalvarProduto.setActionCommand("EDITAR");
         });
 
         btnFiltraProduto = new JButton("Filtrar");
@@ -798,20 +825,132 @@ public class TelaEclipse extends JFrame {
 
         tabProdutos.add(listaProdutos);
 
-        cbListaTipo = criarComboBoxTipos();
+        cbListaTipo = criarComboBoxTipos(true);
         cbListaTipo.setBounds(24, 76, 238, 22);
         listaProdutos.add(cbListaTipo);
 
     }
 
 
+
+    private void initCadastroProduto() {
+        cadastroProduto = new JPanel();
+        cadastroProduto.setBounds(0, 0, 722, 336);
+        cadastroProduto.setLayout(null);
+
+        layerCadastroProduto = new JLayeredPane();
+        layerCadastroProduto.setBounds(0, 0, 722, 336);
+        cadastroProduto.add(layerCadastroProduto);
+
+        cadastroProduto.setVisible(false);
+
+        lblCadastrarProduto = new JLabel("CADASTRAR PRODUTO");
+        lblCadastrarProduto.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCadastrarProduto.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblCadastrarProduto.setBounds(234, 0, 223, 38);
+        layerCadastroProduto.add(lblCadastrarProduto);
+
+        lblCodigoProduto = new JLabel("Código:");
+        lblCodigoProduto.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblCodigoProduto.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCodigoProduto.setBounds(10, 58, 75, 38);
+        layerCadastroProduto.add(lblCodigoProduto);
+
+        tfCodigoProduto = new JTextField();
+        tfCodigoProduto.setEnabled(false);
+        tfCodigoProduto.setEditable(false);
+        tfCodigoProduto.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfCodigoProduto.setBounds(95, 65, 75, 24);
+        layerCadastroProduto.add(tfCodigoProduto);
+        tfCodigoProduto.setColumns(10);
+        try {
+        	tfCodigoProduto.setText(String.valueOf(ProdutoRegistry.getInstance().getProximoCodigoDisponivel()));
+        } catch (Exception e) { /*TODO*/ }
+
+        lblNomeProduto = new JLabel("Nome:");
+        lblNomeProduto.setHorizontalAlignment(SwingConstants.LEFT);
+        lblNomeProduto.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblNomeProduto.setBounds(207, 58, 75, 38);
+        layerCadastroProduto.add(lblNomeProduto);
+        
+        tfNomeProduto = new JTextField();
+        tfNomeProduto.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfNomeProduto.setColumns(10);
+        tfNomeProduto.setBounds(283, 65, 405, 24);
+        layerCadastroProduto.add(tfNomeProduto);
+        
+        JLabel lblValorProduto = new JLabel("Valor:");
+        lblValorProduto.setHorizontalAlignment(SwingConstants.LEFT);
+        lblValorProduto.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblValorProduto.setBounds(10, 126, 75, 38);
+        layerCadastroProduto.add(lblValorProduto);
+        
+        tfValorProduto = new JTextField();
+        tfValorProduto.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfValorProduto.setColumns(10);
+        tfValorProduto.setBounds(136, 133, 128, 24);
+        layerCadastroProduto.add(tfValorProduto);
+        
+        tfQuantidadeProduto = new JTextField();
+        tfQuantidadeProduto.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        tfQuantidadeProduto.setColumns(10);
+        tfQuantidadeProduto.setBounds(136, 196, 128, 24);
+        layerCadastroProduto.add(tfQuantidadeProduto);
+        
+        JLabel lblQuantidadeProduto = new JLabel("Quantidade:");
+        lblQuantidadeProduto.setHorizontalAlignment(SwingConstants.LEFT);
+        lblQuantidadeProduto.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblQuantidadeProduto.setBounds(10, 186, 116, 38);
+        layerCadastroProduto.add(lblQuantidadeProduto);
+        
+        JLabel lblTipo = new JLabel("Tipo:");
+        lblTipo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTipo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblTipo.setBounds(303, 126, 75, 38);
+        layerCadastroProduto.add(lblTipo);
+        
+        JComboBox<String> cbTipoProduto = criarComboBoxTipos(false);
+        cbTipoProduto.setBounds(388, 135, 300, 22);
+        layerCadastroProduto.add(cbTipoProduto);
+        
+        btnSalvarProduto = new JButton("SALVAR");
+        btnSalvarProduto.setForeground(new Color(0, 128, 0));
+        btnSalvarProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnSalvarProduto.setBounds(618, 290, 87, 29);
+        layerCadastroProduto.add(btnSalvarProduto);
+        btnSalvarProduto.addActionListener(e -> {
+            btnSalvarProduto.setActionCommand("SALVAR");
+        });
+        
+        JButton btnCancelarProduto = new JButton("CANCELAR");
+        btnCancelarProduto.setForeground(Color.RED);
+        btnCancelarProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnCancelarProduto.setBounds(501, 290, 107, 29);
+        layerCadastroProduto.add(btnCancelarProduto);
+        btnCancelarProduto.addActionListener(e -> {
+            listaProdutos.setVisible(true);
+            cadastroProduto.setVisible(false);
+            btnSalvarProduto.setActionCommand("SALVAR");
+            tfNomeProduto.setText("");
+            tfQuantidadeProduto.setText("");
+            tfValorProduto.setText("");
+            try {
+            	ProdutoRegistry registry = ProdutoRegistry.getInstance();
+                tfCodigoProduto.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+            } catch (Exception ex) {/*TODO*/}
+        });
+
+        tabProdutos.add(cadastroProduto);
+    }
+
+
     private void enableDisableEmailField(ActionEvent e) {
         String selectedItem = (String) cbClienteTipo.getSelectedItem();
-        if (selectedItem.toUpperCase().equals("FÍSICO")) {
+        if (selectedItem.equalsIgnoreCase("FÍSICO")) {
             tfClienteEmail.setEnabled(false);
             tfClienteEmail.setBackground(Color.LIGHT_GRAY);
         }
-        else if (selectedItem.toUpperCase().equals("JURÍDICO")) {
+        else if (selectedItem.equalsIgnoreCase("JURÍDICO")) {
             tfClienteEmail.setEnabled(true);
             tfClienteEmail.setBackground(Color.WHITE);
         }

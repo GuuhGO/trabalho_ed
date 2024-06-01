@@ -55,6 +55,20 @@ public final class ProdutoRegistry {
     public String getHeader() {
         return DB_PRODUTO.getHeader();
     }
+    
+    public int getProximoCodigoDisponivel() {
+    	int cont = 0;
+    	while(true) {
+    		try {
+    			get(cont);
+    			cont++;
+    		} catch(Exception e) {
+    			if(e.getMessage().equalsIgnoreCase("Produto não encontrado")) {
+    				return cont;
+    			}
+    		}
+    	}
+    }
 
 
     public Produto objectBuilder(String csvLine) throws Exception {
