@@ -101,18 +101,15 @@ public final class TipoRegistry implements ActionListener {
      * @return O menor valor disponível para ser código de um novo tipo
      */
     public int getProximoCodigoDisponivel() {
-        int size = TIPO_LIST.size();
-        int result = size;
-        for (int i = 0; i < size; i++) {
+        int cont = 0;
+        while(true) {
             try {
-                Tipo element = (Tipo) get(i);
-                if (element.getCodigo() != i) {
-                    result = i;
-                    break;
+                if(get(cont) == null) {
+                    return cont;
                 }
-            } catch (Exception e) {/*Na próxima chamada do método getNextCódigo resolve*/}
+                cont++;
+            } catch (Exception e) {/*TODO*/}
         }
-        return result;
     }
 
 
@@ -233,7 +230,7 @@ public final class TipoRegistry implements ActionListener {
         if(get(tipo.getCodigo()) != null) {
             throw new Exception("Já existe um tipo com esse código");
         }
-        clearTextFields();
         add(tipo);
+        clearTextFields();
     }
 }

@@ -313,6 +313,14 @@ public class TelaEclipse extends JFrame {
     }
 
 
+    public void atualizarTfCodigoProduto() {
+        try {
+            ProdutoRegistry registry = ProdutoRegistry.getInstance();
+            tfCodigoProduto.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+        } catch (Exception ex) {/*TODO*/}
+    }
+
+
     public void pesquisarTipo(String codigo) {
         if (codigo == null || codigo.isBlank()) {
             carregarTableTipo();
@@ -336,6 +344,14 @@ public class TelaEclipse extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void atualizarTfCodigoTipo() {
+        try {
+            TipoRegistry registry = TipoRegistry.getInstance();
+            tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+        } catch (Exception ex) {/*TODO*/}
     }
 
 
@@ -660,6 +676,7 @@ public class TelaEclipse extends JFrame {
         btnNovoTipo.addActionListener(e -> {
             cadastroTipo.setVisible(true);
             listaTipos.setVisible(false);
+            atualizarTfCodigoTipo();
         });
 
         tableTipos = new JTable();
@@ -764,10 +781,7 @@ public class TelaEclipse extends JFrame {
             btnSalvarTipoCadastro.setActionCommand("SALVAR");
             taDescricaoTipo.setText("");
             tfNomeTipo.setText("");
-            try {
-                TipoRegistry registry = TipoRegistry.getInstance();
-                tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-            } catch (Exception ex) {/*TODO*/}
+            atualizarTfCodigoTipo();
         });
 
         tabTipos.add(cadastroTipo);
@@ -816,7 +830,8 @@ public class TelaEclipse extends JFrame {
         btnNovoProduto.setBounds(599, 50, 113, 23);
         listaProdutos.add(btnNovoProduto);
         btnNovoProduto.addActionListener(e -> {
-        	listaProdutos.setVisible(false);
+            atualizarTfCodigoProduto();
+            listaProdutos.setVisible(false);
         	cadastroProduto.setVisible(true);
         });
 
@@ -881,9 +896,7 @@ public class TelaEclipse extends JFrame {
         tfCodigoProduto.setBounds(95, 65, 75, 24);
         layerCadastroProduto.add(tfCodigoProduto);
         tfCodigoProduto.setColumns(10);
-        try {
-        	tfCodigoProduto.setText(String.valueOf(ProdutoRegistry.getInstance().getProximoCodigoDisponivel()));
-        } catch (Exception e) { /*TODO*/ }
+        atualizarTfCodigoProduto();
 
         lblNomeProduto = new JLabel("Nome:");
         lblNomeProduto.setHorizontalAlignment(SwingConstants.LEFT);
@@ -956,12 +969,8 @@ public class TelaEclipse extends JFrame {
             tfNomeProduto.setText("");
             tfQuantidadeProduto.setText("");
             tfValorProduto.setText("");
-            try {
-            	ProdutoRegistry registry = ProdutoRegistry.getInstance();
-                tfCodigoProduto.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-            } catch (Exception ex) {/*TODO*/}
+            atualizarTfCodigoProduto();
         });
-
         try {
             ProdutoRegistry.getInstance().setView(this, tfCodigoProduto, tfNomeProduto, tfValorProduto, tfQuantidadeProduto, cbTipoProduto);
         } catch (Exception e) {/*TODO*/}
