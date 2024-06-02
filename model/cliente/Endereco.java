@@ -7,9 +7,9 @@ public class Endereco implements ICsv {
 	private int numero;
 	private String complemento = "";
 	private String cep;
-	private StringBuffer errorMessage = new StringBuffer("ERRO NA CRIAÇÃO DO ENDEREÇO:\n");
+	private String errorMessage = "";
 
-	public Endereco(String logradouro, int numero, String complemento, String cep) throws Exception {
+	public Endereco(String logradouro, int numero, String complemento, String cep) throws IllegalArgumentException {
 		setLogradouro(logradouro);
 		setComplemento(complemento);
 		setNumero(numero);
@@ -20,11 +20,10 @@ public class Endereco implements ICsv {
 		return this.logradouro;
 	}
 
-	public void setLogradouro(String logradouro) throws Exception {
-		boolean bLog = (!logradouro.isEmpty() || !logradouro.equals("null"));
-		if (!bLog) {
-			errorMessage.append("Logradouro NÃO pode ser vazio\n");
-			throw new Exception(errorMessage.toString());
+	public void setLogradouro(String logradouro) throws IllegalArgumentException {
+		if (logradouro.isEmpty() || logradouro.equals("null")) {
+			errorMessage = "Logradouro NÃO pode ser vazio\n";
+			throw new IllegalArgumentException(errorMessage);
 		}
 		this.logradouro = logradouro;
 	}
@@ -33,11 +32,10 @@ public class Endereco implements ICsv {
 		return this.numero;
 	}
 
-	public void setNumero(int numero) throws Exception {
-		boolean bNum = (numero < 0);
-		if (bNum) {
-			errorMessage.append("Número NÃO pode ser menor que zero\n");
-			throw new Exception(errorMessage.toString());
+	public void setNumero(int numero) throws IllegalArgumentException {
+		if (numero < 0) {
+			errorMessage = "Número NÃO pode ser menor que zero\n";
+			throw new IllegalArgumentException(errorMessage);
 		}
 		this.numero = numero;
 	}
@@ -54,11 +52,10 @@ public class Endereco implements ICsv {
 		return this.cep;
 	}
 
-	public void setCep(String cep) throws Exception {
-		boolean bCep = (cep.isEmpty());
-		if (bCep) {
-			errorMessage.append("CEP NÃO pode ser vazio\n");
-			throw new Exception(errorMessage.toString());
+	public void setCep(String cep) throws IllegalArgumentException {
+		if (cep.isEmpty()) {
+			errorMessage = "CEP NÃO pode ser vazio\n";
+			throw new IllegalArgumentException(errorMessage);
 		}
 		this.cep = cep;
 	}
@@ -99,5 +96,11 @@ public class Endereco implements ICsv {
 	@Override
 	public String getCsvId() {
 		return logradouro + ";" + numero;
+	}
+
+	@Override
+	public boolean compareAllFields(String reference) {
+		return (logradouro.toUpperCase().contains(reference) || String.valueOf(numero).toUpperCase().contains(reference)
+				|| complemento.toUpperCase().contains(reference) || cep.toUpperCase().contains(reference));
 	}
 }

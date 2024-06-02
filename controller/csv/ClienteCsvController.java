@@ -1,52 +1,58 @@
 package controller.csv;
 
+import model.ICsv;
 import model.cliente.BaseCliente;
 import model.cliente.ClienteFisico;
 import model.cliente.ClienteJuridico;
 import model.cliente.Endereco;
 import view.TelaEclipse;
-
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import datastrucures.genericList.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ClienteCsvController extends BaseCsvController<BaseCliente> implements ActionListener {
-	private TelaEclipse tela;
-	private JTextField tfClienteNome;
-	private JTextField tfClienteCpf_Cnpj;
-	private JTextField tfClienteTelefone;
-	private JTextField tfClienteEmail;
-	private JTextField tfEndLogradouro;
-	private JTextField tfEndNumero;
-	private JTextField tfEndComplemento;
-	private JTextField tfEndCep;
-	private JComboBox<String> cbClienteTipo;
 
-	public ClienteCsvController() {
-	}
-
-	public ClienteCsvController(JComboBox<String> cbClienteTipo, JTextField tfClienteNome,
-			JTextField tfClienteCpf_Cnpj, JTextField tfClienteTelefone, JTextField tfClienteEmail,
-			JTextField tfEndLogradouro, JTextField tfEndNumero, JTextField tfEndComplemento, JTextField tfEndCep) {
-		this.cbClienteTipo = cbClienteTipo;
-		this.tfClienteNome = tfClienteNome;
-		this.tfClienteCpf_Cnpj = tfClienteCpf_Cnpj;
-		this.tfClienteTelefone = tfClienteTelefone;
-		this.tfClienteEmail = tfClienteEmail;
-		this.tfEndLogradouro = tfEndLogradouro;
-		this.tfEndNumero = tfEndNumero;
-		this.tfEndComplemento = tfEndComplemento;
-		this.tfEndCep = tfEndCep;
+	public ClienteCsvController(TelaEclipse tela) {
+		screen = tela;
 	}
 
 	@Override
-	public String getHeader() {
-		return "cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email";
+	public void actionPerformed(ActionEvent evt) {
+		String actionCommand = evt.getActionCommand();
+
+		if (actionCommand.toUpperCase().equals("SALVAR")) {
+			cadastrarCliente();
+		}
+		if (actionCommand.toUpperCase().equals("PESQUISAR")) {
+			pesquisarClientes();
+		}
+		if (actionCommand.toUpperCase().equals("EXCLUIR")) {
+			excluirCliente();
+		}
+		if (actionCommand.toUpperCase().equals("EDITAR")) {
+			editarCliente();
+		}
+		if (actionCommand.toUpperCase().equals("ATUALIZAR")) {
+			String cpf = screen.getTfClienteCpf_Cnpj().getText();
+			excluirCliente(cpf);
+			cadastrarCliente();
+			screen.toggleCustomerView(true);
+		}
 	}
 
 	@Override
 	public String getFileName() {
 		return "clientes";
+	}
+
+	@Override
+	public String getHeader() {
+		return "cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email";
 	}
 
 	@Override
@@ -56,124 +62,121 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 		if (length != 9) {
 			throw new Exception("Registro Inválido");
 		}
-
-		return switch (campos[1]) {
-		case "Físico" -> buildClienteFisico(campos);
-		case "Jurídico" -> buildClienteJuridico(campos);
-		default -> throw new Exception("Registro Inválido");
-		};
-	}
-
-	private ClienteJuridico buildClienteJuridico(String[] campos) throws Exception {
-		String cnpj = campos[0];
-		String fantasia = campos[2];
-		String telefone = campos[7];
-		String email = campos[8];
-		String logradouro = campos[3];
+		String cpf_cnpj = campos[0], tipo = campos[1], nome_fantasia = campos[2], telefone = campos[7],
+				email = campos[8], logradouro = campos[3], complemento = campos[5], cep = campos[6];
 		int numero = Integer.parseInt(campos[4]);
-		String complemento = campos[5];
-		String cep = campos[6];
 
-		Endereco endereco = enderecoBuilder(logradouro, numero, complemento, cep);
+		Endereco endereco = new Endereco(logradouro, numero, complemento, cep);
 
-		return new ClienteJuridico(fantasia, cnpj, telefone, email, endereco);
-	}
-
-	private ClienteFisico buildClienteFisico(String[] campos) throws Exception {
-		String cpf = campos[0];
-		String nome = campos[2];
-		String telefone = campos[7];
-		String logradouro = campos[3];
-		int numero = Integer.parseInt(campos[4]);
-		String cep = campos[6];
-		String complemento = campos[5];
-
-		Endereco endereco = enderecoBuilder(logradouro, numero, complemento, cep);
-
-		return new ClienteFisico(nome, cpf, telefone, endereco);
-	}
-
-	private Endereco enderecoBuilder(String logradouro, int numero, String complemento, String cep) throws Exception {
-		logradouro = logradouro.equals("null") ? "Não Encontrado" : logradouro;
-		complemento = complemento.equals("null") ? "" : complemento;
-		cep = cep.equals("null") ? "Não Encontrado" : cep;
-		return new Endereco(logradouro, numero, complemento, cep);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent evt) {
-		String actionCommand = evt.getActionCommand();
-		if (actionCommand.toUpperCase().equals("SALVAR")) {
-			cadastrar();
+		if (tipo.toUpperCase().equals("FÍSICO")) {
+			return new ClienteFisico(nome_fantasia, cpf_cnpj, telefone, endereco);
+		} else if (tipo.toUpperCase().equals("JURÍDICO")) {
+			return new ClienteJuridico(nome_fantasia, cpf_cnpj, telefone, email, endereco);
+		} else {
+			String message = String.format("Registro \"%s\" inválido", csvLine);
+			throw new Exception(message);
 		}
 	}
 
-	private void cadastrar() {
-		String strFields = viewToCsv();
-		clearTextFields();
+	private void cadastrarCliente() {
 		try {
-			BaseCliente cli = objectBuilder(strFields);
-			save(cli);
-			tela.carregarTableClientes();
+			BaseCliente baseCustomer = screen.getCustomerForm();
+			screen.clearCustomerFields();
+			save(baseCustomer);
+			screen.loadCustomersTable();
 		} catch (Exception err) {
 			err.printStackTrace();
+			JLabel lblError = screen.getLblErrorCadastro();
+			screen.printError(lblError, err);
 		}
 	}
 
-	private String viewToCsv() {
-		StringBuilder builder = new StringBuilder();
+	private void editarCliente() {
+		JTable customersTable = screen.getCustomersTable();
+		int indSelectedRow = customersTable.getSelectedRow();
+		if (indSelectedRow != -1) {
+			screen.getLblErrorListaCliente().setText("");
+			String cpf = (String) customersTable.getValueAt(indSelectedRow, 1);
+			String tipo = (String) customersTable.getValueAt(indSelectedRow, 2);
+			String nome_fantasia = (String) customersTable.getValueAt(indSelectedRow, 3);
+			String logradouro = (String) customersTable.getValueAt(indSelectedRow, 4);
+			String strNumero = (String) customersTable.getValueAt(indSelectedRow, 5);
+			String complemento = (String) customersTable.getValueAt(indSelectedRow, 6);
+			String cep = (String) customersTable.getValueAt(indSelectedRow, 7);
+			String telefone = (String) customersTable.getValueAt(indSelectedRow, 8);
+			String email = (String) customersTable.getValueAt(indSelectedRow, 9);
 
-		String cpf = tfClienteCpf_Cnpj.getText();
-		String tipoCliente = cbClienteTipo.getSelectedItem().toString();
-		String nome = tfClienteNome.getText();
-		String logradouro = tfEndLogradouro.getText();
-		String txNumero = tfEndNumero.getText();
-		int numero = txNumero.isEmpty() ? 0 : Integer.parseInt(txNumero);
-		String complemento = tfEndComplemento.getText();
-		String cep = tfEndCep.getText();
-		String telefone = tfClienteTelefone.getText();
-		String email = tfClienteEmail.getText();
+			String csvFields = String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s", cpf, tipo, nome_fantasia, logradouro,
+					strNumero, complemento, cep, telefone, email);
 
-		// Aplicando operação ternária para verificar se a string está vazia
-		cpf = cpf.isEmpty() ? "null" : cpf;
-		tipoCliente = tipoCliente.isEmpty() ? "null" : tipoCliente;
-		nome = nome.isEmpty() ? "null" : nome;
-		logradouro = logradouro.isEmpty() ? "null" : logradouro;
-		complemento = complemento.isEmpty() ? "null" : complemento;
-		cep = cep.isEmpty() ? "null" : cep;
-		telefone = telefone.isEmpty() ? "null" : telefone;
-		email = email.isEmpty() ? "null" : email;
-
-		builder.append(cpf);
-		builder.append(DELIMITER);
-		builder.append(tipoCliente);
-		builder.append(DELIMITER);
-		builder.append(nome);
-		builder.append(DELIMITER);
-		builder.append(logradouro);
-		builder.append(DELIMITER);
-		builder.append(numero);
-		builder.append(DELIMITER);
-		builder.append(complemento);
-		builder.append(DELIMITER);
-		builder.append(cep);
-		builder.append(DELIMITER);
-		builder.append(telefone);
-		builder.append(DELIMITER);
-		builder.append(email);
-
-		return builder.toString();
+			try {
+				BaseCliente tempCli = objectBuilder(csvFields);
+				screen.setCustomerForm(tempCli);
+				screen.getBtnSalvarCliente().setText("ATUALIZAR");
+				screen.getTfClienteCpf_Cnpj().setEnabled(false);
+			} catch (Exception e) {
+				e.printStackTrace();
+				screen.printError(screen.getLblErrorCadastro(), e);
+			}
+			return;
+		}
+		screen.printError(screen.getLblErrorListaCliente(), new Exception("Nenhum cliente selecionado"));
 	}
 
-	private void clearTextFields() {
-		tfClienteCpf_Cnpj.setText("");
-		cbClienteTipo.getSelectedItem().toString();
-		tfClienteNome.setText("");
-		tfEndLogradouro.setText("");
-		tfEndNumero.setText("");
-		tfEndComplemento.setText("");
-		tfEndCep.setText("");
-		tfClienteTelefone.setText("");
-		tfClienteEmail.setText("");
+	private void excluirCliente() {
+		JTable customersTable = screen.getCustomersTable();
+		int indSelectedRow = customersTable.getSelectedRow();
+		if (indSelectedRow != -1) {
+			String cpf = (String) customersTable.getValueAt(indSelectedRow, 1);
+			try {
+				delete(cpf);
+				DefaultTableModel tableModel = (DefaultTableModel) customersTable.getModel();
+				tableModel.removeRow(indSelectedRow);
+			} catch (IOException ioe) {
+				System.out.println(ioe);
+				screen.printError(screen.getLblErrorCadastro(), ioe);
+			}
+			return;
+		}
+		screen.printError(screen.getLblErrorListaCliente(), new Exception("Nenhum cliente selecionado"));
+
+	}
+
+	private void excluirCliente(String cpf) {
+		try {
+			delete(cpf);
+		} catch (IOException ioe) {
+			System.out.println(ioe);
+			screen.printError(screen.getLblErrorCadastro(), ioe);
+		}
+		return;
+
+	}
+
+	private List<ICsv> pesquisarClientes() {
+		List<ICsv> matchCustomers = new List<ICsv>();
+		screen.getLblErrorListaCliente().setText("");
+		try {
+			String search = screen.getCustomerSearch().getText();
+			if (search == null || search.isBlank()) {
+				screen.loadCustomersTable();
+				return null;
+			}
+			List<ICsv> allCustomers = get();
+
+			int size = allCustomers.size();
+			for (int i = 0; i < size; i++) {
+				BaseCliente tempCli = (BaseCliente) allCustomers.get(i);
+				if (tempCli.compareAllFields(search.toUpperCase())) {
+					matchCustomers.addLast(tempCli);
+				}
+			}
+			screen.carregarDados(screen.getCustomersTable(), getHeader(), matchCustomers);
+			JTable tb = screen.getCustomersTable();
+			tb.getColumnModel().getColumn(0).setMaxWidth(34);
+		} catch (Exception err) {
+			screen.printError(screen.getLblErrorCadastro(), err);
+		}
+		return matchCustomers;
 	}
 }

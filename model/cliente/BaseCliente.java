@@ -14,9 +14,9 @@ public abstract class BaseCliente implements ICsv {
 		return this.telefone;
 	}
 
-	public void setTelefone(String telefone) throws Exception {
+	public void setTelefone(String telefone) throws IllegalArgumentException {
 		if (telefone.isEmpty() || telefone.equals("null")) {
-			throw new Exception("Campo 'telefone' não pode ser vazio");
+			throw new IllegalArgumentException("Campo 'telefone' não pode ser vazio");
 		}
 		this.telefone = telefone;
 	}
@@ -37,11 +37,16 @@ public abstract class BaseCliente implements ICsv {
 		return this.tipoCliente;
 	}
 
-	public void setTipoCliente(String tipoCliente) throws Exception {
+	public void setTipoCliente(String tipoCliente) throws IllegalArgumentException {
 		if (tipoCliente.equals("Físico") || tipoCliente.equals("Jurídico")) {
 			this.tipoCliente = tipoCliente;
 			return;
 		}
-		throw new Exception("Tipo de cliente deve ser \"Físico\" ou \"Jurídico\"\n");
+		throw new IllegalArgumentException("Tipo de cliente deve ser \"Físico\" ou \"Jurídico\"\n");
+	}
+
+	public boolean compareAllFields(String reference) {
+		return (tipoCliente.toUpperCase().contains(reference) || telefone.toUpperCase().contains(reference)
+				|| endereco.compareAllFields(reference));
 	}
 }

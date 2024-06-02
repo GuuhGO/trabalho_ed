@@ -72,4 +72,8 @@ public class Produto implements ICsv {
     public String getCsvId() {
         return String.valueOf(getCodigo());
     }
+	@Override
+	public boolean compareAllFields(String reference) {
+		return (String.valueOf(codigo).contains(reference) || nome.contains(reference) || tipo.compareAllFields(reference));
+	}
 }
