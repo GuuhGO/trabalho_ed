@@ -730,6 +730,7 @@ public class TelaEclipse extends JFrame {
 			excluirTipo();
 			carregarTableTipo();
 			carregarTableProduto();
+			atualizarTfCodigoTipo();
 		});
 
 		btnNovoTipo = new JButton("Novo Tipo");
