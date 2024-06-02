@@ -6,7 +6,7 @@ public class ClienteJuridico extends BaseCliente {
 	private String fantasia;
 	private String email;
 
-	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, Endereco endereco) throws Exception{
+	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, Endereco endereco) {
 		setTipoCliente("Jurídico");
 		setCnpj(cnpj);
 		setFantasia(fantasia);
@@ -19,9 +19,9 @@ public class ClienteJuridico extends BaseCliente {
 		return this.cnpj;
 	}
 
-	public void setCnpj(String cnpj) throws Exception {
+	public void setCnpj(String cnpj) throws IllegalArgumentException {
 		if (cnpj.isEmpty() || cnpj.equals("null")) {
-			throw new Exception("Campo 'cnpj' não pode ser vazio");
+			throw new IllegalArgumentException("Campo 'cnpj' não pode ser vazio");
 		}
 		this.cnpj = cnpj;
 	}
@@ -30,9 +30,9 @@ public class ClienteJuridico extends BaseCliente {
 		return this.fantasia;
 	}
 
-	public void setFantasia(String fantasia) throws Exception {
+	public void setFantasia(String fantasia) throws IllegalArgumentException {
 		if (fantasia.isEmpty() || fantasia.equals("null")) {
-			throw new Exception("Campo 'fantasia' não pode ser vazio");
+			throw new IllegalArgumentException("Campo 'fantasia' não pode ser vazio");
 		}
 		this.fantasia = fantasia;
 	}
@@ -41,9 +41,9 @@ public class ClienteJuridico extends BaseCliente {
 		return email;
 	}
 
-	public void setEmail(String email) throws Exception {
+	public void setEmail(String email) throws IllegalArgumentException {
 		if (email.isEmpty() || email.equals("null")) {
-			throw new Exception("Campo email não pode ser vazio!");
+			throw new IllegalArgumentException("Campo email não pode ser vazio!");
 		}
 		this.email = email;
 	}
@@ -69,5 +69,11 @@ public class ClienteJuridico extends BaseCliente {
 	@Override
 	public String getCsvId() {
 		return getCnpj();
+	}
+	
+	@Override
+	public boolean compareAllFields(String reference) {
+		return (super.compareAllFields(reference) || cnpj.toUpperCase().contains(reference) || fantasia.toUpperCase().contains(reference)
+				|| email.toUpperCase().contains(reference));
 	}
 }

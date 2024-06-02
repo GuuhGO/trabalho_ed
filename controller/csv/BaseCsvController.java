@@ -69,23 +69,6 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
         delete(obj.getCsvId());
     }
 
-    private String getRegistroById(String id) throws IOException {
-        File file = getValidatedFile();
-        String result = null;
-
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-            String currentLine;
-            while ((currentLine = buffer.readLine()) != null) {
-                if(currentLine.isBlank()) continue;
-                if (currentLine.substring(0, currentLine.indexOf(';')).equals(id)) {
-                    result = currentLine;
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
     @Override
     public T get(String id) throws Exception {
         String registroCsv = getRegistroById(id);
@@ -117,7 +100,24 @@ public abstract class BaseCsvController<T extends ICsv> implements ICsvControlle
         return list;
     }
 
-    private void createFile() throws IOException {
+    private String getRegistroById(String id) throws IOException {
+	    File file = getValidatedFile();
+	    String result = null;
+	
+	    try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+	        String currentLine;
+	        while ((currentLine = buffer.readLine()) != null) {
+	            if(currentLine.isBlank()) continue;
+	            if (currentLine.substring(0, currentLine.indexOf(';')).equals(id)) {
+	                result = currentLine;
+	                break;
+	            }
+	        }
+	    }
+	    return result;
+	}
+
+	private void createFile() throws IOException {
         File dir = new File(DIR_PATH);
         File arq = new File(DIR_PATH, getFileName() + ".csv");
         if (!dir.exists() || !dir.isDirectory()) {

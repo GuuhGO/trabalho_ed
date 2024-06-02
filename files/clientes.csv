@@ -1,107 +1,11 @@
 cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email
-69507841202;Físico;Stephany Mendonça;Distrito João Miguel Souza, 22;521;N;89086-205;+55 (061) 9691 9488;bda-cunha@example.com
-47625910849;Jurídico;Dr. Pietro Melo;Condomínio Macedo, 16;880;H;19394-030;+55 31 5903 6026;claraoliveira@example.org
-34620791822;Físico;Paulo Rodrigues;Pátio Marques;221;M;62365-605;(081) 6315 4342;leaoana-livia@example.org
 91352487691;Jurídico;Dr. Benício Pastor;Alameda de Aragão, 1;134;w;58568408;+55 41 1158-2461;aragaoluara@example.org
 52406398765;Jurídico;Mariah Leão;Travessa Câmara, 380;112;t;90781-605;31 6358 2741;ksa@example.com
 67302814562;Jurídico;Alves - EI;Passarela Correia, 317;260;A;64108-809;(031) 4712 7850;rochafrancisco@example.org
 84750162949;Físico;Peixoto;Jardim Alice da Rocha;441;o;23495863;+55 (051) 6091-8110;fernanda69@example.net
-29053648151;Jurídico;Sra. Ester Nascimento;Loteamento Macedo, 4;136;Z;48971-826;+55 31 4612 3654;da-cruzvalentim@example.net
 65231497061;Físico;Garcia;Residencial Josué Camargo, 26;291;i;66114138;+55 (041) 8513-5624;sara03@example.org
-49256370107;Jurídico;Esther Nascimento;Via Teixeira, 94;456;F;19031969;+55 (084) 0899 3297;vargascaue@example.com
-47682390565;Jurídico;Fogaça;Esplanada Novaes, 96;635;x;55835418;+55 61 4948-5748;cavalcanteluiz-felipe@example.net
-02346718904;Físico;Cassiano Macedo S.A.;Loteamento de Leão, 817;291;e;08724-744;41 1036-0956;vargasvinicius@example.org
-19036857295;Físico;Francisco Sampaio;Núcleo de Novaes, 9;238;I;95141621;+55 (071) 9892-1425;zgarcia@example.net
-96120457801;Jurídico;Silveira Aparecida S/A;Via Melina Albuquerque;331;Z;71287152;0500-511-8841;bcostela@example.org
-13287465007;Físico;Melo;Fazenda Aragão, 25;460;r;49996649;+55 84 5387-6446;rodriguespedro@example.com
-41973056801;Jurídico;Farias S/A;Jardim de da Rosa, 551;7;M;81457-539;84 7702 5268;kaiquearaujo@example.org
-86092745356;Jurídico;Ribeiro;Fazenda Lara Camargo, 96;701;Z;78521-419;+55 (081) 3970 6057;yago57@example.org
-98326574074;Físico;Davi Lucca Moraes;Vereda Silva, 20;689;i;73962-276;84 5597-6273;andradeesther@example.org
-86201437940;Físico;Mendonça;Setor Gabriela Barros, 58;498;z;83859-035;+55 51 8169 6646;vmendes@example.net
-19852736086;Jurídico;Raul Fogaça;Aeroporto Melina Caldeira, 98;570;R;35423-026;+55 (081) 6407-7142;antony67@example.org
-75904631839;Jurídico;Dr. Dom Ramos;Sítio Luiz Felipe Ferreira, 57;757;T;49320768;+55 (011) 9690-6777;kaiquepimenta@example.com
-16893245033;Jurídico;Aragão;Fazenda das Neves, 67;794;Y;27046579;(061) 3223-9129;danielafarias@example.net
-65874023135;Físico;Azevedo;Quadra de Albuquerque, 69;733;d;69436-666;+55 31 7291-2286;laura66@example.net
-12865493709;Jurídico;Cavalcante;Vila Eloá Cassiano, 349;352;N;62082-236;(081) 2782 7941;gabriel85@example.org
-35194728050;Jurídico;Sales;Via de Farias;536;W;39840-890;61 9863-6664;guerrarodrigo@example.com
-97023584188;Físico;Albuquerque;Avenida de Nunes, 61;351;h;42496-431;+55 (031) 0238-3050;lais96@example.com
-06438719269;Jurídico;Lavínia da Mata;Trevo Léo Araújo, 91;332;W;30530527;+55 71 4779-4033;manuellaazevedo@example.org
-71932658068;Jurídico;Rios Andrade S/A;Alameda de Ferreira, 64;302;H;07901931;41 8190 7332;portomateus@example.net
-01867542307;Físico;Cunha;Alameda Théo Pinto, 80;225;o;78150167;+55 61 1140-8559;maria-helena55@example.net
-43879015600;Físico;Aparecida;Pátio Jesus, 528;6;B;66791-969;+55 (021) 8427 9093;levirocha@example.com
-97408132597;Físico;Montenegro Brito Ltda.;Vale Farias, 29;524;u;67015126;+55 (041) 5718 1248;rcavalcante@example.net
-01946837296;Jurídico;Dra. Luana da Rosa;Praça Maria Isis Jesus, 55;841;j;96956-527;(031) 2774-6822;ester36@example.org
-80513279423;Jurídico;Correia;Morro de Moreira, 71;846;A;28879-308;+55 (084) 6350 9441;sofia19@example.com
-18075234979;Físico;Novaes;Loteamento de Camargo, 407;754;l;23351-542;+55 (011) 4632 5146;biancaduarte@example.net
-37098165212;Físico;João Vitor das Neves;Viela de Silva;249;j;79246614;+55 61 9194-4385;ivieira@example.net
-72015496343;Físico;Cauê da Mota;Rodovia de Teixeira, 56;2;E;39550-377;+55 (051) 9991 3219;wgarcia@example.net
-82635490198;Físico;Lima;Travessa de Vasconcelos, 26;458;G;39615-422;+55 31 4398 2343;marcos-viniciusfogaca@example.net
-53810942723;Jurídico;Nascimento;Rua Leonardo da Paz, 10;162;g;42134-651;+55 (021) 0186 3409;lucasabreu@example.net
-27354091804;Físico;Ester Vieira;Conjunto Sampaio, 10;394;e;98782146;+55 (031) 8400-4590;mendoncahelena@example.com
-39654782065;Jurídico;Gael Henrique Almeida;Residencial de Rios, 100;462;M;13496-417;11 5231 9121;fernandafonseca@example.com
-72481093631;Jurídico;Cauã Jesus;Morro Sá, 86;995;p;64045410;41 4933-2663;talves@example.com
-58931027621;Jurídico;Leão;Sítio Giovanna Ferreira, 55;517;x;94476-098;+55 (081) 9038 9941;marcelo85@example.org
-48271936069;Físico;Montenegro S.A.;Passarela de Marques, 38;136;U;82768345;+55 51 0586 3823;ana-clararezende@example.com
-13869472022;Físico;Diego Silva;Vereda Melo, 16;967;d;39921-478;(021) 1701 2830;dfarias@example.com
-86325109759;Físico;Andrade - EI;Recanto de Nascimento, 118;517;J;52676168;71 3976 7247;da-rosaester@example.net
-75314986264;Jurídico;da Rocha S/A;Praia de Vargas, 51;609;x;01927-257;+55 11 5926-9340;fmoreira@example.net
-58706439101;Jurídico;Eduardo Borges;Esplanada Machado;627;l;96123-937;+55 21 7567-2675;correialuigi@example.org
-17405283608;Jurídico;da Conceição;Morro Nascimento, 796;586;h;79827043;+55 (061) 1350-4826;lda-rocha@example.org
-69120487304;Jurídico;Costa Pastor S.A.;Favela da Mata, 373;783;w;75470-878;+55 41 2445 1857;cavalcantivitor-gabriel@example.com
-54136972016;Jurídico;Dr. João Vitor da Luz;Ladeira de Sousa;489;h;43780106;(041) 0860-9669;alveseduarda@example.org
-04537629134;Físico;Apollo Freitas;Avenida de da Rocha, 34;623;J;59700374;0900-247-7195;jcirino@example.net
-72640918303;Jurídico;Dom Pereira;Residencial Hadassa Pereira, 8;966;I;28269-933;(031) 8812 6095;alexiacavalcanti@example.com
-74630295810;Jurídico;Yan Leão;Estrada Maria Fernanda Montenegro, 9;571;B;19052-227;41 2867-9411;pietraviana@example.com
-19382057404;Jurídico;Gabrielly Sá;Esplanada Ana Laura Peixoto, 368;322;B;29885967;0300-093-9421;isaacporto@example.com
-76148320517;Jurídico;Câmara - EI;Colônia de Leão, 83;216;G;64101-365;71 4398-1839;ivieira@example.net
-08125963740;Físico;Emanuella da Paz;Trevo de Cardoso, 40;167;Q;76163-500;81 8119-4229;upereira@example.com
-10846259702;Físico;Alícia Nogueira;Lagoa Juan Pimenta, 96;498;E;92326-761;0500 633 1917;da-rochanina@example.com
-19723865068;Físico;Dra. Joana Rocha;Residencial Mariane da Cunha, 41;883;o;12934-014;(031) 1209-9824;nataliafernandes@example.org
-52349706125;Físico;Sra. Maria Laura Cirino;Avenida Augusto Vargas;221;I;87355-130;+55 81 3541 9751;apollo76@example.net
-71986203530;Físico;Ana Vitória Rios;Condomínio de Pastor, 98;539;d;48126-512;+55 51 2619 7318;thales63@example.net
-13579402625;Jurídico;Albuquerque;Favela Sampaio, 95;626;q;61586799;+55 (051) 4631-4595;xcaldeira@example.net
-71035482690;Físico;da Mota;Setor Isadora Sá, 2;596;f;46785-701;0900-312-2643;wpeixoto@example.com
-69103827577;Físico;Correia Duarte Ltda.;Vale Sales, 294;876;I;63760207;+55 61 6244-5126;carolina36@example.net
-43768592146;Jurídico;da Cruz;Favela Abreu, 1;967;Q;17957595;(011) 8474 9325;novaesmirella@example.com
-67591382446;Físico;Enrico da Luz;Lagoa da Mota, 377;111;k;40786-823;+55 (061) 0821-9748;samuelcamara@example.net
-89564071267;Jurídico;Cunha;Avenida de Moura, 9;630;y;36678334;(031) 5338 9197;livia20@example.com
-56274380108;Físico;Silveira;Distrito de Abreu, 42;285;C;61614700;+55 (051) 4603-9059;joseramos@example.org
-40721856390;Físico;Luan Rezende;Feira de Rodrigues, 55;440;p;74367-128;(081) 4285 7807;daniel20@example.net
-23957840600;Jurídico;Pires;Quadra de Melo, 35;316;V;14268-704;+55 (051) 5332-7979;barbarada-rosa@example.com
-36401275871;Físico;Aparecida;Núcleo de Nunes, 25;39;A;35975493;+55 (081) 2654-5609;novaisluara@example.net
-19836047557;Jurídico;Cavalcanti Alves S/A;Feira Luiz Felipe Casa Grande, 72;210;v;54026404;41 5830-2437;kfarias@example.net
-28917536409;Jurídico;da Paz;Travessa Joaquim Pinto, 8;438;n;83598-470;+55 (084) 7259-1545;rezendematheus@example.org
-07859641267;Jurídico;Cavalcanti;Ladeira Souza, 962;853;i;74438760;41 3323 6812;moraesisadora@example.net
-50183924797;Físico;Jesus - EI;Parque de Rodrigues, 70;876;s;53014-973;+55 71 2746-5713;isis46@example.com
-59683214746;Físico;Juan Pereira;Rodovia Pedro Miguel Aragão, 40;113;X;85184-565;31 2243-3666;lavinia49@example.net
-53647901857;Físico;Alexandre Pacheco;Praia Garcia, 815;758;Z;10551-578;+55 11 8218 9418;albuquerquejoao-guilherme@example.net
-87931465237;Jurídico;Fonseca Rios S.A.;Chácara Garcia, 22;528;k;11323-005;+55 61 9986-3452;luiz-fernando71@example.net
-29073518423;Jurídico;Cirino - ME;Esplanada Léo das Neves, 89;340;X;45718-430;+55 41 2294-4151;bporto@example.com
-15273964873;Físico;Dra. Ana Laura Novais;Vereda da Rosa, 527;62;w;47337-661;84 8563-4750;tda-luz@example.com
-28093765492;Físico;Araújo S/A;Trecho de Alves, 20;88;X;83465517;+55 (011) 2886-9380;ana-sophia82@example.net
-93671542080;Físico;Maria Luísa Costa;Aeroporto Yasmin Oliveira, 80;0;z;51977927;(081) 7745 5657;gda-rosa@example.org
-30197865259;Físico;Allana Duarte;Viela de Rodrigues, 71;930;C;28218-112;+55 71 5385 2060;bryanmachado@example.com
-86419730520;Físico;João Vitor Moreira;Viaduto de Pereira, 28;738;Z;02492506;0900-692-9138;mgoncalves@example.org
-14238675053;Jurídico;Guilherme Freitas;Ladeira Pacheco;874;Q;44987382;84 6623-2126;caleb12@example.com
-50132967499;Jurídico;Moreira;Rodovia de Montenegro, 5;236;u;22291-347;+55 (031) 2973 3916;ryan21@example.com
-48739065120;Físico;José Pedro da Cruz;Vale de Garcia, 72;615;Y;90074-933;11 8191 6556;ana-sophiagomes@example.org
-04316958224;Jurídico;Pires;Vereda Nogueira, 706;917;G;92378318;(061) 8717 1879;maria-julia27@example.net
-08471653290;Físico;Fernanda da Rosa;Lago Gomes, 5;891;U;95271-599;+55 84 0850-2514;piresbryan@example.net
-43509786238;Jurídico;Pastor;Conjunto Léo Pires, 4;545;h;57850-811;+55 21 6872-3969;luiz-otavio16@example.net
-81524973041;Jurídico;Benício Câmara;Loteamento Montenegro, 17;567;N;37095689;(031) 0162 4303;enzo-gabriel28@example.com
-53286701912;Físico;Andrade;Feira Borges, 8;354;Q;34377491;(051) 6368 3703;mmendes@example.net
-81752069420;Jurídico;Viana - EI;Favela Letícia Caldeira, 13;272;U;26348150;+55 31 4864 4031;portoeduarda@example.net
-96320814551;Físico;Andrade;Viela Brito, 146;248;u;13796-394;+55 (011) 0437-3636;leandro69@example.com
-98756321473;Jurídico;Nogueira;Via Arthur Miguel Almeida, 4;942;N;91061213;0800-929-3535;maria-sophiada-luz@example.net
-81493275682;Físico;Lima Nascimento - EI;Viaduto de Mendes;395;J;56977-623;(051) 9170 0532;kevin12@example.com
-81937542637;Jurídico;Yasmin Barbosa;Morro Yago Nogueira, 6;157;Z;91267355;+55 (011) 2739 0228;silvarodrigo@example.com
-94328076140;Jurídico;Letícia Martins;Passarela Luiza Mendonça;122;l;46185123;(081) 4095 4467;melodavi-miguel@example.org
-01642593842;Jurídico;Camargo;Setor Moura, 50;317;F;71822-893;+55 (051) 8200 5598;peixotocecilia@example.com
-49178632528;Jurídico;Cecilia Monteiro;Quadra de Cavalcanti, 90;136;M;14972-442;+55 (081) 6022-1299;guerraamanda@example.org
-72054618390;Físico;Pereira - ME;Viela Correia, 69;313;A;44480-313;11 2515-5796;valentina59@example.net
-12345678910;Físico;Renan;Rua Sei Lá;20;C;08390470;11900002000;null
 758978078;Físico;GUSTAVO GA;Rua 6;0;null;8977917;78786788;null
-1;Físico;a;a;1;a;b;5;null
-3;Físico;b;b;134;null;14;b;null
-6542;Físico;c;gshfhs;2;null;n;465324;null
 0987765712;Físico;Rofrigo;Humanis Tricotis;0;casa 78;7894512;00000000000;null
+2020;Jurídico;Consultoria LTDA;Avenida Peixe;2045;Bloco C;0909090;935;email@consultoria.com.br
+34620791822;Físico;Fernando Rodrigues;Pátio Marques;221;M;62365-605;TelefoneBugadão;null
+99999999999999;Jurídico;Shrek;Avenida Zebra;1010;Bagre;08981898;1190909090;email@email.com
