@@ -40,7 +40,12 @@ import model.cliente.BaseCliente;
         return String.valueOf(getID_COMPRA());
     }
 
-    @Override
+     @Override
+     public boolean compareAllFields(String reference) {
+         return false;
+     }
+
+     @Override
     public String toString() {
         return getObjCsv();
     }

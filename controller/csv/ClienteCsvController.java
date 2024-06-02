@@ -17,6 +17,9 @@ import java.io.IOException;
 
 public class ClienteCsvController extends BaseCsvController<BaseCliente> implements ActionListener {
 
+	public ClienteCsvController() {
+	}
+
 	public ClienteCsvController(TelaEclipse tela) {
 		screen = tela;
 	}

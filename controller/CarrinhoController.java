@@ -116,6 +116,10 @@ public class CarrinhoController implements ICsv {
         return String.valueOf(ID_COMPRA);
     }
 
+    @Override
+    public boolean compareAllFields(String reference) {
+        return false;
+    }
 
     @Override
     public String toString() {

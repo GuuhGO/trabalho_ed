@@ -729,6 +729,7 @@ public class TelaEclipse extends JFrame {
 		btnExcluiTipo.addActionListener(e -> {
 			excluirTipo();
 			carregarTableTipo();
+			carregarTableProduto();
 		});
 
 		btnNovoTipo = new JButton("Novo Tipo");
