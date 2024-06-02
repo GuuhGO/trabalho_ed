@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
@@ -26,9 +25,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import controller.ComprasController;
 import controller.ProdutoRegistry;
 import controller.TipoRegistry;
 import controller.csv.ClienteCsvController;
+import controller.csv.ItemCompraCsvController;
 import datastrucures.genericList.List;
 import model.ICsv;
 import model.Produto;
@@ -169,12 +170,14 @@ public class TelaEclipse extends JFrame {
         tabbedPane.addTab("Clientes", null, tabCliente, "Cliente");
         tabbedPane.addTab("Tipos", null, tabTipos, "Tipo");
         tabbedPane.addTab("Produtos", null, tabProdutos, "Produto");
+		tabbedPane.addTab("Vendas", null, tabCompras, "Vendas");
         tabbedPane.addChangeListener(this::updateResolution);
         contentPane.add(tabbedPane);
 
         tabCliente.setLayout(null);
         tabTipos.setLayout(null);
         tabProdutos.setLayout(null);
+		tabCompras.setLayout(null);
 
         initListaClientes();
         initCadastroClientes();
@@ -182,11 +185,13 @@ public class TelaEclipse extends JFrame {
         initCadastroTipos();
         initListaProdutos();
         initCadastroProduto();
+		initListaVendas();
 
         
         loadCustomersTable();
-        carregarTableTipo();
-        carregarTableProduto();
+        loadTypeTable();
+        loadProductTable();
+		loadSalesTable();
     }
 
 	public void carregarDados(JTable table, String csvHeader, List<ICsv> list) {
@@ -212,7 +217,7 @@ public class TelaEclipse extends JFrame {
 		table.setModel(tableModel);
 	}
 
-	public void carregarTableTipo() {
+	public void loadTypeTable() {
 		List<ICsv> listTipos;
 		String csvHeader;
 		try {
@@ -303,7 +308,7 @@ public class TelaEclipse extends JFrame {
 
 	public void pesquisarTipo(String codigo) {
 		if (codigo == null || codigo.isBlank()) {
-			carregarTableTipo();
+			loadTypeTable();
 			return;
 		}
 		try {
@@ -728,8 +733,8 @@ public class TelaEclipse extends JFrame {
 		listaTipos.add(btnExcluiTipo);
 		btnExcluiTipo.addActionListener(e -> {
 			excluirTipo();
-			carregarTableTipo();
-			carregarTableProduto();
+			loadTypeTable();
+			loadProductTable();
 			atualizarTfCodigoTipo();
 		});
 
@@ -797,7 +802,7 @@ public class TelaEclipse extends JFrame {
 		int selectedIndex = tabbedPane.getSelectedIndex();
 		int x = getX();
 		int y = getY();
-		if (selectedIndex == 0 || selectedIndex == 2)
+		if (selectedIndex == 0 || selectedIndex == 2 || selectedIndex == 3 || selectedIndex == 4)
 			setBounds(x, y, 740, 400);
 		if (selectedIndex == 1)
 			setBounds(x, y, 640, 400);
@@ -824,7 +829,7 @@ public class TelaEclipse extends JFrame {
 	private void pesquisarProduto(String codigo) {
 		int codigoProduto;
 		if (codigo == null || codigo.isBlank()) {
-			carregarTableProduto();
+			loadProductTable();
 			return;
 		}
 		try {
@@ -879,7 +884,7 @@ public class TelaEclipse extends JFrame {
 		return cb;
 	}
 
-	public void carregarTableProduto() {
+	public void loadProductTable() {
 		try {
 			ProdutoRegistry produtoRegistry = ProdutoRegistry.getInstance();
 			List<ICsv> data = getProdutosFiltrados(produtoRegistry);
@@ -968,7 +973,7 @@ public class TelaEclipse extends JFrame {
 		listaProdutos.add(btnExcluiProduto);
 		btnExcluiProduto.addActionListener(e -> {
 			excluirProduto();
-			carregarTableProduto();
+			loadProductTable();
 		});
 
 		btnNovoProduto = new JButton("Novo Produto");
@@ -996,7 +1001,7 @@ public class TelaEclipse extends JFrame {
 		btnFiltraProduto.setBounds(283, 75, 100, 21);
 		listaProdutos.add(btnFiltraProduto);
 		btnFiltraProduto.addActionListener(e -> {
-			carregarTableProduto();
+			loadProductTable();
 		});
 
 		tableProduto = new JTable();
@@ -1136,4 +1141,98 @@ public class TelaEclipse extends JFrame {
 			tfClienteEmail.setBackground(Color.WHITE);
 		}
 	}
+
+
+	private final ComprasController salesCtrl = new ComprasController(this);
+	private JLabel lblErrorSalesList;
+	private JButton btnSearchSale;
+	private JButton btnViewSalesDetails;
+	private JPanel tabCompras = new JPanel();
+	private JPanel listSales;
+	private JLabel lblSalesTitle;
+	private JLabel lblSearchSales;
+	private JLabel lblSaleTotal;
+	private JTextField tfSearchSales;
+	private JScrollPane scrollPaneCompras;
+	private JTable salesTable;
+
+	public JTable getSalesTable() {
+		return this.salesTable;
+	}
+
+	public JTextField getTfSearchSales() {
+		return tfSearchSales;
+	}
+
+	public JLabel getLblErrorSalesList() {
+		return lblErrorSalesList;
+	}
+
+	public JLabel getLblSaleTotal() {
+		return lblSaleTotal;
+	}
+
+	private void initListaVendas() {
+
+		listSales = new JPanel();
+		listSales.setBounds(0, 0, 722, 336);
+		listSales.setLayout(null);
+
+		lblSalesTitle = new JLabel("VENDAS");
+		lblSalesTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblSalesTitle.setBounds(310, 11, 117, 30);
+
+		salesTable = new JTable();
+		scrollPaneCompras = new JScrollPane(salesTable);
+		scrollPaneCompras.setBounds(14, 109, 698, 227);
+
+		lblErrorSalesList = new JLabel("");
+		lblErrorSalesList.setBounds(14, 75, 117, 30);
+		lblErrorSalesList.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblErrorSalesList.setForeground(new Color(255, 0, 0));
+
+		lblSearchSales = new JLabel("Pesquisar Venda");
+		lblSearchSales.setBounds(14, 27, 100, 21);
+
+		tfSearchSales = new JTextField();
+		tfSearchSales.setBounds(14, 51, 150, 19);
+		tfSearchSales.setToolTipText("Id da compra");
+		tfSearchSales.setColumns(10);
+
+		btnSearchSale = new JButton("Pesquisar");
+		btnSearchSale.setActionCommand("PESQUISAR");
+		btnSearchSale.setBounds(180, 50, 100, 21);
+		btnSearchSale.addActionListener(salesCtrl);
+//		TOTAL VENDA: #######
+		lblSaleTotal = new JLabel("");
+		lblSaleTotal.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblSaleTotal.setForeground(new Color(0, 100, 0));
+		lblSaleTotal.setBounds(523, 51, 250, 21);
+
+		listSales.add(lblSalesTitle);
+		listSales.add(scrollPaneCompras);
+		listSales.add(lblSearchSales);
+		listSales.add(tfSearchSales);
+		listSales.add(btnSearchSale);
+		listSales.add(lblSaleTotal);
+		listSales.add(lblErrorSalesList);
+		tabCompras.add(listSales);
+	}
+
+
+	public void loadSalesTable() {
+		var salesController = new ItemCompraCsvController();
+        try {
+			List<ICsv> salesList = salesController.get();
+			String header = salesController.getHeader();
+			carregarDados(salesTable, header, salesList);
+			salesTable.getColumnModel().getColumn(0).setMaxWidth(26);
+			salesTable.getColumnModel().getColumn(1).setMaxWidth(80);
+			salesTable.getColumnModel().getColumn(2).setMinWidth(100);
+		} catch (IOException e) {
+			e.printStackTrace();
+			printError(lblErrorSalesList, e);
+        }
+
+    }
 }

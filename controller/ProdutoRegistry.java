@@ -160,7 +160,7 @@ public final class ProdutoRegistry implements ActionListener {
 		if (actionPerformed.equalsIgnoreCase("SALVAR")) {
 			try {
 				cadastrar();
-				tela.carregarTableProduto();
+				tela.loadProductTable();
 			} catch (Exception e) {
 				/* TODO */
 				e.printStackTrace();
@@ -169,7 +169,7 @@ public final class ProdutoRegistry implements ActionListener {
 		if (actionPerformed.equalsIgnoreCase("EDITAR")) {
 			try {
 				editar();
-				tela.carregarTableProduto();
+				tela.loadProductTable();
 			} catch (Exception e) {
 				/* TODO */
 				e.printStackTrace();

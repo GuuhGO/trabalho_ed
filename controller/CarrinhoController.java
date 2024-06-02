@@ -77,7 +77,7 @@ public class CarrinhoController implements ICsv {
             try {
                 DB_COMPRAS.get(String.valueOf(index++));
             } catch (Exception e) {
-                if(e.getMessage().equalsIgnoreCase("Produto não encontrado")) {
+                if(e.getMessage().equalsIgnoreCase("Registro não encontrado")) {
                     return index; // valor disponível para criação de um novo carrinho
                 }
                 throw new Exception(e);

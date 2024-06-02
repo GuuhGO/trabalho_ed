@@ -55,7 +55,7 @@ public class ItemCompraCsvController extends BaseCsvController<ItemCompra> {
             if (!e.getMessage().equalsIgnoreCase("Registro não encontrado")) {
                 throw new Exception(e);
             }
-            String clienteBase = "%s;Físico;Desconhecido;null;0;null;null;Desconhecido;null";
+            String clienteBase = "%s;Físico;Desconhecido;Desconhecido;0;null;Desconhecido;Desconhecido;null";
             cliente = clienteCsvController.objectBuilder(String.format(clienteBase, fields[1]));
         }
         return cliente;

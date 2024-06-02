@@ -198,7 +198,7 @@ public final class TipoRegistry implements ActionListener {
         if (actionPerformed.equalsIgnoreCase("SALVAR")) {
             try {
                 cadastrar();
-                tela.carregarTableTipo();
+                tela.loadTypeTable();
             } catch (Exception e) {
                 /*TODO*/
                 e.printStackTrace();
@@ -207,8 +207,8 @@ public final class TipoRegistry implements ActionListener {
         if (actionPerformed.equalsIgnoreCase("EDITAR")) {
             try {
                 editar();
-                tela.carregarTableTipo();
-                tela.carregarTableProduto();
+                tela.loadTypeTable();
+                tela.loadProductTable();
             } catch (Exception e) {
                 /*TODO*/
                 e.printStackTrace();
