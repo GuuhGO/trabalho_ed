@@ -1,6 +1,7 @@
 package controller.hashTables;
 
 import datastrucures.genericList.List;
+import model.ICsv;
 import model.Produto;
 import model.Tipo;
 
@@ -80,12 +81,12 @@ public class ProdutoHashTable {
         throw new Exception("Produto não encontrado");
     }
 
-    public List<Produto> getByType(int codigoTipo) throws Exception {
+    public List<ICsv> getByType(int codigoTipo) throws Exception {
         int bucketIndex = hashFunction(codigoTipo);
         @SuppressWarnings("unchecked")
         List<Produto> bucket = buckets[bucketIndex];
         int bucketSize = bucket.size();
-        List<Produto> resposta = new List<>();
+        List<ICsv> resposta = new List<>();
         for (int i = 0; i < bucketSize; i++) {
             Produto produto = bucket.get(i);
             if(produto.getTipo().getCodigo() == codigoTipo) {
@@ -95,8 +96,8 @@ public class ProdutoHashTable {
         return resposta;
     }
 
-    public List<Produto> getAllProducts() throws Exception {
-        List<Produto> resposta = new List<>();
+    public List<ICsv> getAllProducts() throws Exception {
+        List<ICsv> resposta = new List<>();
         for(@SuppressWarnings("unchecked") List<Produto> bucket : buckets) {
             if(bucket == null) continue;
             int bucketSize = bucket.size();

@@ -1,11 +1,11 @@
 cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email
-91352487691;Jurídico;Dr. Benício Pastor;Alameda de Aragão, 1;134;w;58568408;+55 41 1158-2461;aragaoluara@example.org
-52406398765;Jurídico;Mariah Leão;Travessa Câmara, 380;112;t;90781-605;31 6358 2741;ksa@example.com
 67302814562;Jurídico;Alves - EI;Passarela Correia, 317;260;A;64108-809;(031) 4712 7850;rochafrancisco@example.org
 84750162949;Físico;Peixoto;Jardim Alice da Rocha;441;o;23495863;+55 (051) 6091-8110;fernanda69@example.net
 65231497061;Físico;Garcia;Residencial Josué Camargo, 26;291;i;66114138;+55 (041) 8513-5624;sara03@example.org
-758978078;Físico;GUSTAVO GA;Rua 6;0;null;8977917;78786788;null
 0987765712;Físico;Rofrigo;Humanis Tricotis;0;casa 78;7894512;00000000000;null
 2020;Jurídico;Consultoria LTDA;Avenida Peixe;2045;Bloco C;0909090;935;email@consultoria.com.br
-34620791822;Físico;Fernando Rodrigues;Pátio Marques;221;M;62365-605;TelefoneBugadão;null
 99999999999999;Jurídico;Shrek;Avenida Zebra;1010;Bagre;08981898;1190909090;email@email.com
+758978078;Físico;Gustavo Guimarães;Rua 6;0;null;8977917;78786788;null
+52406398765;Jurídico;Mariah Leão;Travessa Câmara, 380;112;Casa;90781-605;31 6358 2741;ksa@example.com
+91352487691;Jurídico;Dr. Benício Pastor;Alameda de Aragão, 1;134;Bloco;58568408;11411158-2461;aragaoluara@example.org
+34620791822;Físico;Fernando Rodrigues;Pátio Marques;221;Mato;62365-605;11912345678;null

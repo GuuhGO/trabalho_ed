@@ -17,18 +17,16 @@ import java.io.IOException;
 
 public class ClienteCsvController extends BaseCsvController<BaseCliente> implements ActionListener {
 
-	private TelaEclipse screen;
-
 	public ClienteCsvController(TelaEclipse tela) {
-		this.screen = tela;
+		screen = tela;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		String actionCommand = evt.getActionCommand();
+
 		if (actionCommand.toUpperCase().equals("SALVAR")) {
 			cadastrarCliente();
-//			screen.toggleCustomerView(true);
 		}
 		if (actionCommand.toUpperCase().equals("PESQUISAR")) {
 			pesquisarClientes();
@@ -84,7 +82,6 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 		try {
 			BaseCliente baseCustomer = screen.getCustomerForm();
 			screen.clearCustomerFields();
-			boolean isEditing = screen.isEditingCustomer();
 			save(baseCustomer);
 			screen.loadCustomersTable();
 		} catch (Exception err) {
@@ -98,6 +95,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 		JTable customersTable = screen.getCustomersTable();
 		int indSelectedRow = customersTable.getSelectedRow();
 		if (indSelectedRow != -1) {
+			screen.getLblErrorListaCliente().setText("");
 			String cpf = (String) customersTable.getValueAt(indSelectedRow, 1);
 			String tipo = (String) customersTable.getValueAt(indSelectedRow, 2);
 			String nome_fantasia = (String) customersTable.getValueAt(indSelectedRow, 3);
@@ -120,12 +118,12 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 				e.printStackTrace();
 				screen.printError(screen.getLblErrorCadastro(), e);
 			}
-
+			return;
 		}
+		screen.printError(screen.getLblErrorListaCliente(), new Exception("Nenhum cliente selecionado"));
 	}
 
 	private void excluirCliente() {
-		screen.getLblErrorListaCliente().setText("");
 		JTable customersTable = screen.getCustomersTable();
 		int indSelectedRow = customersTable.getSelectedRow();
 		if (indSelectedRow != -1) {
@@ -143,7 +141,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 		screen.printError(screen.getLblErrorListaCliente(), new Exception("Nenhum cliente selecionado"));
 
 	}
-	
+
 	private void excluirCliente(String cpf) {
 		try {
 			delete(cpf);
@@ -157,6 +155,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 
 	private List<ICsv> pesquisarClientes() {
 		List<ICsv> matchCustomers = new List<ICsv>();
+		screen.getLblErrorListaCliente().setText("");
 		try {
 			String search = screen.getCustomerSearch().getText();
 			if (search == null || search.isBlank()) {

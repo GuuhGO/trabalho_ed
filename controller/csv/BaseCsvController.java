@@ -2,13 +2,15 @@ package controller.csv;
 
 import datastrucures.genericList.List;
 import model.ICsv;
+import view.TelaEclipse;
 
 import java.io.*;
 
 public abstract class BaseCsvController<T extends ICsv> implements ICsvController<T> {
     public static final String DIR_PATH = "./src/files";
     public static final String DELIMITER = ";";
-
+    protected TelaEclipse screen; 
+    
     public BaseCsvController() {
     }
 
