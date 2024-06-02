@@ -26,8 +26,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import controller.ComprasController;
-import controller.ProdutoRegistry;
-import controller.TipoRegistry;
+import controller.ProdutoController;
+import controller.TipoController;
 import controller.csv.ClienteCsvController;
 import controller.csv.ItemCompraCsvController;
 import datastrucures.genericList.List;
@@ -221,7 +221,7 @@ public class TelaEclipse extends JFrame {
 		List<ICsv> listTipos;
 		String csvHeader;
 		try {
-			TipoRegistry registry = TipoRegistry.getInstance();
+			TipoController registry = TipoController.getInstance();
 			listTipos = registry.get();
 			csvHeader = registry.getHeader();
 			carregarDados(tableTipos, csvHeader, listTipos);
@@ -319,7 +319,7 @@ public class TelaEclipse extends JFrame {
 		List<ICsv> listTipos = new List<>();
 		String csvHeader;
 		try {
-			TipoRegistry registry = TipoRegistry.getInstance();
+			TipoController registry = TipoController.getInstance();
 			ICsv item = registry.get(codigo);
 			listTipos.addLast(item);
 			csvHeader = registry.getHeader();
@@ -368,7 +368,7 @@ public class TelaEclipse extends JFrame {
 		String codigoTipo = (String) model.getValueAt(selectedRow, 1);
 		try {
 			int id = Integer.parseInt(codigoTipo);
-			TipoRegistry instance = TipoRegistry.getInstance();
+			TipoController instance = TipoController.getInstance();
 			instance.remove(id);
 		} catch (NumberFormatException error) {
 		} catch (Exception errorGeral) {
@@ -602,7 +602,7 @@ public class TelaEclipse extends JFrame {
 		btnSalvarTipoCadastro.setBounds(511, 288, 87, 29);
 		cadastroTipo.add(btnSalvarTipoCadastro);
 		try {
-			TipoRegistry registry = TipoRegistry.getInstance();
+			TipoController registry = TipoController.getInstance();
 			btnSalvarTipoCadastro.addActionListener(registry);
 			registry.setView(this, tfCodigoTipo, tfNomeTipo, taDescricaoTipo);
 			tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
@@ -624,7 +624,7 @@ public class TelaEclipse extends JFrame {
 			taDescricaoTipo.setText("");
 			tfNomeTipo.setText("");
 			try {
-				TipoRegistry registry = TipoRegistry.getInstance();
+				TipoController registry = TipoController.getInstance();
 				tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
 			} catch (Exception ex) {
 				/* TODO */}
@@ -736,6 +736,8 @@ public class TelaEclipse extends JFrame {
 			loadTypeTable();
 			loadProductTable();
 			atualizarTfCodigoTipo();
+			cbListaTipo.setModel(criarComboBoxTipos(true));
+			cbTipoProduto.setModel(criarComboBoxTipos(false));
 		});
 
 		btnNovoTipo = new JButton("Novo Tipo");
@@ -744,6 +746,8 @@ public class TelaEclipse extends JFrame {
 		btnNovoTipo.addActionListener(e -> {
 			cadastroTipo.setVisible(true);
 			listaTipos.setVisible(false);
+			cbListaTipo.setModel(criarComboBoxTipos(true));
+			cbTipoProduto.setModel(criarComboBoxTipos(false));
 		});
 
 		tableTipos = new JTable();
@@ -761,6 +765,8 @@ public class TelaEclipse extends JFrame {
 				btnSalvarTipoCadastro.setActionCommand("EDITAR");
 				listaTipos.setVisible(false);
 				cadastroTipo.setVisible(true);
+				cbListaTipo.setModel(criarComboBoxTipos(true));
+				cbTipoProduto.setModel(criarComboBoxTipos(false));
 			}
 		});
 	}
@@ -769,7 +775,7 @@ public class TelaEclipse extends JFrame {
 		int selectedRow = tableTipos.getSelectedRow();
 		String codigoTipo = (String) tableTipos.getModel().getValueAt(selectedRow, 1);
 		try {
-			Tipo t = (Tipo) TipoRegistry.getInstance().get(codigoTipo);
+			Tipo t = (Tipo) TipoController.getInstance().get(codigoTipo);
 			if (t == null) {
 				return false;
 			}
@@ -819,8 +825,7 @@ public class TelaEclipse extends JFrame {
 		String codigoProduto = (String) model.getValueAt(selectedRow, 1);
 		try {
 			int id = Integer.parseInt(codigoProduto);
-			ProdutoRegistry instance = ProdutoRegistry.getInstance();
-			instance.remove(id);
+			produtoCtrl.remove(id);
 		} catch (NumberFormatException error) {
 			/* TODO */} catch (Exception e) {
 			/* TODO 2 */}
@@ -842,7 +847,7 @@ public class TelaEclipse extends JFrame {
 			List<ICsv> target = new List<>();
 			String csvHeader;
 
-			ProdutoRegistry pR = ProdutoRegistry.getInstance();
+			ProdutoController pR = ProdutoController.getInstance();
 
 			String selectedComboBox = (String) cbListaTipo.getSelectedItem();
 			if (selectedComboBox.equals("-")) {
@@ -863,50 +868,48 @@ public class TelaEclipse extends JFrame {
 
 	}
 
-	private JComboBox<String> criarComboBoxTipos(boolean tipoVazio) {
-		JComboBox<String> cb = new JComboBox<>();
+	private DefaultComboBoxModel<String> criarComboBoxTipos(boolean tipoVazio) {
 		DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
 		if (tipoVazio) {
 			m.addElement("-");
 		}
 		try {
-			List<ICsv> tipos = TipoRegistry.getInstance().get();
+			List<ICsv> tipos = tipoCtrl.get();
 			int size = tipos.size();
 			for (int i = 0; i < size; i++) {
 				Tipo item = (Tipo) tipos.get(i);
 				m.addElement(item.getCodigo() + "-" + item.getNome());
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cb.setModel(m);
-		return cb;
+		return m;
 	}
 
-	public void loadProductTable() {
+	public List<ICsv> loadProductTable() {
 		try {
-			ProdutoRegistry produtoRegistry = ProdutoRegistry.getInstance();
-			List<ICsv> data = getProdutosFiltrados(produtoRegistry);
-			String csvHeader = produtoRegistry.getHeader();
+			List<ICsv> data = getProdutosFiltrados();
+			String csvHeader = produtoCtrl.getHeader();
 			carregarDados(tableProduto, csvHeader, data);
 			tableProduto.getColumnModel().getColumn(0).setMaxWidth(26);
 			tableProduto.getColumnModel().getColumn(1).setMaxWidth(46);
 			tableProduto.getColumnModel().getColumn(2).setMaxWidth(46);
 			tableProduto.getColumnModel().getColumn(3).setMinWidth(270);
+			return data;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	private List<ICsv> getProdutosFiltrados(ProdutoRegistry produtoRegistry) throws Exception {
+	private List<ICsv> getProdutosFiltrados() throws Exception {
 		List<ICsv> data;
 		String selectedComboBox = (String) cbListaTipo.getSelectedItem();
 		if (selectedComboBox.equals("-")) {
-			data = produtoRegistry.get();
+			data = produtoCtrl.get();
 		} else {
 			int codigoTipo = Integer.parseInt(selectedComboBox.split("-")[0]);
-			data = produtoRegistry.getByTipe(codigoTipo);
+			data = produtoCtrl.getByTipe(codigoTipo);
 		}
 		return data;
 	}
@@ -915,7 +918,7 @@ public class TelaEclipse extends JFrame {
 		int selectedRow = tableProduto.getSelectedRow();
 		try {
 			int codigoProduto = Integer.parseInt((String) tableProduto.getModel().getValueAt(selectedRow, 1));
-			Produto p = (Produto) ProdutoRegistry.getInstance().get(codigoProduto);
+			Produto p = (Produto) ProdutoController.getInstance().get(codigoProduto);
 			tfCodigoProduto.setText(String.valueOf(codigoProduto));
 			tfNomeProduto.setText(p.getNome());
 			tfValorProduto.setText(String.valueOf(p.getValor()));
@@ -926,94 +929,146 @@ public class TelaEclipse extends JFrame {
 		}
 	}
 
-	public void atualizarTfCodigoProduto() {
+
+	private void atualizarTfCodigoTipo() {
 		try {
-			ProdutoRegistry registry = ProdutoRegistry.getInstance();
-			tfCodigoProduto.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
+			TipoController registry = TipoController.getInstance();
+			tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
 		} catch (Exception ex) {
 			/* TODO */}
 	}
 
-	private void atualizarTfCodigoTipo() {
-		try {
-			TipoRegistry registry = TipoRegistry.getInstance();
-			tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-		} catch (Exception ex) {
-			/* TODO */}
-	} 
+	private final ProdutoController produtoCtrl;
+    {
+        try {
+            produtoCtrl = ProdutoController.getInstance();
+			produtoCtrl.setView(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	private final TipoController tipoCtrl;
+    {
+        try {
+            tipoCtrl = TipoController.getInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	public void toggleProductView(boolean listView) {
+		listaProdutos.setVisible(listView);
+		cadastroProduto.setVisible(!listView);
+	}
+
+	public JTextField getTfBuscaProduto() {
+		return tfBuscaProduto;
+	}
+
+    private JComboBox<String> cbTipoProduto;
+
 	private void initListaProdutos() {
 		listaProdutos = new JPanel();
 		listaProdutos.setBounds(0, 0, 722, 336);
-		listaProdutos.setLayout(null);
 
 		lblTituloProdutos = new JLabel("PRODUTOS");
 		lblTituloProdutos.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblTituloProdutos.setBounds(273, 11, 117, 30);
-		listaProdutos.add(lblTituloProdutos);
 
 		lblBuscaProduto = new JLabel("Pesquisar Código");
 		lblBuscaProduto.setBounds(24, 27, 150, 21);
-		listaProdutos.add(lblBuscaProduto);
 
 		tfBuscaProduto = new JTextField();
 		tfBuscaProduto.setBounds(24, 51, 238, 19);
-		listaProdutos.add(tfBuscaProduto);
 		tfBuscaProduto.setColumns(10);
 
 		btnPesquisaProduto = new JButton("Pesquisar");
 		btnPesquisaProduto.setBounds(283, 50, 100, 21);
-		listaProdutos.add(btnPesquisaProduto);
-		btnPesquisaProduto.addActionListener(e -> {
-			pesquisarProduto(tfBuscaProduto.getText());
-			tfBuscaProduto.setText("");
-		});
+		btnPesquisaProduto.setActionCommand("PESQUISAR");
+		btnPesquisaProduto.addActionListener(produtoCtrl);
 
 		btnExcluiProduto = new JButton("Excluir");
 		btnExcluiProduto.setBounds(389, 50, 100, 21);
-		listaProdutos.add(btnExcluiProduto);
-		btnExcluiProduto.addActionListener(e -> {
-			excluirProduto();
-			loadProductTable();
-		});
+		btnExcluiProduto.setActionCommand("EXCLUIR");
+		btnExcluiProduto.addActionListener(produtoCtrl);
 
 		btnNovoProduto = new JButton("Novo Produto");
 		btnNovoProduto.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnNovoProduto.setBounds(599, 50, 113, 23);
-		listaProdutos.add(btnNovoProduto);
+		btnNovoProduto.setActionCommand("NOVO_PRODUTO");
+		btnNovoProduto.addActionListener(produtoCtrl);
 		btnNovoProduto.addActionListener(e -> {
-			atualizarTfCodigoProduto();
-			listaProdutos.setVisible(false);
-			cadastroProduto.setVisible(true);
+			clearProductFields();
+			toggleProductView(false);
 		});
 
 		btnEditarProduto = new JButton("Editar");
 		btnEditarProduto.setBounds(495, 50, 100, 21);
-		listaProdutos.add(btnEditarProduto);
-		btnEditarProduto.addActionListener(e -> {
-			if (prepararCamposParaEditarProduto()) {
-				listaProdutos.setVisible(false);
-				cadastroProduto.setVisible(true);
-				btnSalvarProduto.setActionCommand("EDITAR");
-			}
-		});
+		btnEditarProduto.setActionCommand("INIT_EDITAR");
+		btnEditarProduto.addActionListener(produtoCtrl);
+		btnEditarProduto.addActionListener(e -> btnSalvarProduto.setActionCommand("EDITAR"));
 
 		btnFiltraProduto = new JButton("Filtrar");
 		btnFiltraProduto.setBounds(283, 75, 100, 21);
-		listaProdutos.add(btnFiltraProduto);
-		btnFiltraProduto.addActionListener(e -> {
-			loadProductTable();
-		});
+		btnFiltraProduto.addActionListener(e -> loadProductTable());
 
 		tableProduto = new JTable();
 		scrollPaneProdutos = new JScrollPane(tableProduto);
 		scrollPaneProdutos.setBounds(14, 109, 698, 227);
+
+		cbListaTipo = new JComboBox<>();
+		cbListaTipo.setModel(criarComboBoxTipos(true));
+		cbListaTipo.setBounds(24, 76, 238, 22);
+
+		listaProdutos.add(lblTituloProdutos);
+		listaProdutos.add(lblBuscaProduto);
+		listaProdutos.add(tfBuscaProduto);
+		listaProdutos.add(btnPesquisaProduto);
+		listaProdutos.setLayout(null);
+		listaProdutos.setLayout(null);
+		listaProdutos.add(lblTituloProdutos);
+		listaProdutos.add(lblBuscaProduto);
+		listaProdutos.add(tfBuscaProduto);
+		listaProdutos.add(btnPesquisaProduto);
+		listaProdutos.add(btnExcluiProduto);
+		listaProdutos.add(btnNovoProduto);
+		listaProdutos.add(btnEditarProduto);
+		listaProdutos.add(btnFiltraProduto);
 		listaProdutos.add(scrollPaneProdutos);
+		listaProdutos.add(cbListaTipo);
 
 		tabProdutos.add(listaProdutos);
+	}
 
-		cbListaTipo = criarComboBoxTipos(true);
-		cbListaTipo.setBounds(24, 76, 238, 22);
-		listaProdutos.add(cbListaTipo);
+	public Produto getProductForm() throws Exception {
+		int code = Integer.parseInt(tfCodigoProduto.getText());
+		String name = tfNomeProduto.getText();
+		double value = tfValorProduto.getText().isBlank() ? 0 : Double.parseDouble(tfValorProduto.getText());
+		int ammount = tfQuantidadeProduto.getText().isBlank() ? 0 : Integer.parseInt(tfQuantidadeProduto.getText());
+		String selectedType = (String) cbTipoProduto.getSelectedItem();
+		Tipo type = (Tipo) tipoCtrl.get(selectedType.split("-")[0]);
+		return new Produto(code, name, type, value, ammount);
+	}
+
+	public void setProductForm(Produto p) {
+		tfCodigoProduto.setText(String.valueOf(p.getCodigo()));
+		tfNomeProduto.setText(p.getNome());
+		cbTipoProduto.setSelectedIndex(0);
+		tfValorProduto.setText(String.valueOf(p.getValor()));
+		tfQuantidadeProduto.setText(String.valueOf(p.getQuantidadeEstoque()));
+	}
+
+	public void clearProductFields() {
+		tfCodigoProduto.setText(String.valueOf(produtoCtrl.getProximoCodigoDisponivel()));
+		tfNomeProduto.setText("");
+		cbTipoProduto.setSelectedIndex(0);
+		tfValorProduto.setText("");
+		tfQuantidadeProduto.setText("");
+	}
+
+	public JTable getTableProduto() {
+		return tableProduto;
 	}
 
 	private void initCadastroProduto() {
@@ -1046,7 +1101,6 @@ public class TelaEclipse extends JFrame {
 		tfCodigoProduto.setBounds(95, 65, 75, 24);
 		layerCadastroProduto.add(tfCodigoProduto);
 		tfCodigoProduto.setColumns(10);
-		atualizarTfCodigoProduto();
 
 		lblNomeProduto = new JLabel("Nome:");
 		lblNomeProduto.setHorizontalAlignment(SwingConstants.LEFT);
@@ -1090,9 +1144,12 @@ public class TelaEclipse extends JFrame {
 		lblTipo.setBounds(303, 126, 75, 38);
 		layerCadastroProduto.add(lblTipo);
 
-		JComboBox<String> cbTipoProduto = criarComboBoxTipos(false);
+		cbTipoProduto = new JComboBox<>();
+		cbTipoProduto.setModel(criarComboBoxTipos(false));
 		cbTipoProduto.setBounds(388, 135, 300, 22);
 		layerCadastroProduto.add(cbTipoProduto);
+
+		clearProductFields();
 
 		btnSalvarProduto = new JButton("SALVAR");
 		btnSalvarProduto.setActionCommand("SALVAR");
@@ -1100,13 +1157,10 @@ public class TelaEclipse extends JFrame {
 		btnSalvarProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnSalvarProduto.setBounds(618, 290, 87, 29);
 		layerCadastroProduto.add(btnSalvarProduto);
-		try {
-			btnSalvarProduto.addActionListener(ProdutoRegistry.getInstance());
-		} catch (Exception e) {
-			/* TODO */}
 		btnSalvarProduto.addActionListener(e -> {
 			btnSalvarProduto.setActionCommand("SALVAR");
 		});
+		btnSalvarProduto.addActionListener(produtoCtrl);
 
 		JButton btnCancelarProduto = new JButton("CANCELAR");
 		btnCancelarProduto.setForeground(Color.RED);
@@ -1114,19 +1168,10 @@ public class TelaEclipse extends JFrame {
 		btnCancelarProduto.setBounds(501, 290, 107, 29);
 		layerCadastroProduto.add(btnCancelarProduto);
 		btnCancelarProduto.addActionListener(e -> {
-			listaProdutos.setVisible(true);
-			cadastroProduto.setVisible(false);
+			toggleProductView(true);
 			btnSalvarProduto.setActionCommand("SALVAR");
-			tfNomeProduto.setText("");
-			tfQuantidadeProduto.setText("");
-			tfValorProduto.setText("");
-			atualizarTfCodigoProduto();
+			clearProductFields();
 		});
-		try {
-			ProdutoRegistry.getInstance().setView(this, tfCodigoProduto, tfNomeProduto, tfValorProduto,
-					tfQuantidadeProduto, cbTipoProduto);
-		} catch (Exception e) {
-			/* TODO */}
 
 		tabProdutos.add(cadastroProduto);
 	}

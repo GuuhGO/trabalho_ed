@@ -1,6 +1,6 @@
 package controller.csv;
 
-import controller.TipoRegistry;
+import controller.TipoController;
 import datastrucures.genericList.List;
 import model.ICsv;
 import model.Produto;
@@ -66,7 +66,7 @@ public class ProdutoCsvController extends BaseCsvController<Produto> {
         }
 
         if (result == null) {
-            result = TipoRegistry.getInstance().getUncategorizedType();
+            result = TipoController.getInstance().getUncategorizedType();
         }
 
         return result;

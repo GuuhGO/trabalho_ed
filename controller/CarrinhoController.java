@@ -91,7 +91,7 @@ public class CarrinhoController implements ICsv {
         for (int i = 0; i < size; i++) {
             DB_COMPRAS.save(ITEM_LIST.get(i));
         }
-        ProdutoRegistry.getInstance().updateData();
+        ProdutoController.getInstance().updateData();
     }
 
 

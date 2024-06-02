@@ -11,8 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public final class TipoRegistry implements ActionListener {
-    private static TipoRegistry INSTANCE = null;
+public final class TipoController implements ActionListener {
+    private static TipoController INSTANCE = null;
 
     private final TipoCsvController DB_TIPO;
     private final List<ICsv> TIPO_LIST;
@@ -25,7 +25,7 @@ public final class TipoRegistry implements ActionListener {
     private JTextArea taDescricao;
 
 
-    private TipoRegistry() throws Exception {
+    private TipoController() throws Exception {
         DB_TIPO = new TipoCsvController();
         TIPO_LIST = DB_TIPO.get();
         // garante que existe uma categoria para tipos não categorizados
@@ -41,9 +41,9 @@ public final class TipoRegistry implements ActionListener {
     }
 
 
-    public static TipoRegistry getInstance() throws Exception {
+    public static TipoController getInstance() throws Exception {
         if (INSTANCE == null) {
-            INSTANCE = new TipoRegistry();
+            INSTANCE = new TipoController();
         }
         return INSTANCE;
     }
@@ -141,7 +141,7 @@ public final class TipoRegistry implements ActionListener {
 
     public void remove(int codigoTipo) throws Exception {
         removeUpdateless(codigoTipo);
-        ProdutoRegistry.getInstance().updateData();
+        ProdutoController.getInstance().updateData();
     }
 
 
@@ -158,7 +158,7 @@ public final class TipoRegistry implements ActionListener {
     public void edit(Tipo old, Tipo _new) throws Exception {
         removeUpdateless(old.getCodigo());
         add(_new);
-        ProdutoRegistry.getInstance().updateData();
+        ProdutoController.getInstance().updateData();
     }
 
 

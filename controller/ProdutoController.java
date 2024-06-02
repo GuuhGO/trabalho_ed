@@ -5,29 +5,24 @@ import controller.hashTables.ProdutoHashTable;
 import datastrucures.genericList.List;
 import model.ICsv;
 import model.Produto;
-import model.Tipo;
 import view.TelaEclipse;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public final class ProdutoRegistry implements ActionListener {
-	private static ProdutoRegistry INSTANCE = null;
+public final class ProdutoController implements ActionListener {
+	private static ProdutoController INSTANCE = null;
 
 	private final ProdutoCsvController DB_PRODUTO;
 	private ProdutoHashTable TABLE_PRODUTO;
 	private boolean viewSetted;
-	private TelaEclipse tela;
-	private JTextField tfCodigo;
-	private JTextField tfNome;
-	private JTextField tfValor;
-	private JTextField tfQuantidade;
-	private JComboBox<String> cbTipo;
+	private TelaEclipse SCREEN;
 
-	private ProdutoRegistry() throws Exception {
-		TipoRegistry tipoRegistry = TipoRegistry.getInstance();
-		DB_PRODUTO = new ProdutoCsvController(tipoRegistry.getTipoList());
+	private ProdutoController() throws Exception {
+		TipoController tipoController = TipoController.getInstance();
+		DB_PRODUTO = new ProdutoCsvController(tipoController.getTipoList());
 		TABLE_PRODUTO = new ProdutoHashTable();
 		updateData(); // lê o arquivo popula a table
 	}
@@ -53,9 +48,9 @@ public final class ProdutoRegistry implements ActionListener {
 		}
 	}
 
-	public static ProdutoRegistry getInstance() throws Exception {
+	public static ProdutoController getInstance() throws Exception {
 		if (INSTANCE == null) {
-			INSTANCE = new ProdutoRegistry();
+			INSTANCE = new ProdutoController();
 		}
 		return INSTANCE;
 	}
@@ -122,77 +117,126 @@ public final class ProdutoRegistry implements ActionListener {
 		return TABLE_PRODUTO.getByType(codigoTipo);
 	}
 
-	public void setView(TelaEclipse tela, JTextField tfCodigo, JTextField tfNome, JTextField tfValor,
-			JTextField tfQuantidade, JComboBox<String> cbTipo) throws Exception {
+	public void setView(TelaEclipse SCREEN) throws Exception {
 		if (!viewSetted) {
-			this.tela = tela;
-			this.tfCodigo = tfCodigo;
-			this.tfNome = tfNome;
-			this.tfValor = tfValor;
-			this.tfQuantidade = tfQuantidade;
-			this.cbTipo = cbTipo;
+			this.SCREEN = SCREEN;
 			this.viewSetted = true;
 		} else {
 			throw new Exception("View já definida");
 		}
 	}
 
-	public Produto viewToProduto() throws Exception {
-		int codigo = Integer.parseInt(tfCodigo.getText());
-		String nome = tfNome.getText();
-		double valor = Double.parseDouble(tfValor.getText());
-		int quantidade = Integer.parseInt(tfQuantidade.getText());
-		String tipoSelecionado = (String) cbTipo.getSelectedItem();
-		Tipo tipo = (Tipo) TipoRegistry.getInstance().get(tipoSelecionado.split("-")[0]);
-		return new Produto(codigo, nome, tipo, valor, quantidade);
-	}
-
-	public void clearTextFields() {
-		tfCodigo.setText(String.valueOf(getProximoCodigoDisponivel()));
-		tfNome.setText("");
-		tfValor.setText("");
-		tfQuantidade.setText("");
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		String actionPerformed = evt.getActionCommand();
-		if (actionPerformed.equalsIgnoreCase("SALVAR")) {
-			try {
+		try {
+			if (actionPerformed.equalsIgnoreCase("SALVAR")) {
 				cadastrar();
-				tela.loadProductTable();
-			} catch (Exception e) {
-				/* TODO */
-				e.printStackTrace();
+				SCREEN.loadProductTable();
 			}
-		}
-		if (actionPerformed.equalsIgnoreCase("EDITAR")) {
-			try {
+			if(actionPerformed.equalsIgnoreCase("INIT_EDITAR")) {
+				initEditFields();
+			}
+			if (actionPerformed.equalsIgnoreCase("EDITAR")) {
 				editar();
-				tela.loadProductTable();
-			} catch (Exception e) {
-				/* TODO */
-				e.printStackTrace();
 			}
+			if (actionPerformed.equalsIgnoreCase("PESQUISAR")) {
+				pesquisar();
+			}
+			if (actionPerformed.equalsIgnoreCase("EXCLUIR")) {
+				excluir();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+
+	private void initEditFields() throws Exception {
+		JTable t = SCREEN.getTableProduto();
+		int index= t.getSelectedRow();
+		if(index == -1) {
+			throw new Exception("Nenhum produto selecionado");
+		}
+		TableModel m = t.getModel();
+		int code = Integer.parseInt((String) m.getValueAt(index, 1));
+		Produto p = (Produto) get(code);
+		SCREEN.setProductForm(p);
+		SCREEN.toggleProductView(false);
+	}
+
+	private void excluir() throws Exception {
+		JTable t = SCREEN.getTableProduto();
+		int index= t.getSelectedRow();
+		if(index == -1) {
+			throw new Exception("Nenhum produto selecionado");
+		}
+		TableModel m = t.getModel();
+		int code = Integer.parseInt((String) m.getValueAt(index, 1));
+		remove(code);
+		SCREEN.loadProductTable();
+	}
+
+	private void pesquisar() throws Exception{
+		String searchTerm = SCREEN.getTfBuscaProduto().getText();
+		if(searchTerm == null || searchTerm.isBlank()) {
+			SCREEN.loadProductTable();
+			return;
+		}
+
+		int code;
+		try {
+			code = Integer.parseInt(searchTerm);
+		} catch (NumberFormatException e){
+			SCREEN.getTfBuscaProduto().setText("");
+			//TODO mostrar erro
+			return;
+		}
+
+		List<ICsv> result = new List<>();
+		List<ICsv> list = SCREEN.loadProductTable();
+		if (list != null) {
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				Produto item = (Produto) list.get(i);
+				if(item.getCodigo() == code) {
+					result.addLast(item);
+					break;
+				}
+			}
+
+		}
+		JTable t = SCREEN.getTableProduto();
+		SCREEN.carregarDados(t, DB_PRODUTO.getHeader(), result);
+		t.getColumnModel().getColumn(0).setMaxWidth(26);
+		t.getColumnModel().getColumn(1).setMaxWidth(46);
+		t.getColumnModel().getColumn(2).setMaxWidth(46);
+		t.getColumnModel().getColumn(3).setMinWidth(270);
+
 	}
 
 	private void editar() throws Exception {
-		Produto _new = viewToProduto();
+		Produto _new = SCREEN.getProductForm();
 		Produto old = (Produto) get(_new.getCodigo());
-		clearTextFields();
 		edit(old, _new);
+		SCREEN.clearProductFields();
+		SCREEN.loadProductTable();
 	}
 
 	private void cadastrar() throws Exception {
-		Produto p = viewToProduto();
+		Produto p = SCREEN.getProductForm();
 		try {
 			get(p.getCodigo());
 		} catch (Exception e) {
 			if (e.getMessage().equals("Produto não encontrado")) {
 				add(p);
 			}
+			else {
+				throw new Exception(e);
+			}
 		}
-		clearTextFields();
+		SCREEN.clearProductFields();
+		SCREEN.loadProductTable();
 	}
 }
