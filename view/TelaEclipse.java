@@ -1,8 +1,6 @@
 package view;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
@@ -510,7 +508,7 @@ public class TelaEclipse extends JFrame {
 		tfEndCep.setBounds(120, 243, 190, 24);
 		cadastroClientes.add(tfEndCep);
 
-		// Botão para Salvar novo Cliente
+	// Botão para Salvar novo Cliente
 		btnSalvarCliente = new JButton("SALVAR");
 		getBtnSalvarCliente().setFont(new Font("Tahoma", Font.BOLD, 12));
 		getBtnSalvarCliente().setForeground(new Color(0, 128, 0));
@@ -548,7 +546,6 @@ public class TelaEclipse extends JFrame {
 
 		layerCadastroTipo = new JLayeredPane();
 		layerCadastroTipo.setBounds(0, 0, 621, 278);
-		cadastroTipo.add(layerCadastroTipo);
 
 		cadastroTipo.setVisible(false);
 
@@ -556,79 +553,75 @@ public class TelaEclipse extends JFrame {
 		lblCadastrarTipo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCadastrarTipo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblCadastrarTipo.setBounds(213, 3, 194, 38);
-		layerCadastroTipo.add(lblCadastrarTipo);
 
 		lblCodigo = new JLabel("Código:");
 		lblCodigo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblCodigo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCodigo.setBounds(10, 58, 75, 38);
-		layerCadastroTipo.add(lblCodigo);
 
 		tfCodigoTipo = new JTextField();
 		tfCodigoTipo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		tfCodigoTipo.setEditable(false);
 		tfCodigoTipo.setEnabled(false);
 		tfCodigoTipo.setBounds(95, 65, 61, 24);
-		layerCadastroTipo.add(tfCodigoTipo);
 		tfCodigoTipo.setColumns(10);
 
 		lblNomeTipo = new JLabel("Nome:");
 		lblNomeTipo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNomeTipo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNomeTipo.setBounds(207, 58, 75, 38);
-		layerCadastroTipo.add(lblNomeTipo);
 
 		tfNomeTipo = new JTextField();
 		tfNomeTipo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		tfNomeTipo.setColumns(10);
 		tfNomeTipo.setBounds(292, 65, 319, 24);
-		layerCadastroTipo.add(tfNomeTipo);
 
 		lblDescricao = new JLabel("Descrição:");
 		lblDescricao.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDescricao.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblDescricao.setBounds(10, 107, 101, 38);
-		layerCadastroTipo.add(lblDescricao);
 
 		taDescricaoTipo = new JTextArea();
 		taDescricaoTipo.setLineWrap(true);
 		taDescricaoTipo.setBorder(new LineBorder(new Color(0, 0, 0)));
 		taDescricaoTipo.setBounds(10, 156, 601, 111);
-		layerCadastroTipo.add(taDescricaoTipo);
 
 		btnSalvarTipoCadastro = new JButton("SALVAR");
 		btnSalvarTipoCadastro.setForeground(new Color(0, 128, 0));
 		btnSalvarTipoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnSalvarTipoCadastro.setBounds(511, 288, 87, 29);
-		cadastroTipo.add(btnSalvarTipoCadastro);
-		try {
-			TipoController registry = TipoController.getInstance();
-			btnSalvarTipoCadastro.addActionListener(registry);
-			registry.setView(this, tfCodigoTipo, tfNomeTipo, taDescricaoTipo);
-			tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-		} catch (Exception e) {
-			/* TODO */ }
+		btnSalvarTipoCadastro.addActionListener(tipoCtrl);
 		btnSalvarTipoCadastro.addActionListener(e -> {
 			btnSalvarTipoCadastro.setActionCommand("SALVAR");
+			cbListaTipo.setModel(criarComboBoxTipos(true));
+			cbTipoProduto.setModel(criarComboBoxTipos(false));
 		});
 
 		btnCancelarTipoCadastro = new JButton("CANCELAR");
 		btnCancelarTipoCadastro.setForeground(Color.RED);
 		btnCancelarTipoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnCancelarTipoCadastro.setBounds(394, 288, 107, 29);
-		cadastroTipo.add(btnCancelarTipoCadastro);
 		btnCancelarTipoCadastro.addActionListener(e -> {
-			listaTipos.setVisible(true);
-			cadastroTipo.setVisible(false);
 			btnSalvarTipoCadastro.setActionCommand("SALVAR");
-			taDescricaoTipo.setText("");
-			tfNomeTipo.setText("");
-			try {
-				TipoController registry = TipoController.getInstance();
-				tfCodigoTipo.setText(String.valueOf(registry.getProximoCodigoDisponivel()));
-			} catch (Exception ex) {
-				/* TODO */}
+			clearTypeFields();
+			toggleTypeView(true);
 		});
+
+
+		layerCadastroTipo.add(lblCadastrarTipo);
+		layerCadastroTipo.add(lblCodigo);
+		layerCadastroTipo.add(tfCodigoTipo);
+		layerCadastroTipo.add(lblNomeTipo);
+		layerCadastroTipo.add(tfNomeTipo);
+		layerCadastroTipo.add(lblDescricao);
+		layerCadastroTipo.add(taDescricaoTipo);
+
+		clearTypeFields();
+
+		cadastroTipo.add(layerCadastroTipo);
+
+		cadastroTipo.add(btnSalvarTipoCadastro);
+		cadastroTipo.add(btnCancelarTipoCadastro);
 
 		tabTipos.add(cadastroTipo);
 	}
@@ -701,6 +694,42 @@ public class TelaEclipse extends JFrame {
 		listaClientes.add(btnEditarCliente);
 	}
 
+
+
+
+	public void clearTypeFields() {
+		tfCodigoTipo.setText(String.valueOf(tipoCtrl.getProximoCodigoDisponivel()));
+		tfNomeTipo.setText("");
+		taDescricaoTipo.setText("");
+	}
+
+	public void toggleTypeView(boolean listView) {
+		listaTipos.setVisible(listView);
+		cadastroTipo.setVisible(!listView);
+	}
+
+	public JTable getTableTipos() {
+		return tableTipos;
+	}
+
+	public JTextField getTfBuscaTipo() {
+		return tfBuscaTipo;
+	}
+
+	public Tipo getTypeForm() throws Exception {
+		int code = Integer.parseInt(tfCodigoTipo.getText());
+		String name = tfNomeTipo.getText();
+		String description = taDescricaoTipo.getText();
+		return new Tipo(code, name, description);
+	}
+
+	public void setTypeForm(Tipo t) {
+		tfCodigoTipo.setText(String.valueOf(t.getCodigo()));
+		tfNomeTipo.setText(t.getNome());
+		taDescricaoTipo.setText(t.getDescricao());
+	}
+
+
 	private void initListaTipos() {
 		listaTipos = new JPanel();
 		listaTipos.setBounds(0, 0, 621, 336);
@@ -709,66 +738,59 @@ public class TelaEclipse extends JFrame {
 		lblTituloTipos = new JLabel("TIPOS");
 		lblTituloTipos.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblTituloTipos.setBounds(273, 11, 60, 30);
-		listaTipos.add(lblTituloTipos);
 
 		lblBuscaTipo = new JLabel("Pesquisar Código");
 		lblBuscaTipo.setBounds(24, 27, 150, 21);
-		listaTipos.add(lblBuscaTipo);
 
 		tfBuscaTipo = new JTextField();
 		tfBuscaTipo.setBounds(24, 51, 150, 19);
-		listaTipos.add(tfBuscaTipo);
 		tfBuscaTipo.setColumns(10);
 
 		btnPesquisaTipo = new JButton("Pesquisar");
 		btnPesquisaTipo.setBounds(184, 50, 100, 21);
-		listaTipos.add(btnPesquisaTipo);
-		btnPesquisaTipo.addActionListener(e -> {
-			pesquisarTipo(tfBuscaTipo.getText());
-			tfBuscaTipo.setText("");
-		});
+		btnPesquisaTipo.setActionCommand("PESQUISAR");
+		btnPesquisaTipo.addActionListener(tipoCtrl);
 
 		btnExcluiTipo = new JButton("Excluir");
 		btnExcluiTipo.setBounds(290, 50, 100, 21);
-		listaTipos.add(btnExcluiTipo);
+		btnExcluiTipo.setActionCommand("EXCLUIR");
+		btnExcluiTipo.addActionListener(tipoCtrl);
 		btnExcluiTipo.addActionListener(e -> {
-			excluirTipo();
-			loadTypeTable();
-			loadProductTable();
-			atualizarTfCodigoTipo();
 			cbListaTipo.setModel(criarComboBoxTipos(true));
 			cbTipoProduto.setModel(criarComboBoxTipos(false));
 		});
 
 		btnNovoTipo = new JButton("Novo Tipo");
 		btnNovoTipo.setBounds(487, 50, 89, 23);
-		listaTipos.add(btnNovoTipo);
 		btnNovoTipo.addActionListener(e -> {
-			cadastroTipo.setVisible(true);
-			listaTipos.setVisible(false);
-			cbListaTipo.setModel(criarComboBoxTipos(true));
-			cbTipoProduto.setModel(criarComboBoxTipos(false));
+			clearTypeFields();
+			toggleTypeView(false);
+		});
+
+		JButton btnEditarTipo = new JButton("Editar");
+		btnEditarTipo.setBounds(290, 82, 100, 21);
+		btnEditarTipo.setActionCommand("INIT_EDITAR");
+		btnEditarTipo.addActionListener(tipoCtrl);
+		btnEditarTipo.addActionListener(e -> {
+				btnSalvarTipoCadastro.setActionCommand("EDITAR");
+				cbListaTipo.setModel(criarComboBoxTipos(true));
+				cbTipoProduto.setModel(criarComboBoxTipos(false));
 		});
 
 		tableTipos = new JTable();
 		scrollPaneTipos = new JScrollPane(tableTipos);
 		scrollPaneTipos.setBounds(14, 109, 592, 227);
+
+		listaTipos.add(lblTituloTipos);
+		listaTipos.add(lblBuscaTipo);
+		listaTipos.add(tfBuscaTipo);
+		listaTipos.add(btnPesquisaTipo);
+		listaTipos.add(btnExcluiTipo);
+		listaTipos.add(btnNovoTipo);
+		listaTipos.add(btnEditarTipo);
 		listaTipos.add(scrollPaneTipos);
 
 		tabTipos.add(listaTipos);
-
-		JButton btnEditarTipo = new JButton("Editar");
-		btnEditarTipo.setBounds(290, 82, 100, 21);
-		listaTipos.add(btnEditarTipo);
-		btnEditarTipo.addActionListener(e -> {
-			if (prepararCamposParaEditarTipo()) {
-				btnSalvarTipoCadastro.setActionCommand("EDITAR");
-				listaTipos.setVisible(false);
-				cadastroTipo.setVisible(true);
-				cbListaTipo.setModel(criarComboBoxTipos(true));
-				cbTipoProduto.setModel(criarComboBoxTipos(false));
-			}
-		});
 	}
 
 	private boolean prepararCamposParaEditarTipo() {
@@ -952,6 +974,7 @@ public class TelaEclipse extends JFrame {
     {
         try {
             tipoCtrl = TipoController.getInstance();
+			tipoCtrl.setView(this);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

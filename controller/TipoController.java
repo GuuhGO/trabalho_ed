@@ -7,6 +7,7 @@ import model.Tipo;
 import view.TelaEclipse;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,25 +20,19 @@ public final class TipoController implements ActionListener {
     private final Tipo TIPO_SEM_CATEGORIA; // Útil para tornar a leitura de produtos mais rápida
 
     private boolean viewSetted = false;
-    private TelaEclipse tela;
-    private JTextField tfCodigo;
-    private JTextField tfNome;
-    private JTextArea taDescricao;
+    private TelaEclipse SCREEN;
 
 
     private TipoController() throws Exception {
         DB_TIPO = new TipoCsvController();
         TIPO_LIST = DB_TIPO.get();
         // garante que existe uma categoria para tipos não categorizados
-        Tipo temp = (Tipo) this.get(0);
-        if (temp != null) {
-            TIPO_SEM_CATEGORIA = temp;
-        }
-        else {
-            temp = new Tipo(0, "Produtos não categorizados", "Bens sem alguma categorização específicada");
-            TIPO_SEM_CATEGORIA = temp;
-            this.add(TIPO_SEM_CATEGORIA);
-        }
+        Tipo temp = new Tipo(0, "Produtos não categorizados", "Bens sem alguma categorização específicada");
+        try {
+            temp = (Tipo) this.get(0);
+        } catch (Exception e) {/*TODO talvez precise de algo aqui*/}
+        TIPO_SEM_CATEGORIA = temp;
+        this.add(TIPO_SEM_CATEGORIA);
     }
 
 
@@ -66,17 +61,14 @@ public final class TipoController implements ActionListener {
 
     public ICsv get(String codigoTipo) throws Exception {
         int size = TIPO_LIST.size();
-        Tipo target = null;
         int targetCode = Integer.parseInt(codigoTipo);
-
         for (int i = 0; i < size; i++) {
             var tipo = (Tipo) TIPO_LIST.get(i);
             if (tipo.getCodigo() == targetCode) {
-                target = tipo;
-                break;
+                return tipo;
             }
         }
-        return target;
+        throw new Exception("Tipo não encontrado");
     }
 
     public ICsv get(int codigoTipo) throws Exception {
@@ -102,13 +94,15 @@ public final class TipoController implements ActionListener {
      */
     public int getProximoCodigoDisponivel() {
         int cont = 0;
-        while(true) {
+        while (true) {
             try {
-                if(get(cont) == null) {
+                get(cont);
+                cont++;
+            } catch (Exception e) {
+                if (e.getMessage().equals("Tipo não encontrado")) {
                     return cont;
                 }
-                cont++;
-            } catch (Exception e) {/*TODO*/}
+            }
         }
     }
 
@@ -162,75 +156,129 @@ public final class TipoController implements ActionListener {
     }
 
 
-    public void setView(TelaEclipse tela, JTextField tfCodigo, JTextField tfNome, JTextArea taDescricao) throws Exception {
+    public void setView(TelaEclipse SCREEN) throws Exception {
         if (!viewSetted) {
-            this.tela = tela;
-            this.tfCodigo = tfCodigo;
-            this.tfNome = tfNome;
-            this.taDescricao = taDescricao;
+            this.SCREEN = SCREEN;
             this.viewSetted = true;
+            return;
         }
-        else {
-            throw new Exception("View já definida");
-        }
-    }
-
-
-    private Tipo viewToTipo() {
-        int codigo = Integer.parseInt((tfCodigo.getText()));
-        String nome = tfNome.getText();
-        String descricao = taDescricao.getText();
-
-        return new Tipo(codigo, nome, descricao);
-    }
-
-
-    private void clearTextFields() {
-        taDescricao.setText("");
-        tfNome.setText("");
-        tfCodigo.setText(String.valueOf(this.getProximoCodigoDisponivel()));
+        throw new Exception("View já definida");
     }
 
 
     @Override
     public void actionPerformed(ActionEvent evt) {
         String actionPerformed = evt.getActionCommand();
-        if (actionPerformed.equalsIgnoreCase("SALVAR")) {
-            try {
+        try {
+            if (actionPerformed.equalsIgnoreCase("SALVAR")) {
                 cadastrar();
-                tela.loadTypeTable();
-            } catch (Exception e) {
-                /*TODO*/
-                e.printStackTrace();
             }
-        }
-        if (actionPerformed.equalsIgnoreCase("EDITAR")) {
-            try {
+            if (actionPerformed.equalsIgnoreCase("INIT_EDITAR")) {
+                initEditFields();
+            }
+            if (actionPerformed.equalsIgnoreCase("EDITAR")) {
                 editar();
-                tela.loadTypeTable();
-                tela.loadProductTable();
-            } catch (Exception e) {
-                /*TODO*/
-                e.printStackTrace();
+            }
+            if (actionPerformed.equalsIgnoreCase("PESQUISAR")) {
+                pesquisar();
+            }
+            if (actionPerformed.equalsIgnoreCase("EXCLUIR")) {
+                excluir();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void excluir() throws Exception {
+        JTable t = SCREEN.getTableTipos();
+        int index = t.getSelectedRow();
+        if (index == -1) {
+            throw new Exception("Nenhum tipo selecionado");
+        }
+        TableModel m = t.getModel();
+        int code = Integer.parseInt((String) m.getValueAt(index, 1));
+        remove(code);
+        SCREEN.loadTypeTable();
+        SCREEN.loadProductTable();
+    }
+
+
+    private void pesquisar() throws Exception {
+        String searchTerm = SCREEN.getTfBuscaProduto().getText();
+        SCREEN.getTfBuscaTipo().setText("");
+        if (searchTerm == null || searchTerm.isBlank()) {
+            SCREEN.loadProductTable();
+            return;
+        }
+
+        int code;
+        try {
+            code = Integer.parseInt(searchTerm);
+        } catch (NumberFormatException e) {
+            //TODO mostrar erro
+            return;
+        }
+
+        List<ICsv> result = new List<>();
+        List<ICsv> list = DB_TIPO.get();
+
+        if (list != null) {
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                Tipo item = (Tipo) list.get(i);
+                if (item.getCodigo() == code) {
+                    result.addLast(item);
+                    break;
+                }
             }
         }
+
+        JTable t = SCREEN.getTableTipos();
+        SCREEN.carregarDados(t, DB_TIPO.getHeader(), result);
+        t.getColumnModel().getColumn(0).setMaxWidth(26);
+        t.getColumnModel().getColumn(1).setMaxWidth(46);
     }
 
 
-    private void editar() throws Exception{
-        Tipo _new = viewToTipo();
-        Tipo old = (Tipo) get(_new.getCodigo());
-        clearTextFields();
-        edit(old, _new);
-    }
-
-
-    private void cadastrar() throws Exception{
-        Tipo tipo = viewToTipo();
-        if(get(tipo.getCodigo()) != null) {
-            throw new Exception("Já existe um tipo com esse código");
+    private void initEditFields() throws Exception {
+        JTable table = SCREEN.getTableTipos();
+        int index = table.getSelectedRow();
+        if (index == -1) {
+            throw new Exception("Nenhum produto selecionado");
         }
-        add(tipo);
-        clearTextFields();
+        TableModel m = table.getModel();
+        int code = Integer.parseInt((String) m.getValueAt(index, 1));
+        Tipo t = (Tipo) get(code);
+        SCREEN.setTypeForm(t);
+        SCREEN.toggleTypeView(false);
+    }
+
+
+    private void editar() throws Exception {
+        Tipo _new = SCREEN.getTypeForm();
+        Tipo old = (Tipo) get(_new.getCodigo());
+        edit(old, _new);
+        SCREEN.clearTypeFields();
+        SCREEN.loadTypeTable();
+        SCREEN.loadProductTable();
+    }
+
+
+    private void cadastrar() throws Exception {
+        Tipo t = SCREEN.getTypeForm();
+        try {
+            get(t.getCodigo());
+        } catch (Exception e) {
+            if (e.getMessage().equals("Tipo não encontrado")) {
+                add(t);
+            }
+            else {
+                throw new Exception(e);
+            }
+        }
+        SCREEN.clearTypeFields();
+        SCREEN.loadTypeTable();
     }
 }

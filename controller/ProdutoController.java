@@ -133,7 +133,6 @@ public final class ProdutoController implements ActionListener {
 		try {
 			if (actionPerformed.equalsIgnoreCase("SALVAR")) {
 				cadastrar();
-				SCREEN.loadProductTable();
 			}
 			if(actionPerformed.equalsIgnoreCase("INIT_EDITAR")) {
 				initEditFields();
@@ -180,6 +179,7 @@ public final class ProdutoController implements ActionListener {
 
 	private void pesquisar() throws Exception{
 		String searchTerm = SCREEN.getTfBuscaProduto().getText();
+		SCREEN.getTfBuscaProduto().setText("");
 		if(searchTerm == null || searchTerm.isBlank()) {
 			SCREEN.loadProductTable();
 			return;
@@ -189,7 +189,6 @@ public final class ProdutoController implements ActionListener {
 		try {
 			code = Integer.parseInt(searchTerm);
 		} catch (NumberFormatException e){
-			SCREEN.getTfBuscaProduto().setText("");
 			//TODO mostrar erro
 			return;
 		}
