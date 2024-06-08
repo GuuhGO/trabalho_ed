@@ -1,6 +1,5 @@
 cpf_cnpj;tipo;nome_fantasia;logradouro;numero;complemento;cep;telefone;email
 67302814562;Jurídico;Alves - EI;Passarela Correia, 317;260;A;64108-809;(031) 4712 7850;rochafrancisco@example.org
-84750162949;Físico;Peixoto;Jardim Alice da Rocha;441;o;23495863;+55 (051) 6091-8110;fernanda69@example.net
 65231497061;Físico;Garcia;Residencial Josué Camargo, 26;291;i;66114138;+55 (041) 8513-5624;sara03@example.org
 0987765712;Físico;Rofrigo;Humanis Tricotis;0;casa 78;7894512;00000000000;null
 2020;Jurídico;Consultoria LTDA;Avenida Peixe;2045;Bloco C;0909090;935;email@consultoria.com.br

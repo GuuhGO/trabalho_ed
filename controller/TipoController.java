@@ -30,9 +30,10 @@ public final class TipoController implements ActionListener {
         Tipo temp = new Tipo(0, "Produtos não categorizados", "Bens sem alguma categorização específicada");
         try {
             temp = (Tipo) this.get(0);
-        } catch (Exception e) {/*TODO talvez precise de algo aqui*/}
+        } catch (Exception e) {
+            this.add(temp);
+        }
         TIPO_SEM_CATEGORIA = temp;
-        this.add(TIPO_SEM_CATEGORIA);
     }
 
 
@@ -206,10 +207,10 @@ public final class TipoController implements ActionListener {
 
 
     private void pesquisar() throws Exception {
-        String searchTerm = SCREEN.getTfBuscaProduto().getText();
+        String searchTerm = SCREEN.getTfBuscaTipo().getText();
         SCREEN.getTfBuscaTipo().setText("");
         if (searchTerm == null || searchTerm.isBlank()) {
-            SCREEN.loadProductTable();
+            SCREEN.loadTypeTable();
             return;
         }
 
