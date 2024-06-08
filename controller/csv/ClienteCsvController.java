@@ -8,7 +8,6 @@ import model.cliente.Endereco;
 import view.TelaEclipse;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import datastrucures.genericList.List;
 import java.awt.event.ActionEvent;
@@ -105,9 +104,7 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 			String cep = (String) customersTable.getValueAt(indSelectedRow, 7);
 			String telefone = (String) customersTable.getValueAt(indSelectedRow, 8);
 			String email = (String) customersTable.getValueAt(indSelectedRow, 9);
-
-			String csvFields = String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s", cpf, tipo, nome_fantasia, logradouro,
-					strNumero, complemento, cep, telefone, email);
+			String csvFields = String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s", cpf, tipo, nome_fantasia, logradouro, strNumero, complemento, cep, telefone, email);
 
 			try {
 				BaseCliente tempCli = objectBuilder(csvFields);
@@ -150,7 +147,6 @@ public class ClienteCsvController extends BaseCsvController<BaseCliente> impleme
 			screen.printError(screen.getLblErrorCadastro(), ioe);
 		}
 		return;
-
 	}
 
 	private List<ICsv> pesquisarClientes() {
