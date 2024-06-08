@@ -5,8 +5,10 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -23,6 +25,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import controller.CarrinhoController;
 import controller.ComprasController;
 import controller.ProdutoController;
 import controller.TipoController;
@@ -58,98 +61,110 @@ public class TelaEclipse extends JFrame {
 		});
 	};
 
-	private boolean isEditingCustomer = false;
+	private JButton btnCancelar;
 	private JButton btnCancelarCadCliente;
 	private JButton btnCancelarTipoCadastro;
+	private JButton btnCancelCart;
 	private JButton btnEditarCliente;
+	private JButton btnEditarProduto;
+	private JButton btnEditarTipo;
+	private JButton btnExcluiProduto;
+	private JButton btnExcluir;
 	private JButton btnExcluirCliente;
 	private JButton btnExcluiTipo;
+	private JButton btnFiltraProduto;
 	private JButton btnNovoCliente;
+	private JButton btnNovoProduto;
 	private JButton btnNovoTipo;
+	private JButton btnOpenCart;
+	private JButton btnPesquisaProduto;
+	private JButton btnPesquisar;
 	private JButton btnPesquisarCliente;
 	private JButton btnPesquisaTipo;
+	private JButton btnSalvar;
 	private JButton btnSalvarCliente;
+	private JButton btnSalvarProduto;
 	private JButton btnSalvarTipoCadastro;
+	private JButton btnSearchProdCart;
 	private JPanel cadastroClientes;
+	private JPanel cadastroProduto;
 	private JPanel cadastroTipo;
+	private CarrinhoController cartCtrl = new CarrinhoController(this);
 	private JComboBox<String> cbClienteTipo;
+	private JComboBox<String> cbListaTipo;
 	private JPanel contentPane;
 	private ClienteCsvController customerCtrl = new ClienteCsvController(this);
+	private JLayeredPane layerCadastroProduto;
 	private JLayeredPane layerCadastroTipo;
+	private JLabel lblBuscaProduto;
 	private JLabel lblBuscaTipo;
 	private JLabel lblCadastrarCliente;
+	private JLabel lblCadastrarProduto;
 	private JLabel lblCadastrarTipo;
+	private JLabel lblCartCustomer;
 	private JLabel lblClienteCpf_Cnpj;
 	private JLabel lblClienteEmail;
 	private JLabel lblClienteNome;
 	private JLabel lblClienteTelefone;
 	private JLabel lblClienteTipo;
 	private JLabel lblCodigo;
+	private JLabel lblCodigoProduto;
+	private JLabel lblCpfCarrinho;
 	private JLabel lblDescricao;
 	private JLabel lblEndCep;
 	private JLabel lblEnderecoComplemento;
 	private JLabel lblEnderecoLogradouro;
 	private JLabel lblEnderecoNumero;
 	private JLabel lblErrorCadastroCliente;
+	private JLabel lblErrorCart;
 	private JLabel lblErrorListaCliente;
+	private JLabel lblNomeProduto;
 	private JLabel lblNomeTipo;
 	private JLabel lblSearch;
+	private JLabel lblTituloCarrinho;
 	private JLabel lblTituloClientes;
+	private JLabel lblTituloProdutos;
 	private JLabel lblTituloTipos;
 	private JPanel listaClientes;
+	private JPanel listaProdutos;
 	private JPanel listaTipos;
+	private JPanel pnCarrinho;
 	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneProdutos;
 	private JScrollPane scrollPaneTipos;
+	private JScrollPane spCartItems;
+	private JScrollPane spProdTable;
 	private JTabbedPane tabbedPane;
+	private JPanel tabCarrinho = new JPanel();
 	private JPanel tabCliente = new JPanel();
 	private JTable tableCliente;
+	private JTable tableProduto;
 	private JTable tableTipos;
+	private JPanel tabProdutos = new JPanel();
 	private JPanel tabTipos = new JPanel();
 	private JTextArea taDescricaoTipo;
+	private JTable tbCartItems;
+	private JTable tbProdCart;
+	private JTextField tfBusca;
+	private JTextField tfBuscaProduto;
 	private JTextField tfBuscaTipo;
 	private JTextField tfClienteCpf_Cnpj;
 	private JTextField tfClienteEmail;
 	private JTextField tfClienteNome;
 	private JTextField tfClienteTelefone;
+	private JTextField tfCodigoProduto;
 	private JTextField tfCodigoTipo;
+	private JTextField tfCpfCarrinho;
 	private JTextField tfEndCep;
 	private JTextField tfEndComplemento;
 	private JTextField tfEndLogradouro;
 	private JTextField tfEndNumero;
-	private JTextField tfNomeTipo;
-	private JTextField tfSearch;
-
-	// NOVO
-	private ClienteCsvController clienteController;
-	private JButton btnExcluir;
-	private JButton btnPesquisar;
-	private JPanel listaProdutos;
-	private JTable tableProduto;
-	private JTextField tfBusca;
-	private JTextField tfBuscaProduto;
-	private JButton btnSalvar;
-	private JButton btnCancelar;
-	private JButton btnEditarTipo;
-	private final JPanel tabProdutos = new JPanel();
-	private JLabel lblTituloProdutos;
-	private JLabel lblBuscaProduto;
-	private JButton btnPesquisaProduto;
-	private JButton btnExcluiProduto;
-	private JButton btnNovoProduto;
-	private JButton btnEditarProduto;
-	private JScrollPane scrollPaneProdutos;
-	private JComboBox<String> cbListaTipo;
-	private JButton btnFiltraProduto;
-	private JPanel cadastroProduto;
-	private JLayeredPane layerCadastroProduto;
-	private JLabel lblCadastrarProduto;
-	private JLabel lblCodigoProduto;
-	private JTextField tfCodigoProduto;
-	private JLabel lblNomeProduto;
 	private JTextField tfNomeProduto;
-	private JTextField tfValorProduto;
+	private JTextField tfNomeTipo;
 	private JTextField tfQuantidadeProduto;
-	private JButton btnSalvarProduto;
+	private JTextField tfSearch;
+	private JTextField tfSearchProdCart;
+	private JTextField tfValorProduto;
 
 	public TelaEclipse() {
 
@@ -168,6 +183,7 @@ public class TelaEclipse extends JFrame {
         tabbedPane.addTab("Clientes", null, tabCliente, "Cliente");
         tabbedPane.addTab("Tipos", null, tabTipos, "Tipo");
         tabbedPane.addTab("Produtos", null, tabProdutos, "Produto");
+		tabbedPane.addTab("Carrinho", null, tabCarrinho, "Carrinho");
 		tabbedPane.addTab("Vendas", null, tabCompras, "Vendas");
         tabbedPane.addChangeListener(this::updateResolution);
         contentPane.add(tabbedPane);
@@ -175,6 +191,7 @@ public class TelaEclipse extends JFrame {
         tabCliente.setLayout(null);
         tabTipos.setLayout(null);
         tabProdutos.setLayout(null);
+		tabCarrinho.setLayout(null);
 		tabCompras.setLayout(null);
 
         initListaClientes();
@@ -183,6 +200,7 @@ public class TelaEclipse extends JFrame {
         initCadastroTipos();
         initListaProdutos();
         initCadastroProduto();
+		initCarrinho();
 		initListaVendas();
 
         
@@ -271,9 +289,6 @@ public class TelaEclipse extends JFrame {
 		throw new IllegalArgumentException("Tipo do cliente deve ser \"Físico\" ou \"Jurídico\"");
 	}
 
-	public JTextField getTfClienteCpf_Cnpj() {
-		return tfClienteCpf_Cnpj;
-	}
 
 	public JTextField getCustomerSearch() {
 		return tfSearch;
@@ -283,12 +298,32 @@ public class TelaEclipse extends JFrame {
 		return tableCliente;
 	}
 
+	public JLabel getLblCartCustomer() {
+		return lblCartCustomer;
+	}
+
 	public JLabel getLblErrorCadastro() {
 		return lblErrorCadastroCliente;
 	}
 
+	public JLabel getLblErrorCart() {
+		return lblErrorCart;
+	}
+
 	public JLabel getLblErrorListaCliente() {
 		return lblErrorListaCliente;
+	}
+
+	public JTextField getTfClienteCpf_Cnpj() {
+		return tfClienteCpf_Cnpj;
+	}
+
+	public JTextField getTfCpfCarrinho() {
+		return tfCpfCarrinho;
+	}
+
+	public JTextField getTfSearchProdCart() {
+		return tfSearchProdCart;
 	}
 
 	public void loadCustomersTable() {
@@ -358,6 +393,12 @@ public class TelaEclipse extends JFrame {
 
 		lblErrorCadastroCliente.setText("");
 
+	}
+
+	public void toggleTextField(JTextField targetObject, boolean enabled) {
+		Color bg = enabled ? Color.WHITE : Color.LIGHT_GRAY;
+		tfSearchProdCart.setEnabled(enabled);
+		tfSearchProdCart.setBackground(bg);
 	}
 
 	private void excluirTipo() {
@@ -625,6 +666,77 @@ public class TelaEclipse extends JFrame {
 
 		tabTipos.add(cadastroTipo);
 	}
+	private void initCarrinho() {
+		pnCarrinho = new JPanel();
+		pnCarrinho.setLayout(null);
+		pnCarrinho.setBounds(0, 0, 722, 336);
+		tabCarrinho.add(pnCarrinho);
+
+		lblTituloCarrinho = new JLabel("CARRINHO");
+		lblTituloCarrinho.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTituloCarrinho.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblTituloCarrinho.setBounds(254, 10, 178, 30);
+		pnCarrinho.add(lblTituloCarrinho);
+
+		lblCpfCarrinho = new JLabel("Informar CPF");
+		lblCpfCarrinho.setBounds(10, 19, 150, 21);
+		pnCarrinho.add(lblCpfCarrinho);
+
+		tfCpfCarrinho = new JTextField();
+		tfCpfCarrinho.setToolTipText("Informar CPF");
+		tfCpfCarrinho.setColumns(10);
+		tfCpfCarrinho.setBounds(10, 49, 118, 19);
+		pnCarrinho.add(getTfCpfCarrinho());
+
+		btnOpenCart = new JButton("Abrir Carrinho");
+		btnOpenCart.setMargin(new Insets(2, 2, 2, 2));
+		btnOpenCart.setBounds(10, 79, 90, 21);
+		btnOpenCart.addActionListener(cartCtrl);
+		pnCarrinho.add(btnOpenCart);
+
+		btnCancelCart = new JButton("Cancelar");
+		btnCancelCart.setMargin(new Insets(2, 2, 2, 2));
+		btnCancelCart.setBounds(110, 79, 70, 21);
+		btnCancelCart.addActionListener(cartCtrl);
+		pnCarrinho.add(btnCancelCart);
+
+		tfSearchProdCart = new JTextField();
+		toggleTextField(tfSearchProdCart, false);
+		tfSearchProdCart.setToolTipText("Pesquisar produto");
+		tfSearchProdCart.setColumns(10);
+		tfSearchProdCart.setBounds(10, 129, 150, 21);
+		pnCarrinho.add(tfSearchProdCart);
+
+		lblCartCustomer = new JLabel("");
+		lblCartCustomer.setBounds(220, 48, 210, 21);
+		pnCarrinho.add(lblCartCustomer);
+
+		spProdTable = new JScrollPane();
+		spProdTable.setBounds(10, 160, 438, 166);
+		pnCarrinho.add(spProdTable);
+
+		tbProdCart = new JTable();
+		spProdTable.setViewportView(tbProdCart);
+
+		ImageIcon searchIcon = new ImageIcon(".\\src\\assets\\lupa16px.png");
+		btnSearchProdCart = new JButton(searchIcon);
+		btnSearchProdCart.setBounds(170, 129, 21, 21);
+		btnSearchProdCart.setMargin(new Insets(2, 2, 2, 2));
+		pnCarrinho.add(btnSearchProdCart);
+
+		spCartItems = new JScrollPane();
+		spCartItems.setBounds(467, 50, 245, 276);
+		pnCarrinho.add(spCartItems);
+
+		tbCartItems = new JTable();
+		spCartItems.setViewportView(tbCartItems);
+
+		lblErrorCart = new JLabel("");
+		lblErrorCart.setForeground(new Color(255, 0, 0));
+		lblErrorCart.setBounds(10, 106, 150, 13);
+		pnCarrinho.add(lblErrorCart);
+
+	}
 
 	private void initListaClientes() {
 		// Tela de Lista de Clientes
@@ -834,10 +946,6 @@ public class TelaEclipse extends JFrame {
 			setBounds(x, y, 740, 400);
 		if (selectedIndex == 1)
 			setBounds(x, y, 640, 400);
-	}
-
-	public boolean isEditingCustomer() {
-		return isEditingCustomer;
 	}
 
 	// a partir daqui
