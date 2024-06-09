@@ -22,12 +22,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.IOException;
-import java.io.Serial;
 import java.util.Objects;
 
 public class TelaEclipse extends JFrame {
 
-	@Serial
 	private static final long serialVersionUID = 1L;
 	private final CarrinhoController cartCtrl = new CarrinhoController(this);
 	private final ClienteCsvController customerCtrl = new ClienteCsvController(this);
