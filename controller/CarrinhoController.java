@@ -112,6 +112,8 @@ public class CarrinhoController implements ICsv, ActionListener {
 			e1.printStackTrace();
 			lblErrorCart.setForeground(Color.RED);
 			updateLblText(lblCartNum, "");
+			updateLblText(lblCartCustomerID, "");
+			updateLblText(lblCartCustomerName, "");
 			screen.printError(lblErrorCart, e1);
 			screen.toggleTextField(tfSearchProdCart, false);
 		}
@@ -136,7 +138,6 @@ public class CarrinhoController implements ICsv, ActionListener {
 		valorTotal = 0;
 		try {
 			int size = ITEM_STACK.size();
-			System.out.println("Cancel - size: " + size);
 			for (int i = 0; i < size; i++) {
 				ItemCompra item = ITEM_STACK.pop();
 				item.aumentarEstoque();
@@ -314,7 +315,6 @@ public class CarrinhoController implements ICsv, ActionListener {
 
 	public void save() throws Exception {
 		int size = ITEM_STACK.size();
-		System.out.println("Save - size: " + size);
 		for (int i = 0; i < size; i++) {
 			ItemCompra item = ITEM_STACK.pop();
 			Produto prod = item.getPRODUTO();
