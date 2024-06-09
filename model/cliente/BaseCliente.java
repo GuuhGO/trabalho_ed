@@ -45,6 +45,11 @@ public abstract class BaseCliente implements ICsv {
 		throw new IllegalArgumentException("Tipo de cliente deve ser \"Físico\" ou \"Jurídico\"\n");
 	}
 
+	public String getNome() {
+		return "";
+	}
+	
+	
 	public boolean compareAllFields(String reference) {
 		return (tipoCliente.toUpperCase().contains(reference) || telefone.toUpperCase().contains(reference)
 				|| endereco.compareAllFields(reference));

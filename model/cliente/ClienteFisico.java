@@ -23,8 +23,9 @@ public class ClienteFisico extends BaseCliente {
 		this.cpf = cpf;
 	}
 
+	@Override
 	public String getNome() {
-		return this.nome;
+		return nome;
 	}
 
 	public void setNome(String nome) throws IllegalArgumentException {
@@ -52,6 +53,11 @@ public class ClienteFisico extends BaseCliente {
 		return buffer.toString();
 	}
 
+	@Override
+	public String toString() {
+		return String.format("CPF: %s | Nome: %s", getCpf(), getNome());
+	}
+	
 	@Override
 	public String getCsvId() {
 		return getCpf();

@@ -1,7 +1,7 @@
 package controller.csv;
 
 import controller.TipoController;
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 import model.Produto;
 import model.Tipo;

@@ -1,6 +1,6 @@
 package controller.csv;
 
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 
 import java.io.IOException;

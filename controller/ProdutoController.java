@@ -2,7 +2,7 @@ package controller;
 
 import controller.csv.ProdutoCsvController;
 import controller.hashTables.ProdutoHashTable;
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 import model.Produto;
 import view.TelaEclipse;

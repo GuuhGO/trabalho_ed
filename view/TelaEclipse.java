@@ -5,10 +5,8 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -23,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import controller.CarrinhoController;
@@ -31,7 +30,7 @@ import controller.ProdutoController;
 import controller.TipoController;
 import controller.csv.ClienteCsvController;
 import controller.csv.ItemCompraCsvController;
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 import model.Produto;
 import model.Tipo;
@@ -101,7 +100,7 @@ public class TelaEclipse extends JFrame {
 	private JLabel lblCadastrarCliente;
 	private JLabel lblCadastrarProduto;
 	private JLabel lblCadastrarTipo;
-	private JLabel lblCartCustomer;
+	private JLabel lblCartNum;
 	private JLabel lblClienteCpf_Cnpj;
 	private JLabel lblClienteEmail;
 	private JLabel lblClienteNome;
@@ -165,6 +164,10 @@ public class TelaEclipse extends JFrame {
 	private JTextField tfSearch;
 	private JTextField tfSearchProdCart;
 	private JTextField tfValorProduto;
+	private JButton btnComprar;
+	private JLabel lblCartCustomerID;
+	private JLabel lblCartCustomerName;
+	private JButton btnAddToCart;
 
 	public TelaEclipse() {
 
@@ -207,6 +210,8 @@ public class TelaEclipse extends JFrame {
         loadCustomersTable();
         loadTypeTable();
         loadProductTable();
+        loadProdCartTable();
+        loadCartItemsTable();
 		loadSalesTable();
     }
 
@@ -298,9 +303,6 @@ public class TelaEclipse extends JFrame {
 		return tableCliente;
 	}
 
-	public JLabel getLblCartCustomer() {
-		return lblCartCustomer;
-	}
 
 	public JLabel getLblErrorCadastro() {
 		return lblErrorCadastroCliente;
@@ -375,7 +377,7 @@ public class TelaEclipse extends JFrame {
 			ClienteJuridico tempCj = (ClienteJuridico) customer;
 			cbClienteTipo.setSelectedIndex(1);
 			tfClienteCpf_Cnpj.setText(tempCj.getCnpj().replace("null", ""));
-			tfClienteNome.setText(tempCj.getFantasia().replace("null", ""));
+			tfClienteNome.setText(tempCj.getNome().replace("null", ""));
 			tfClienteEmail.setText(tempCj.getEmail().replace("null", ""));
 		}
 		if (customer.getTipoCliente().toUpperCase().equals("FÍSICO")) {
@@ -672,17 +674,18 @@ public class TelaEclipse extends JFrame {
 		pnCarrinho.setBounds(0, 0, 722, 336);
 		tabCarrinho.add(pnCarrinho);
 
-		lblTituloCarrinho = new JLabel("CARRINHO");
-		lblTituloCarrinho.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTituloCarrinho.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblTituloCarrinho.setBounds(254, 10, 178, 30);
-		pnCarrinho.add(lblTituloCarrinho);
+//		lblTituloCarrinho = new JLabel("CARRINHO");
+//		lblTituloCarrinho.setHorizontalAlignment(SwingConstants.CENTER);
+//		lblTituloCarrinho.setFont(new Font("Tahoma", Font.PLAIN, 20));
+//		lblTituloCarrinho.setBounds(254, 10, 178, 30);
+//		pnCarrinho.add(lblTituloCarrinho);
 
 		lblCpfCarrinho = new JLabel("Informar CPF");
 		lblCpfCarrinho.setBounds(10, 19, 150, 21);
 		pnCarrinho.add(lblCpfCarrinho);
 
 		tfCpfCarrinho = new JTextField();
+		lblCpfCarrinho.setLabelFor(tfCpfCarrinho);
 		tfCpfCarrinho.setToolTipText("Informar CPF");
 		tfCpfCarrinho.setColumns(10);
 		tfCpfCarrinho.setBounds(10, 49, 118, 19);
@@ -694,11 +697,10 @@ public class TelaEclipse extends JFrame {
 		btnOpenCart.addActionListener(cartCtrl);
 		pnCarrinho.add(btnOpenCart);
 
-		btnCancelCart = new JButton("Cancelar");
-		btnCancelCart.setMargin(new Insets(2, 2, 2, 2));
-		btnCancelCart.setBounds(110, 79, 70, 21);
-		btnCancelCart.addActionListener(cartCtrl);
-		pnCarrinho.add(btnCancelCart);
+//		btnCancelCart = new JButton("Cancelar");
+//		btnCancelCart.setMargin(new Insets(2, 2, 2, 2));
+//		btnCancelCart.setBounds(105, 79, 60, 21);
+//		pnCarrinho.add(btnCancelCart);
 
 		tfSearchProdCart = new JTextField();
 		toggleTextField(tfSearchProdCart, false);
@@ -707,9 +709,6 @@ public class TelaEclipse extends JFrame {
 		tfSearchProdCart.setBounds(10, 129, 150, 21);
 		pnCarrinho.add(tfSearchProdCart);
 
-		lblCartCustomer = new JLabel("");
-		lblCartCustomer.setBounds(220, 48, 210, 21);
-		pnCarrinho.add(lblCartCustomer);
 
 		spProdTable = new JScrollPane();
 		spProdTable.setBounds(10, 160, 438, 166);
@@ -718,14 +717,15 @@ public class TelaEclipse extends JFrame {
 		tbProdCart = new JTable();
 		spProdTable.setViewportView(tbProdCart);
 
-		ImageIcon searchIcon = new ImageIcon(".\\src\\assets\\lupa16px.png");
-		btnSearchProdCart = new JButton(searchIcon);
-		btnSearchProdCart.setBounds(170, 129, 21, 21);
+		btnSearchProdCart = new JButton("Pesquisar");
+		btnSearchProdCart.setBounds(170, 129, 70, 21);
 		btnSearchProdCart.setMargin(new Insets(2, 2, 2, 2));
+		btnSearchProdCart.setEnabled(false);
+		btnSearchProdCart.addActionListener(cartCtrl);
 		pnCarrinho.add(btnSearchProdCart);
 
 		spCartItems = new JScrollPane();
-		spCartItems.setBounds(467, 50, 245, 276);
+		spCartItems.setBounds(467, 50, 245, 247);
 		pnCarrinho.add(spCartItems);
 
 		tbCartItems = new JTable();
@@ -735,7 +735,86 @@ public class TelaEclipse extends JFrame {
 		lblErrorCart.setForeground(new Color(255, 0, 0));
 		lblErrorCart.setBounds(10, 106, 150, 13);
 		pnCarrinho.add(lblErrorCart);
+		
+		btnAddToCart = new JButton("Adicionar");
+		btnAddToCart.setToolTipText("Adiciona o elemento selecionado");
+		btnAddToCart.setFont(new Font("Tahoma", Font.BOLD, 10));
+		btnAddToCart.setBackground(new Color(128, 255, 128));
+		btnAddToCart.setMargin(new Insets(2, 2, 2, 2));
+		btnAddToCart.setBounds(298, 129, 70, 21);
+		btnAddToCart.addActionListener(cartCtrl);
+		btnAddToCart.setEnabled(false);
+		pnCarrinho.add(btnAddToCart);
+		
+		btnDelFromCart = new JButton("Remover");
+		btnDelFromCart.setToolTipText("Remove o último elemento adicionado");
+		btnDelFromCart.setMargin(new Insets(2, 2, 2, 2));
+		btnDelFromCart.setFont(new Font("Tahoma", Font.BOLD, 10));
+		btnDelFromCart.setBackground(new Color(255, 128, 128));
+		btnDelFromCart.setBounds(378, 129, 70, 21);
+		btnDelFromCart.addActionListener(cartCtrl);
+		btnDelFromCart.setEnabled(false);
+		pnCarrinho.add(btnDelFromCart);
+		
+		btnComprar = new JButton("Comprar");
+		btnComprar.setFont(new Font("Tahoma", Font.BOLD, 10));
+		btnComprar.setForeground(new Color(255, 255, 255));
+		btnComprar.setMargin(new Insets(2, 2, 2, 2));
+		btnComprar.setBackground(new Color(62, 196, 75));
+		btnComprar.setBounds(642, 19, 70, 21);
+		btnComprar.addActionListener(cartCtrl);
+		pnCarrinho.add(btnComprar);
+		
+		btnCancelCart = new JButton("Cancelar");
+		btnCancelCart.setFont(new Font("Tahoma", Font.BOLD, 10));
+		btnCancelCart.setForeground(new Color(255, 255, 255));
+		btnCancelCart.setMargin(new Insets(2, 2, 2, 2));
+		btnCancelCart.setBackground(new Color(255, 0, 0));
+		btnCancelCart.setBounds(562, 19, 70, 21);
+		btnCancelCart.addActionListener(cartCtrl);
+		pnCarrinho.add(btnCancelCart);
+		
+		lblCartNum = new JLabel("");
+		lblCartNum.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblCartNum.setBounds(170, 19, 150, 20);
+		pnCarrinho.add(lblCartNum);
+		
+		lblCartCustomerID = new JLabel("");
+		lblCartCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblCartCustomerID.setBounds(170, 48, 150, 20);
+		pnCarrinho.add(lblCartCustomerID);
+		
+		lblCartCustomerName = new JLabel("");
+		lblCartCustomerName.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblCartCustomerName.setBounds(170, 80, 150, 20);
+		pnCarrinho.add(lblCartCustomerName);
+		
+		lblFinalPrice = new JLabel("Total: R$");
+		lblFinalPrice.setHorizontalAlignment(SwingConstants.LEFT);
+		lblFinalPrice.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblFinalPrice.setBounds(562, 301, 151, 30);
+		pnCarrinho.add(lblFinalPrice);
+		
+		
+		
+	}
 
+	public void loadCartItemsTable() {
+		// "código;nome;valor"
+		String productHeader[] = produtoCtrl.getHeader().split(";");
+		String vetHeader[] = {productHeader[0], productHeader[2], productHeader[3]};
+		String header = String.join(";", vetHeader);
+		carregarDados(tbCartItems, header, new List<ICsv>());
+		TableColumn column = tbCartItems.getColumnModel().getColumn(0);
+		tbCartItems.removeColumn(column);
+		tbCartItems.getColumnModel().getColumn(0).setMaxWidth(40);
+		tbCartItems.getColumnModel().getColumn(2).setMaxWidth(60);
+		
+	}
+
+	public void loadProdCartTable() {
+		carregarDados(tbProdCart, produtoCtrl.getHeader(), new List<ICsv>());
+		tbProdCart.getColumnModel().getColumn(0).setMaxWidth(30);
 	}
 
 	private void initListaClientes() {
@@ -1331,6 +1410,8 @@ public class TelaEclipse extends JFrame {
 	private JTextField tfSearchSales;
 	private JScrollPane scrollPaneCompras;
 	private JTable salesTable;
+	private JLabel lblFinalPrice;
+	private JButton btnDelFromCart;
 
 	public JTable getSalesTable() {
 		return this.salesTable;
@@ -1360,7 +1441,7 @@ public class TelaEclipse extends JFrame {
 
 		salesTable = new JTable();
 		scrollPaneCompras = new JScrollPane(salesTable);
-		scrollPaneCompras.setBounds(14, 109, 698, 227);
+		scrollPaneCompras.setBounds(14, 109, 698, 217);
 
 		lblErrorSalesList = new JLabel("");
 		lblErrorSalesList.setBounds(14, 75, 117, 30);
@@ -1411,4 +1492,48 @@ public class TelaEclipse extends JFrame {
         }
 
     }
+
+	public JButton getBtnOpenCart() {
+		return btnOpenCart;
+	}
+
+	public JLabel getLblCartNum() {
+		return lblCartNum;
+	}
+
+	public JLabel getLblCartCustomerID() {
+		return lblCartCustomerID;
+	}
+
+	public JLabel getLblCartCustomerName() {
+		return lblCartCustomerName;
+	}
+
+	public JTable getTbProdCart() {
+		return tbProdCart;
+	}
+
+	public ProdutoController getProdutoCtrl() {
+		return produtoCtrl;
+	}
+
+	public JButton getBtnAddToCart() {
+		return btnAddToCart;
+	}
+
+	public JButton getBtnSearchProdCart() {
+		return btnSearchProdCart;
+	}
+
+	public JTable getTbCartItems() {
+		return tbCartItems;
+	}
+
+	public JLabel getLblFinalPrice() {
+		return lblFinalPrice;
+	}
+
+	public JButton getBtnDelFromCart() {
+		return btnDelFromCart;
+	}
 }

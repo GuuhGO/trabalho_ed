@@ -9,7 +9,7 @@ public class ClienteJuridico extends BaseCliente {
 	public ClienteJuridico(String fantasia, String cnpj, String telefone, String email, Endereco endereco) {
 		setTipoCliente("Jurídico");
 		setCnpj(cnpj);
-		setFantasia(fantasia);
+		setNome(fantasia);
 		setTelefone(telefone);
 		setEmail(email);
 		this.endereco = endereco;
@@ -26,11 +26,12 @@ public class ClienteJuridico extends BaseCliente {
 		this.cnpj = cnpj;
 	}
 
-	public String getFantasia() {
+	@Override
+	public String getNome() {
 		return this.fantasia;
 	}
 
-	public void setFantasia(String fantasia) throws IllegalArgumentException {
+	public void setNome(String fantasia) throws IllegalArgumentException {
 		if (fantasia.isEmpty() || fantasia.equals("null")) {
 			throw new IllegalArgumentException("Campo 'fantasia' não pode ser vazio");
 		}
@@ -48,6 +49,11 @@ public class ClienteJuridico extends BaseCliente {
 		this.email = email;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("CNPJ: %s | Fantasia: %s", getCnpj(), getNome());
+	}
+	
 	@Override
 	public String getObjCsv() {
 		//cpf/cnpj;tipo;nome/fantasia;logradouro;numero;complemento;cep;telefone;email

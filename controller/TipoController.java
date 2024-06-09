@@ -1,7 +1,7 @@
 package controller;
 
 import controller.csv.TipoCsvController;
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 import model.Tipo;
 import view.TelaEclipse;

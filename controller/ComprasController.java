@@ -1,7 +1,7 @@
 package controller;
 
 import controller.csv.ItemCompraCsvController;
-import datastrucures.genericList.List;
+import datastructures.genericList.List;
 import model.ICsv;
 import model.ItemCompra;
 import view.TelaEclipse;
