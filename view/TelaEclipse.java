@@ -945,10 +945,16 @@ public class TelaEclipse extends JFrame {
 	}
 
 	private List<ICsv> getProdutosFiltrados() throws Exception {
-		List<ICsv> data = new List<>();
+		List<ICsv> data;
 		String selectedComboBox = (String) cbListaTipo.getSelectedItem();
-		if (selectedComboBox != null && selectedComboBox.equals("-")) {
+		if (selectedComboBox == null) {
 			data = produtoCtrl.get();
+		}
+		else if (selectedComboBox.equals("-")) {
+			data = produtoCtrl.get();
+		} else {
+			int typeCode = Integer.parseInt(selectedComboBox.split("-")[0]);
+			data = produtoCtrl.getByTipe(typeCode);
 		}
 		return data;
 	}
