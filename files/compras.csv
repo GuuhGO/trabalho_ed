@@ -37,3 +37,6 @@ id_compra;id_cliente;codigo_produto;codigo_tipo;nome_produto;nome_tipo_produto;v
 4;1234;2;12;Corante laranja;partes e materiais;4.5
 4;1234;5;1;Queijo;bens de consumo;65.0
 4;1234;3;1;Manga;bens de consumo;8.0
+5;1234;3;1;Manga;bens de consumo;8.0
+5;1234;1;2;Concreto;produtos industriais;65.6
+5;1234;5;1;Queijo;bens de consumo;65.0

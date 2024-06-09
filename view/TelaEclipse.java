@@ -45,6 +45,7 @@ public class TelaEclipse extends JFrame {
 	private JButton btnSalvarProduto;
 	private JButton btnSalvarTipoCadastro;
 	private JButton btnSearchProdCart;
+	private JButton btnComprar;
 	private JPanel cadastroClientes;
 	private JPanel cadastroProduto;
 	private JPanel cadastroTipo;
@@ -656,7 +657,7 @@ public class TelaEclipse extends JFrame {
 		btnDelFromCart.setEnabled(false);
 		pnCarrinho.add(btnDelFromCart);
 
-		JButton btnComprar = new JButton("Comprar");
+		btnComprar = new JButton("Comprar");
 		btnComprar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnComprar.setForeground(new Color(255, 255, 255));
 		btnComprar.setMargin(new Insets(2, 2, 2, 2));
@@ -1288,5 +1289,9 @@ public class TelaEclipse extends JFrame {
 
 	public JButton getBtnDelFromCart() {
 		return btnDelFromCart;
+	}
+
+	public JButton getBtnComprar() {
+		return btnComprar;
 	}
 }
