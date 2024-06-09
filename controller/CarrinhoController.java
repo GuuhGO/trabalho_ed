@@ -1,7 +1,6 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import controller.csv.ClienteCsvController;
 import controller.csv.ItemCompraCsvController;
-import datastructures.genericQueue.Queue;
 import datastructures.genericStack.Stack;
 import datastructures.genericList.List;
 import model.ICsv;
@@ -105,7 +103,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 			updateLblText(lblCartCustomerID, "CPF/CNPJ: " + getCLIENTE().getCsvId());
 			updateLblText(lblCartCustomerName, getCLIENTE().getNome());
 
-			screen.toggleTextField(tfSearchProdCart, true);
+			screen.toggleTextField(true);
 
 			fillProdCartTable();
 		} catch (Exception e1) {
@@ -115,7 +113,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 			updateLblText(lblCartCustomerID, "");
 			updateLblText(lblCartCustomerName, "");
 			screen.printError(lblErrorCart, e1);
-			screen.toggleTextField(tfSearchProdCart, false);
+			screen.toggleTextField(false);
 		}
 	}
 
@@ -161,7 +159,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		btnAddToCart.setEnabled(false);
 		btnDelFromCart.setEnabled(false);
 
-		screen.toggleTextField(tfSearch, false);
+		screen.toggleTextField(false);
 		((DefaultTableModel) tbProdCart.getModel()).setRowCount(0);
 		((DefaultTableModel) tbCartItems.getModel()).setRowCount(0);
 		;

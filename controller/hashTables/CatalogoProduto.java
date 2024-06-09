@@ -5,7 +5,7 @@ import model.ICsv;
 import model.Produto;
 import model.Tipo;
 
-public class ProdutoHashTable {
+public class CatalogoProduto {
     private int size; // n° de elementos na table
     @SuppressWarnings("rawtypes")
     private List[] buckets;
@@ -13,7 +13,7 @@ public class ProdutoHashTable {
     // preenche 80% do dos itens do array antes de redimensionar
     // dobrando seu tamanho.
 
-    public ProdutoHashTable() {
+    public CatalogoProduto() {
         inicializarBuckets(15);
         size = 0;
     }

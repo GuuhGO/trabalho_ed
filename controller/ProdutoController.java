@@ -1,7 +1,7 @@
 package controller;
 
 import controller.csv.ProdutoCsvController;
-import controller.hashTables.ProdutoHashTable;
+import controller.hashTables.CatalogoProduto;
 import datastructures.genericList.List;
 import model.ICsv;
 import model.Produto;
@@ -16,14 +16,14 @@ public final class ProdutoController implements ActionListener {
 	private static ProdutoController INSTANCE = null;
 
 	private final ProdutoCsvController DB_PRODUTO;
-	private ProdutoHashTable TABLE_PRODUTO;
+	private CatalogoProduto TABLE_PRODUTO;
 	private boolean viewSetted;
 	private TelaEclipse SCREEN;
 
 	private ProdutoController() throws Exception {
 		TipoController tipoController = TipoController.getInstance();
 		DB_PRODUTO = new ProdutoCsvController(tipoController.getTipoList());
-		TABLE_PRODUTO = new ProdutoHashTable();
+		TABLE_PRODUTO = new CatalogoProduto();
 		updateData(); // lê o arquivo popula a table
 	}
 
@@ -31,7 +31,7 @@ public final class ProdutoController implements ActionListener {
 		List<ICsv> produtoList = DB_PRODUTO.get();
 		int size = produtoList.size();
 
-		TABLE_PRODUTO = new ProdutoHashTable();
+		TABLE_PRODUTO = new CatalogoProduto();
 
 		for (int i = 0; i < size; i++) {
 			Produto p = (Produto) produtoList.get(i);
