@@ -127,6 +127,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		JLabel lblCartNum = screen.getLblCartNum();
 		JLabel lblCartCustomerID = screen.getLblCartCustomerID();
 		JLabel lblCartCustomerName = screen.getLblCartCustomerName();
+		JLabel lblFinalPrice = screen.getLblFinalPrice();
 		JTextField tfSearch = screen.getTfSearchProdCart();
 		JTextField tfCpfCarrinho = screen.getTfCpfCarrinho();
 		JTable tbProdCart = screen.getTbProdCart();
@@ -135,6 +136,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		valorTotal = 0;
 		try {
 			int size = ITEM_STACK.size();
+			System.out.println("Cancel - size: " + size);
 			for (int i = 0; i < size; i++) {
 				ItemCompra item = ITEM_STACK.pop();
 				item.aumentarEstoque();
@@ -149,6 +151,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		updateLblText(lblCartNum, "");
 		updateLblText(lblCartCustomerID, "");
 		updateLblText(lblCartCustomerName, "");
+		updateLblText(lblFinalPrice, "Total: R$");
 		lblErrorCart.setText("");
 		lblErrorCart.setForeground(Color.RED);
 
@@ -311,8 +314,11 @@ public class CarrinhoController implements ICsv, ActionListener {
 
 	public void save() throws Exception {
 		int size = ITEM_STACK.size();
+		System.out.println("Save - size: " + size);
 		for (int i = 0; i < size; i++) {
-			DB_COMPRAS.save(ITEM_STACK.pop());
+			ItemCompra item = ITEM_STACK.pop();
+			Produto prod = item.getPRODUTO();
+			DB_COMPRAS.save(item);
 		}
 		ProdutoController.getInstance().updateData();
 	}
