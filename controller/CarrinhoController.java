@@ -54,6 +54,9 @@ public class CarrinhoController implements ICsv, ActionListener {
 		if (actionCommand.equalsIgnoreCase("CANCELAR")) {
 			cancelCart(e);
 		}
+		if (actionCommand.equalsIgnoreCase("PESQUISAR")) {
+			searchProdCart(e);
+		}
 		if (actionCommand.equalsIgnoreCase("ADICIONAR")) {
 			addToCart(e);
 		}
@@ -70,6 +73,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		JButton btnSearchProdCart = screen.getBtnSearchProdCart();
 		JButton btnAddToCart = screen.getBtnAddToCart();
 		JButton btnDelFromCArt = screen.getBtnDelFromCart();
+		JButton btnComprar = screen.getBtnComprar();
 		JLabel lblCartNum = screen.getLblCartNum();
 		JLabel lblCartCustomerID = screen.getLblCartCustomerID();
 		JLabel lblCartCustomerName = screen.getLblCartCustomerName();
@@ -81,9 +85,9 @@ public class CarrinhoController implements ICsv, ActionListener {
 
 			lblErrorCart.setText("");
 			lblErrorCart.setForeground(Color.GREEN);
+			lblErrorCart.setText("Cliente Encontrado");
 			setCLIENTE(customerCtrl.get(cpf));
 			this.ID_COMPRA = getNextAvailableId();
-			lblErrorCart.setText("Cliente Encontrado");
 			String nome_fantasia = "";
 			if (CLIENTE.getTipoCliente().equalsIgnoreCase("Físico")) {
 				ClienteFisico cf = (ClienteFisico) CLIENTE;
@@ -98,6 +102,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 			btnSearchProdCart.setEnabled(true);
 			btnAddToCart.setEnabled(true);
 			btnDelFromCArt.setEnabled(true);
+			btnComprar.setEnabled(true);
 
 			updateLblText(lblCartNum, "Carrinho: " + ID_COMPRA);
 			updateLblText(lblCartCustomerID, "CPF/CNPJ: " + getCLIENTE().getCsvId());
@@ -123,6 +128,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 		JButton btnSearchProdCart = screen.getBtnSearchProdCart();
 		JButton btnAddToCart = screen.getBtnAddToCart();
 		JButton btnDelFromCart = screen.getBtnDelFromCart();
+		JButton btnComprar = screen.getBtnComprar();
 		JLabel lblErrorCart = screen.getLblErrorCart();
 		JLabel lblCartNum = screen.getLblCartNum();
 		JLabel lblCartCustomerID = screen.getLblCartCustomerID();
@@ -158,12 +164,11 @@ public class CarrinhoController implements ICsv, ActionListener {
 		btnSearchProdCart.setEnabled(false);
 		btnAddToCart.setEnabled(false);
 		btnDelFromCart.setEnabled(false);
+		btnComprar.setEnabled(false);
 
 		screen.toggleTextField(false);
 		((DefaultTableModel) tbProdCart.getModel()).setRowCount(0);
 		((DefaultTableModel) tbCartItems.getModel()).setRowCount(0);
-		;
-
 	}
 
 	private void addToCart(ActionEvent e) {
@@ -190,15 +195,46 @@ public class CarrinhoController implements ICsv, ActionListener {
 		JOptionPane.showMessageDialog(null, "Nenhum item selecionado");
 	}
 
+	private List<ICsv> searchProdCart(ActionEvent e) {
+		List<ICsv> matchProducts = new List<>();
+		try {
+			String search = screen.getTfSearchProdCart().getText();
+			if (search == null || search.isBlank()) {
+				fillProdCartTable();
+				return null;
+			}
+			List<ICsv> allProducts = produtoCtrl.get();
+			int size = allProducts.size();
+			for (int i = 0; i < size; i++) {
+				Produto tempProd = (Produto) allProducts.get(i);
+				if (tempProd.compareAllFields(search.toUpperCase())) {
+					System.out.println("Produto Encontrado " + tempProd.getCodigo());
+					matchProducts.addLast(tempProd);
+				}
+			}
+			JTable tbProdCart = screen.getTbProdCart();
+			screen.carregarDados(tbProdCart, produtoCtrl.getHeader(), matchProducts);
+			tbProdCart.getColumnModel().getColumn(0).setMaxWidth(30);
+			tbProdCart.getColumnModel().getColumn(1).setMaxWidth(46);
+			tbProdCart.getColumnModel().getColumn(2).setMaxWidth(46);
+			tbProdCart.getColumnModel().getColumn(3).setMinWidth(200);
+			
+		} catch (Exception err) {
+			JOptionPane.showMessageDialog(null, err.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
+		return matchProducts;
+	}
+
 	private void delFromCart(ActionEvent e) {
 		JTable tbCartItems = screen.getTbCartItems();
+		JTable tbProdCart = screen.getTbProdCart();
 		JLabel lblFinalPrice = screen.getLblFinalPrice();
 		DefaultTableModel tableModel = (DefaultTableModel) tbCartItems.getModel();
 		try {
-			int stackSize = ITEM_STACK.size();
+			ItemCompra item = ITEM_STACK.top();
 			tableModel.removeRow(0);
 			removerItem();
-			fillProdCartTable();
+			searchProdCart(e);
 			String fValorTotal = String.format("Total: R$%.2f", valorTotal);
 			updateLblText(lblFinalPrice, fValorTotal);
 		} catch (Exception e1) {
@@ -209,14 +245,20 @@ public class CarrinhoController implements ICsv, ActionListener {
 	}
 
 	private void buyCart(ActionEvent e) {
-		try {
-			save();
-			JOptionPane.showMessageDialog(null, "Compra Realizada com Sucesso!", "INFO", JOptionPane.INFORMATION_MESSAGE);
-			cancelCart(e);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		int size = ITEM_STACK.size();
+		if (size > 0) {
+			try {
+				save();
+				JOptionPane.showMessageDialog(null, "Compra Realizada com Sucesso!", "INFO",
+						JOptionPane.INFORMATION_MESSAGE);
+				cancelCart(e);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			return;
 		}
+		JOptionPane.showMessageDialog(null, "Carrinho Vazio", "Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private String[] getRowData(JTable tbProdCart, int indSelectedRow) {
@@ -317,6 +359,7 @@ public class CarrinhoController implements ICsv, ActionListener {
 			ItemCompra item = ITEM_STACK.pop();
 			Produto prod = item.getPRODUTO();
 			DB_COMPRAS.save(item);
+			produtoCtrl.edit(prod, prod);
 		}
 		ProdutoController.getInstance().updateData();
 	}

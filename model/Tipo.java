@@ -77,7 +77,7 @@ public class Tipo implements ICsv {
 
 	@Override
 	public boolean compareAllFields(String reference) {
-		return (String.valueOf(codigo).contains(reference) || nome.contains(reference)
-				|| descricao.contains(reference));
+		return (String.valueOf(codigo).contains(reference) || nome.toUpperCase().contains(reference)
+				|| descricao.toUpperCase().contains(reference));
 	}
 }

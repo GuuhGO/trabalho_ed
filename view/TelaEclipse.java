@@ -653,6 +653,7 @@ public class TelaEclipse extends JFrame {
 		btnComprar.setBackground(new Color(62, 196, 75));
 		btnComprar.setBounds(642, 19, 70, 21);
 		btnComprar.addActionListener(cartCtrl);
+		btnComprar.setEnabled(false);
 		pnCarrinho.add(btnComprar);
 
         JButton btnCancelCart = new JButton("Cancelar");
@@ -1316,5 +1317,9 @@ public class TelaEclipse extends JFrame {
 
 	public JButton getBtnDelFromCart() {
 		return btnDelFromCart;
+	}
+
+	public JButton getBtnComprar() {
+		return btnComprar;
 	}
 }
